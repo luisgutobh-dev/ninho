@@ -23,10 +23,10 @@ Usar uma hospedagem híbrida. Na AWS ficam o backend e as peças que têm plano 
 | Peça | Onde | Observação |
 | --- | --- | --- |
 | Front (PWA) | Vercel, plano gratuito | Sem mudança |
-| Monólito NestJS | AWS, uma instância pequena sempre ligada (EC2 ou Lightsail, escolhida no primeiro deploy, F1 M3) | Única peça paga: até US$ 10 por mês depois dos créditos de conta nova |
+| Monólito NestJS | AWS Lightsail, plano de 1 GB sempre ligado (cerca de US$ 7 por mês, com IPv4 e tráfego incluídos) | Única peça paga. EC2 foi descartado por ora: uma t4g.micro mais o IPv4 público cobrado à parte fica perto de US$ 10 e encosta no teto. Migrar para EC2 é possível se o estudo de AWS pedir |
 | Fila | Amazon SQS com DLQ nativa | Substitui RabbitMQ e BullMQ em produção. Resolve a escolha da pergunta em aberto 2 do PRD |
 | Mensagens com atraso e lembretes | Amazon EventBridge Scheduler, um agendamento por lembrete | O horário é disparado pela AWS, sem depender do backend acordado. O atraso da SQS (máximo 15 min) serve só para retry com backoff |
-| Serviço de Notificações (extraído no F1 M5.1) | AWS Lambda consumindo a SQS | Banco próprio exigido pelo RNT-11; DynamoDB é o candidato natural, decidido no ADR de extração |
+| Serviço de Notificações (extraído no F1 M5.1) | AWS Lambda em Go consumindo a SQS | Go pelo estudo da linguagem e pelo encaixe em Lambda (binário pequeno, cold start rápido, pouca memória); o monólito segue em NestJS, a stack do curso. Banco próprio exigido pelo RNT-11; DynamoDB é o candidato natural, decidido no ADR de extração |
 | Postgres | Supabase, plano gratuito | Pausa depois de 7 dias sem atividade; o uso semanal da família e uma tarefa agendada evitam isso |
 | MongoDB | Atlas, plano gratuito | Sem mudança |
 | Redis | Upstash, plano gratuito | Só cache, placar e rate limit, sem fila |
@@ -48,6 +48,6 @@ Regras que valem para todas as peças:
 - O RNF-P-11 deixa de ser "R$ 0 por mês" e passa a ser "até US$ 10 por mês, só o backend pago". A restrição do case muda de "tudo grátis" para "grátis, exceto o backend".
 - O RNF-P-07 não precisa mais aceitar backend dormindo nem a primeira resposta de 60 s.
 - A fila de produção passa a ser gerenciada. O estudo de broker (RabbitMQ) sai do caminho principal. Se quiser estudá-lo, ele pode entrar só em desenvolvimento, atrás da mesma porta.
-- A Lambda de Notificações dá ao F1 M5.1 um deploy realmente independente do monólito.
+- A Lambda de Notificações dá ao F1 M5.1 um deploy realmente independente do monólito. Por estar em outra linguagem, ela só conversa com o monólito por contrato (eventos na SQS), o que deixa a fronteira explícita. O custo é manter duas toolchains no CI.
 - Aparece um risco novo, a conta da AWS. Ele é mitigado pelo alerta de orçamento e pela infraestrutura como código, que permite destruir e recriar o ambiente.
 - Os limites e preços dos planos gratuitos (créditos de conta nova, cota permanente da SQS, da Lambda e do EventBridge Scheduler) mudam com o tempo e devem ser conferidos no console antes do primeiro deploy.
