@@ -141,11 +141,11 @@ Os identificadores (RF-G-01 etc.) são os usados nas issues e nas specs.
 | RNF-P-04 | Uso sem internet | Listas de compras e anotação de gasto funcionam offline e sincronizam sem perda |
 | RNF-P-05 | Nada se perde | Nenhuma notificação de compra, anotação ou leitura perdida; falha vai para a DLQ e é reprocessável |
 | RNF-P-06 | Resposta da API com o serviço acordado | p95 abaixo de 300 ms nas leituras e 500 ms nas escritas |
-| RNF-P-07 | Disponibilidade | Backend sempre ligado, em melhor esforço numa única instância; nenhuma mensagem se perde durante uma queda ou um deploy, e os lembretes não dependem do backend estar no ar ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)) |
+| RNF-P-07 | Disponibilidade | Backend sempre ligado, em melhor esforço numa única instância; nenhuma mensagem se perde durante uma queda ou um deploy ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)) |
 | RNF-P-08 | Privacidade | Dados financeiros, de saúde (perfil alimentar) e do filho só dentro da família; o app de captura lê apenas os apps do Itaú e do Nubank; repositório público sem dado real |
 | RNF-P-09 | Segurança | Login com sessão segura, papéis aplicados no backend, segredos fora do código, HTTPS em tudo |
 | RNF-P-10 | Backup | Cópia semanal automática do Postgres e do MongoDB, com restauração testada uma vez por formação |
-| RNF-P-11 | Custo | Até US$ 10 por mês, com alerta de orçamento; só o backend é pago, o resto fica em planos gratuitos ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)) |
+| RNF-P-11 | Custo | Planos gratuitos em tudo; a AWS só onde não houver opção gratuita (hoje, só o backend), até US$ 10 por mês com alerta de orçamento ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)) |
 | RNF-P-12 | Idioma, fuso e moeda | Português do Brasil, America/Sao_Paulo, reais |
 | RNF-P-13 | Usabilidade | Ação principal de cada módulo em até 3 toques; funciona bem em tela de celular |
 
@@ -160,12 +160,12 @@ Estes requisitos não vêm do volume do Ninho: uma família de três cabe num Po
 | RNT-03 PostgreSQL como banco transacional | Família, membros, anotações, tarefas, eventos, itens | Modelagem relacional, transações, constraints, índices, migrações | A mesma | F1 M3 |
 | RNT-04 MongoDB como banco de documentos | Notificações brutas do banco, mural, auditoria, séries de consumo | Quando usar documento em vez de tabela, esquema flexível, coleções de série temporal | Tabelas com JSONB no Postgres | F1 M4 e M5.3 |
 | RNT-05 Redis para cache, placar e rate limit | Cache-aside da agenda e do consumo agregado; placar da Rotina em sorted set; rate limit da API de captura | Cache-aside, TTL, invalidação, hit ratio, estruturas do Redis | Cache em memória e placar por consulta SQL | F1 M4 |
-| RNT-06 Fila de mensagens com DLQ | Captura de compra, envio de lembretes, detecção de falhas no consumo; Amazon SQS em produção e EventBridge Scheduler para os horários dos lembretes | Entrega at-least-once, retry com backoff e jitter, DLQ, mensagens com atraso, consumidores concorrentes | Tabela de jobs no Postgres com SELECT … FOR UPDATE SKIP LOCKED | F1 M4 e M5.1 |
+| RNT-06 Fila de mensagens com DLQ | Captura de compra, envio de lembretes, detecção de falhas no consumo; RabbitMQ gerenciado no plano gratuito da CloudAMQP | Entrega at-least-once, retry com backoff e jitter, DLQ, mensagens com atraso, consumidores concorrentes | Tabela de jobs no Postgres com SELECT … FOR UPDATE SKIP LOCKED | F1 M4 e M5.1 |
 | RNT-07 Outbox transacional | Evento gravado na mesma transação da mudança (compra capturada, item acabou, leitura registrada) e publicado depois | Consistência entre banco e fila, dual write | Outbox lido direto pelo worker, sem broker | F1 M5.1 |
 | RNT-08 Idempotência de ponta a ponta | Chave por notificação no app Android, por mensagem no consumidor, por lembrete na entrega, por URL na importação de receitas | Exactly-once efetivo sobre at-least-once | A mesma | F1 M3 a M5.1 |
 | RNT-09 Tempo real por WebSocket | Listas de compras e mural atualizados ao vivo para todos | Fan-out, reconexão, presença, escala horizontal com pub/sub | Atualização ao abrir a tela ou polling | F1 M4 |
 | RNT-10 Offline-first com resolução de conflito | Listas e anotações no PWA; fila local no app Android | Sincronização, relógio e versão por item, last-write-wins por campo ou CRDT (ADR) | Bloquear edição sem internet | F1 M4 |
-| RNT-11 Extração de um serviço | Notificações vira serviço separado, escrito em Go e rodando em AWS Lambda que consome a SQS, com seu próprio banco | Quando extrair, contrato entre serviços, consistência eventual, deploy independente | Notificações de volta como módulo do monólito | F1 M5.1 |
+| RNT-11 Extração de um serviço | Notificações vira serviço separado, escrito em Go, num container próprio na mesma instância do monólito, com seu próprio banco | Quando extrair, contrato entre serviços, consistência eventual, deploy independente | Notificações de volta como módulo do monólito | F1 M5.1 |
 | RNT-12 Integração externa resiliente | Google Calendar nos dois sentidos com webhooks; push e e-mail | Webhooks, renovação de canais, retry, circuit breaker, timeout, conflito de edição | Só exportar para o Google, sem webhooks | F1 M5.1 |
 | RNT-13 CQRS leve | Modelos de leitura do placar e do consumo agregado, alimentados por eventos | Separar escrita e leitura, projeções, reconstrução | Consulta direta nas tabelas | F1 M5.1 |
 | RNT-14 Pipeline de migração de dados | 101 leituras do painel Consumo da Casa para o Ninho | Extração, validação, idempotência da carga, relatório de divergências | Script único | F1 M5.3 |
@@ -175,12 +175,12 @@ Estes requisitos não vêm do volume do Ninho: uma família de três cabe num Po
 | RNT-18 Teste de falha | Derrubar a fila, o Redis ou o Google no Docker Compose e ver o que acontece | Degradação graciosa, recuperação, validação do runbook | Não se aplica | F1 M5.3 |
 | RNT-19 Feature flags | Todo módulo novo entra desligado e é liberado aos poucos | Entrega contínua, lançamento separado do deploy | Variável de ambiente | F1 M4 e F2 M4 |
 | RNT-20 Fitness functions e testes | Build quebra se um módulo importar o domínio de outro ou se o domínio depender de framework; pirâmide com containers reais e contrato entre front e API | Arquitetura evolutiva, testes como harness para agentes | A mesma | F1 M3 e M5.1 |
-| RNT-21 CI/CD e métricas de engenharia | GitHub Actions com testes, revisor automático e deploy na AWS por OIDC; infraestrutura da AWS como código no repositório; DORA do repositório | Pipeline, ambientes, frequência de deploy, lead time | A mesma | F1 M3 e M7 |
+| RNT-21 CI/CD e métricas de engenharia | GitHub Actions com testes, revisor automático e deploy; DORA do repositório | Pipeline, ambientes, frequência de deploy, lead time | A mesma | F1 M3 e M7 |
 | RNT-22 IA com evals | Cupom, voz, leitura do medidor por foto e assistente de cardápio com RAG e ferramentas; conjunto dourado no CI; tracing | Evals, RAG, uso de ferramentas, limite de autonomia, segurança de LLM | Entrada manual | Formação 3 |
 | RNT-23 Observabilidade de uso de IA e tokens | Toda chamada a modelo das features de IA (cupom, voz, medidor, cardápio) gera um span com modelo, tokens de entrada, saída e cache, latência, custo estimado, feature e pessoa; dashboard de tokens e custo por feature e por semana; orçamento mensal com alerta e corte automático | Convenções de GenAI do OpenTelemetry, FinOps de IA, cache de prompt, custo por unidade de valor (por cupom lido, por cardápio gerado) | Tabela de chamadas no Postgres com tokens e custo, e uma consulta mensal | F3 M2 (base) e M7 (orçamento e alerta) |
 | RNT-24 Telemetria dos agentes de desenvolvimento | Uso e custo do Claude Code, do revisor de PR e do agente de operação exportados por OpenTelemetry para o mesmo Grafana do Ninho: tokens e custo por sessão, por PR e por issue, ao lado do DORA do repositório | Medir o custo de construir com agentes; a dimensão custo do DX AI Measurement Framework com dados reais | Anotar o custo da sessão em cada PR | F1 M3 (liga), M6.2 (custo por PR) e M7 (one-pager) |
 
-**Stack de referência:** React como PWA na Vercel; app Android (Kotlin ou React Native) instalado fora da loja; NestJS no AWS Lightsail; PostgreSQL no Supabase usado só como banco (Data API desligada ou RLS ligado); MongoDB Atlas; Redis no Upstash; Amazon SQS com DLQ e EventBridge Scheduler (adaptadores locais em desenvolvimento); Notificações em Go numa AWS Lambda; backups num bucket S3 privado; Socket.IO; Web Push e e-mail; OpenTelemetry com Grafana; Sentry; PostHog; GitHub Actions. Localmente, tudo sobe com Docker Compose.
+**Stack de referência:** React como PWA na Vercel; app Android (Kotlin ou React Native) instalado fora da loja; NestJS no AWS Lightsail (única peça paga); PostgreSQL no Supabase usado só como banco (Data API desligada ou RLS ligado); MongoDB Atlas; Redis no Upstash; RabbitMQ (Docker em desenvolvimento, CloudAMQP gratuito em produção); Notificações em Go; e-mail por provedor gratuito; backups no Cloudflare R2; Socket.IO; Web Push e e-mail; OpenTelemetry com Grafana; Sentry; PostHog; GitHub Actions. Localmente, tudo sobe com Docker Compose.
 
 **ADRs previstos:** hospedagem e infraestrutura (feito: [ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)); hexagonal; conflito offline (last-write-wins ou CRDT); extração de Notificações; versão completa × simplificada, com as medições lado a lado; método de detecção de falhas no Consumo; front (PWA mais app Android de captura).
 
@@ -198,8 +198,9 @@ Estes requisitos não vêm do volume do Ninho: uma família de três cabe num Po
 | O Android restringe o acesso a notificações para apps instalados fora da loja | A captura automática não funciona sem configuração | Passo a passo de instalação com a liberação manual das configurações restritas; testar nos 3 celulares no início do F1 M4 |
 | Os bancos mudam o texto do push | Notificações não lidas | Leitor por banco com testes sobre exemplos reais anonimizados; o que falhar vai para a DLQ e aparece para o Guto (RF-G-08) |
 | Supabase gratuito pausa após uma semana sem atividade | Projeto pausado | Tarefa agendada que mantém o banco ativo; app Android guarda e reenvia |
-| Conta da AWS passa do orçamento | Custo inesperado | Alerta no AWS Budgets em 50%, 80% e 100%; infraestrutura como código para destruir e recriar o ambiente |
-| Sem backup no plano gratuito do Supabase | Perda de dados | Dump semanal pelo GitHub Actions para um bucket S3 privado (RNF-P-10) |
+| Limites de planos gratuitos de terceiros mudam ou são atingidos (CloudAMQP, Upstash, e-mail) | Fila, cache ou e-mail param | Limites conferidos antes do deploy e monitorados; troca de adaptador pela porta (RNT-02); AWS só se não houver outra opção gratuita |
+| Conta da AWS passa do orçamento | Custo inesperado | Alerta no AWS Budgets em 50%, 80% e 100% de US$ 10 |
+| Sem backup no plano gratuito do Supabase | Perda de dados | Dump semanal criptografado pelo GitHub Actions para o Cloudflare R2 (RNF-P-10) |
 | Limites do app OAuth do Google em modo de teste | Sincronização para depois de alguns dias | Verificar no F1 M5.1 o estado de publicação e a validade do token; ADR com a escolha |
 | Excesso de engenharia para 3 a 4 horas por semana | O módulo não fica pronto e a família não usa | A versão simplificada de cada requisito técnico é o plano B; o MVP funcional vem antes da peça extra |
 | Dados reais num repositório público | Vazamento | Seeds e fixtures fictícios; segredos no ambiente; revisão no modelo de ameaças (F1 M6.1) |
@@ -222,9 +223,8 @@ Estes requisitos não vêm do volume do Ninho: uma família de três cabe num Po
 ## Perguntas em aberto
 
 1. O filho usa o app com conta própria desde o início, ou entra só na Rotina e na Agenda mais tarde?
-2. ~~Fila: RabbitMQ ou BullMQ?~~ Decidido: Amazon SQS ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)).
+2. ~~Fila: RabbitMQ ou BullMQ?~~ Decidido: RabbitMQ, na CloudAMQP gratuita em produção ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)).
 3. Conflito offline nas listas: last-write-wins por campo ou CRDT?
-4. Provedor de e-mail para os lembretes: Amazon SES, se couber no orçamento, ou um provedor com plano gratuito. Decidir no F1 M5.1.
+4. Provedor de e-mail com plano gratuito para os lembretes: Resend ou Brevo. Escolha final no F1 M5.1.
 5. Formato do relatório do Mobills para a importação da fase 3.
-6. ~~Onde guardar os backups semanais?~~ Decidido: bucket S3 privado ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)).
-7. Região única para AWS, Supabase e Atlas: sa-east-1 (mais perto) ou us-east-1 (mais barata)? Decidir no primeiro deploy (F1 M3).
+6. ~~Onde guardar os backups semanais?~~ Decidido: Cloudflare R2 gratuito, com dump criptografado ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)).
