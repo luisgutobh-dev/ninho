@@ -24,13 +24,13 @@ Aplicando a regra, a única peça sem opção gratuita adequada é o backend sem
 | --- | --- | --- |
 | Front (PWA) | Vercel, plano gratuito | Sem mudança |
 | Monólito NestJS | **AWS Lightsail**, plano de 1 GB sempre ligado (cerca de US$ 7 por mês, com IPv4 e tráfego incluídos) | Única peça paga. Com o backend sempre ligado, os lembretes saem do próprio backend, sem agendador externo |
-| Serviço de Notificações (extraído no F1 M5.1) | Container separado em Go, na mesma instância do Lightsail | Go pelo estudo da linguagem. Deploy e processo independentes do monólito, sem custo extra; banco próprio exigido pelo RNT-11, decidido no ADR de extração |
+| Serviço de Notificações (extraído do monólito) | Container separado em Go, na mesma instância do Lightsail | Go pelo estudo da linguagem. Deploy e processo independentes do monólito, sem custo extra; banco próprio exigido pelo RNT-11, decidido no ADR de extração |
 | Mensageria | **Amazon SNS** (tópicos de eventos) e **Amazon SQS** (uma fila por consumidor, cada uma com DLQ), dentro da cota gratuita permanente da AWS | Escolha do mantenedor. Não é recurso pago: SNS e SQS têm cota gratuita permanente (1 milhão de publicações e 1 milhão de requisições por mês). Desenho em "Mensageria" abaixo. Resolve a pergunta em aberto 2 do PRD |
 | Postgres | Supabase, plano gratuito | Pausa depois de 7 dias sem atividade; o uso semanal e uma tarefa agendada evitam isso |
 | MongoDB | Atlas, plano gratuito | Sem mudança |
 | Redis | Upstash, plano gratuito | Só cache, placar e rate limit, sem fila |
 | Backups | Cloudflare R2, plano gratuito (10 GB), com o dump criptografado antes do envio | Fecha a pergunta em aberto 6 do PRD |
-| E-mail dos lembretes | Provedor com plano gratuito (Resend ou Brevo) | Fecha a pergunta em aberto 4, com a escolha final no F1 M5.1 |
+| E-mail dos lembretes | Provedor com plano gratuito (Resend ou Brevo) | Fecha a pergunta em aberto 4, com a escolha final ao construir a Agenda |
 | Observabilidade | Grafana Cloud, Sentry e PostHog nos planos gratuitos | Sem mudança |
 | CI/CD | GitHub Actions, com deploy no Lightsail | Entra junto com o código (RNT-21) |
 
@@ -60,7 +60,7 @@ O padrão é **fan-out SNS → SQS**: cada contexto publica os eventos dele num 
 
 | Fila | Consumidor | Assina | Faz |
 | --- | --- | --- | --- |
-| `conciliacao-compras` | Conciliação (monólito) | `ninho-conciliacao`, filtro `CompraCapturada` | Leitor por banco (Itaú ou Nubank) extrai valor, estabelecimento e cartão e cria a pergunta |
+| `conciliacao-compras` | Conciliação (monólito) | `ninho-conciliacao`, filtro `CompraCapturada` | Leitor por banco extrai valor, estabelecimento e cartão e cria a pergunta |
 | `notificacoes-entregas` | Notificações (serviço Go) | `PerguntaCriada`, `LembreteVencido`, `AlertaConsumo` | Aplica as preferências de canal e entrega Web Push e e-mail |
 | `rotina-itens-acabados` | Rotina (monólito) | `ninho-despensa`, filtro `ItemAcabou` | Põe o item na lista de compras certa |
 | `despensa-itens-comprados` | Despensa (monólito) | `ninho-rotina`, filtro `ItemComprado` | Volta o item para "tem" |
@@ -84,4 +84,4 @@ O padrão é **fan-out SNS → SQS**: cada contexto publica os eventos dele num 
 - A cota de 1 milhão de requisições da SQS é gasta mais pelo polling do que pelas mensagens: cada fila com long polling de 20 s faz cerca de 130 mil requisições por mês, mesmo vazia. As 5 filas somam cerca de 650 mil, e por isso uma fila nova só entra com essa conta refeita. As DLQs não são consultadas em polling; só um alarme lê a profundidade delas.
 - O estudo de broker muda de RabbitMQ (exchanges, bindings) para pub/sub gerenciado (fan-out SNS → SQS, filter policies, visibility timeout). Os conceitos do RNT-06 (at-least-once, DLQ, retry, idempotência) continuam todos.
 - O Ninho passa a depender de vários planos gratuitos. Os limites deles (cota da SQS e do SNS, comandos do Upstash, envios do provedor de e-mail) mudam com o tempo, devem ser conferidos antes do primeiro deploy e entram nos alertas de observabilidade.
-- A AWS fica com uso mínimo. O estudo de AWS do programa pode usar outros recursos à parte, sem entrar no caminho de produção do Ninho.
+- A AWS fica com uso mínimo. Estudos de AWS podem usar outros recursos à parte, sem entrar no caminho de produção do Ninho.

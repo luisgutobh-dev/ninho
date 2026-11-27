@@ -4,7 +4,7 @@
 
 ## Resumo
 
-O domínio do Ninho é a gestão do dia a dia da família. Ele se divide em 9 subdomínios (2 core), desenhados como 7 bounded contexts que se integram com 3 sistemas externos (Itaú/Nubank, Mobills e Google Calendar).
+O domínio do Ninho é a gestão do dia a dia da família. Ele se divide em 9 subdomínios (2 core), desenhados como 7 bounded contexts que se integram com 3 sistemas externos (os bancos, o Mobills e o Google Calendar).
 
 Os dois cores são a conciliação de gastos e a detecção de falhas de consumo. É neles que vale o melhor esforço de modelagem e de teste. Todo o resto é supporting ou generic.
 
@@ -16,7 +16,7 @@ O tipo vem só de dois critérios: a complexidade da regra de negócio (não a t
 | --- | --- | --- |
 | Conciliação de gastos | core | Razão de o app existir. Casar anotação com lançamento (RF-G-09) e lembrar o que cada estabelecimento costuma ser (RF-G-10). Ninguém vende isso. |
 | Detecção de falhas de consumo | core | Escore z modificado, banda do hidrômetro e CUSUM (RF-C-06). É a regra mais sofisticada do app e nenhum produto faz isso para o seu hidrômetro. |
-| Captura de notificações Itaú/Nubank | supporting | Não existe pronto, mas a regra é traduzir texto. Não diferencia nada. |
+| Captura de notificações dos bancos | supporting | Não existe pronto, mas a regra é traduzir texto. Não diferencia nada. |
 | Registro de leituras | supporting | Cadastro de leitura e conta, com validação simples. |
 | Rotina (tarefas, pontos, listas) | supporting | Regra trivial. Na rigor seria generic, porque existe app pronto; é construído porque o Ninho é case de estudo (registrar em ADR). |
 | Agenda e lembretes | supporting | O que é seu é pouco: categorias, cor por pessoa e o lembrete que repete até alguém marcar "feito" (RF-A-05). |
@@ -52,7 +52,7 @@ A regra que decide cada relação externa: ACL onde protege o core, conformista 
 ```mermaid
 flowchart LR
   subgraph Externos
-    BANCOS[Itaú/Nubank]
+    BANCOS[Bancos]
     MOBILLS[Mobills]
     GCAL[Google Calendar]
   end
@@ -71,7 +71,7 @@ Identidade e Notificações ficam embaixo porque não conhecem ninguém e servem
 
 | Upstream | Downstream | Padrão | Por quê |
 | --- | --- | --- | --- |
-| Itaú/Nubank | Conciliação de gastos | ACL (a Captura) | Dois formatos que mudam sem aviso, alimentando o core. A Captura traduz o push em "compra capturada"; o RF-G-08 é a ACL dizendo que não conseguiu traduzir. |
+| Bancos | Conciliação de gastos | ACL (a Captura) | Dois formatos que mudam sem aviso, alimentando o core. A Captura traduz o push em "compra capturada"; o RF-G-08 é a ACL dizendo que não conseguiu traduzir. |
 | Mobills | Conciliação de gastos | ACL | Alimenta o core (RF-G-09). Se o Mobills for trocado, só a ACL muda. |
 | Google Calendar | Agenda e lembretes | Conformista | Contexto supporting e modelo de evento que é quase um padrão da indústria. Vira ACL se a Agenda ganhar regra que o Google não representa. |
 | Rotina | Despensa | Cliente-fornecedor, Despensa conformista | A Despensa chama "adicionar à lista" e escuta "item comprado", ignorando o que não é dela. |
@@ -80,7 +80,7 @@ Identidade e Notificações ficam embaixo porque não conhecem ninguém e servem
 
 Nenhum Shared Kernel: cada contexto modela "pessoa" e "item" do seu jeito.
 
-**Serviço extraído no F1 M5.1:** Notificações (decidido em 26/11). É o contexto com mais consumidores e o contrato mais estável, não tem regra de negócio do Ninho e concentra o que justifica um processo separado (fila com atraso, retry, DLQ, entrega idempotente, RNF-P-02). A Agenda continua como módulo do monólito.
+**Serviço extraído:** Notificações (decidido em 26/11). É o contexto com mais consumidores e o contrato mais estável, não tem regra de negócio do Ninho e concentra o que justifica um processo separado (fila com atraso, retry, DLQ, entrega idempotente, RNF-P-02). A Agenda continua como módulo do monólito.
 
 ## DDD tático
 
@@ -112,7 +112,7 @@ O teste é a igualdade: importa *qual* é (entidade, igual por id) ou só os val
 | Memória do estabelecimento (RF-G-10) | Entidade | Acumula histórico; o nome normalizado é a identidade. |
 | Estabelecimento na compra | Objeto de valor | No MVP é só o texto do push. |
 | Dinheiro | Objeto de valor | Centavos em inteiro, moeda BRL, validação no construtor. Evita a obsessão por primitivos. |
-| Meio de pagamento | Objeto de valor | Nubank Master é definido pelos atributos. |
+| Meio de pagamento | Objeto de valor | "Cartão de crédito, bandeira X" é definido pelos atributos. |
 | Quem gastou | Objeto de valor (MembroId) | A pessoa é entidade na Identidade; aqui só a referência por id. |
 | Data e hora | Objeto de valor | Definida só pelo valor. |
 
