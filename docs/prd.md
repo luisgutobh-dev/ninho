@@ -290,18 +290,32 @@ Estes requisitos não vêm do volume do Ninho: uma família de três cabe num Po
 
 ## Roadmap ligado ao programa
 
+Com este roadmap, o fim da Formação 3 entrega o escopo inteiro dos cinco módulos, incluindo os itens "depois do MVP".
+
 | Momento | Entrega |
 | --- | --- |
-| F1 M1.2 | Repositório, CLAUDE.md, primeira skill, login, família, membros e papéis |
+| F1 M1.2 | Repositório, CLAUDE.md, primeira skill; Identidade e família (RF-I-01 a 05) no ar como walking skeleton |
 | F1 M2 | Este PRD revisado, design doc da Memória de gastos, primeiros ADRs |
-| F1 M3 | Memória de gastos (MVP) com spec, testes antes do código, revisor no CI e observabilidade básica |
-| F1 M4 | Rotina (MVP), captura automática no Android, fila, cache, tempo real e offline |
-| F1 M5.1 | Agenda e lembretes; Notificações extraído como serviço; outbox, Google Calendar, CQRS leve; versão simplificada e ADR comparativo |
+| F1 M3 | Memória de gastos (MVP, RF-G-01 a 04) com spec, testes antes do código, revisor no CI e observabilidade básica |
+| F1 M4 | Rotina (MVP, RF-R-01 a 06) e captura automática no Android (RF-G-05 a 08); fila, cache, tempo real e offline |
+| F1 M5.1 | Agenda e lembretes (RF-A-01 a 06), Notificações extraído como serviço (RF-N-01 a 06), preferências de aviso (RF-I-06) e lembretes de tarefa da Rotina pela Agenda; outbox, Google Calendar, CQRS leve; versão simplificada e ADR comparativo |
 | F1 M5.2 | Refatoração com DDD |
-| F1 M5.3 | Consumo: migração, detecção de falhas, SLOs, carga sintética e teste de falha |
-| F1 M5.4 a M7 | ADR do front, contexto e modelo de ameaças, agentes revisor e de operação, DORA |
-| Formação 2 | Despensa (MVP) com processo de produto e métricas de negócio |
-| Formação 3 | IA no Ninho com evals |
+| F1 M5.3 | Consumo (MVP, RF-C-01 a 07): migração, detecção de falhas, SLOs, carga sintética e teste de falha |
+| F1 M5.4 | ADR do front |
+| F1 M6.1 | Contexto e modelo de ameaças; exportar e apagar dados (RNF-P-14 e 15); Agenda com resumo do dia seguinte e aviso de conflito; resumo diário das notificações |
+| F1 M6.2 e M7 | Agentes revisor e de operação, DORA; Consumo com custo estimado pela tarifa, metas de redução e gás |
+| F2 M2 | Rotina com recompensas e conquistas, medidas no funil de uso semanal |
+| F2 M3 e M4 | Despensa (MVP, RF-D-01 a 03): PRD e design, construção e liberação por feature flag |
+| F2 M5 | Despensa com quantidade em estoque, validade e receitas (cadastro manual e importação por link) com busca |
+| F2 M6 | Despensa com cardápio da semana e lista de compras gerada do cardápio |
+| F3 M1 | Memória por estabelecimento (RF-G-10) com sugestão por IA |
+| F3 M2 | Cupom por foto (RF-G-11) e leitura do medidor por foto, na mesma porta de visão |
+| F3 M3 e M4 | RAG de receitas e perfil alimentar; assistente de cardápio |
+| F3 M5 | Fechamento do mês automatizado, começando pela importação do Mobills com casamento automático (RF-G-09) |
+| F3 M6 | Evals das features de IA |
+| F3 M7 | Anotação de gasto por voz (RF-G-11); orçamento e checklist de produção da IA |
+
+**Momentos mais carregados:** F1 M4 e F1 M5.1. Se o F1 M5.1 apertar, o primeiro a sair é o aviso de conflito da Agenda.
 
 ## Perguntas em aberto
 
