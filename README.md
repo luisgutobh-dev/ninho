@@ -13,4 +13,5 @@ Os documentos em `docs/` são a fonte da verdade do projeto. Toda mudança neles
 | [Case](docs/case.md) | Os cinco módulos, a arquitetura completa, quando cada módulo entra no programa, práticas, observabilidade e gestão do trabalho |
 | [PRD](docs/prd.md) | Requisitos funcionais (RF), não funcionais de produto (RNF-P) e técnicos de estudo (RNT), riscos e roadmap |
 | [Mapa de DDD](docs/ddd/mapa-estrategico.md) | Subdomínios, 7 bounded contexts, mapa de contextos e modelo tático |
+| [Aprendizados](docs/aprendizados.md) | O que foi aprendido em cada sessão de estudo, por tema |
 | [ADRs](docs/adr/) | Decisões de arquitetura, uma por arquivo |
