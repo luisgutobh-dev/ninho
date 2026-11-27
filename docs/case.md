@@ -82,17 +82,17 @@ O case do programa é o **Ninho**, um app para a família usar no dia a dia, no 
 | --- | --- | --- |
 | Front web e celular | React como PWA instalável, na Vercel | Cache no cliente, uso offline |
 | App de captura | Android (Kotlin ou React Native), instalado fora da loja | Leitura de notificações, fila local offline, envio idempotente |
-| Backend | NestJS, monólito modular com um módulo por área | Fronteiras de domínio e, depois, extração de um serviço |
+| Backend | NestJS, monólito modular com um módulo por área, numa instância pequena da AWS | Fronteiras de domínio e, depois, extração de um serviço |
 | Banco transacional | PostgreSQL no Supabase, usado só como banco | Transações e constraints |
 | Banco de documentos | MongoDB (Atlas, plano gratuito) | Notificações brutas, mural, auditoria, séries temporais |
 | Cache e placar | Redis (Upstash, plano gratuito) | Cache-aside, TTL, sorted sets, rate limit |
-| Fila | RabbitMQ local no Docker, ou BullMQ sobre o Redis | At-least-once, DLQ, retry com backoff, consumidor idempotente, mensagens com atraso |
+| Fila e agendamento | Amazon SQS com DLQ e EventBridge Scheduler (adaptadores locais em desenvolvimento) | At-least-once, DLQ, retry com backoff, consumidor idempotente, mensagens com atraso |
 | Tempo real | WebSocket (Socket.IO) | Fan-out e reconexão |
-| Notificações | Web Push e e-mail | Outbox, entrega idempotente, preferências por canal |
+| Notificações | Web Push e e-mail, num serviço em AWS Lambda a partir do F1 M5.1 | Outbox, entrega idempotente, preferências por canal |
 | Integrações | Google Calendar API com webhooks | Sincronização nos dois sentidos, retry, circuit breaker |
-| Deploy e CI | Vercel (front), Render (backend), Supabase; GitHub Actions | Ambientes e pipeline |
+| Deploy e CI | Vercel (front), AWS (backend numa instância pequena, SQS, Lambda, S3), Supabase; GitHub Actions com deploy por OIDC e infraestrutura como código | Ambientes e pipeline |
 
-Localmente, tudo sobe com Docker Compose.
+Localmente, tudo sobe com Docker Compose. A decisão de hospedagem está no [ADR 0002](adr/0002-hospedagem-e-infraestrutura.md).
 
 ## Quando cada módulo entra no programa
 
@@ -187,7 +187,7 @@ O progresso do Ninho fica no GitHub Issues com um quadro no GitHub Projects. A p
 
 - Ritmo de 3 a 4 horas por semana, uma parte de módulo por semana.
 - Stack do curso da Alura (Node, React, NestJS), mais o app Android de captura; as peças extras só onde exercitam um conceito.
-- Tudo em planos gratuitos. O deploy entra no escopo, porque a família vai usar.
+- Tudo em planos gratuitos, exceto o backend na AWS (até US$ 10 por mês). O deploy entra no escopo, porque a família vai usar.
 - Repositório público sem dados reais da família; segredos fora do código.
 - Fora de escopo: publicação em loja de apps e escala real.
 
