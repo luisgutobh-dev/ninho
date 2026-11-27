@@ -86,7 +86,7 @@ O case do programa é o **Ninho**, um app para a família usar no dia a dia, no 
 | Banco transacional | PostgreSQL no Supabase, usado só como banco | Transações e constraints |
 | Banco de documentos | MongoDB (Atlas, plano gratuito) | Notificações brutas, mural, auditoria, séries temporais |
 | Cache e placar | Redis (Upstash, plano gratuito) | Cache-aside, TTL, sorted sets, rate limit |
-| Fila | RabbitMQ: Docker localmente, CloudAMQP (plano gratuito) em produção | At-least-once, DLQ, retry com backoff, consumidor idempotente, mensagens com atraso |
+| Mensageria | Amazon SNS e SQS (cota gratuita), com LocalStack localmente | At-least-once, DLQ, retry com backoff, consumidor idempotente, mensagens com atraso |
 | Tempo real | WebSocket (Socket.IO) | Fan-out e reconexão |
 | Notificações | Web Push e e-mail (provedor gratuito), num serviço em Go a partir do F1 M5.1 | Outbox, entrega idempotente, preferências por canal |
 | Integrações | Google Calendar API com webhooks | Sincronização nos dois sentidos, retry, circuit breaker |
