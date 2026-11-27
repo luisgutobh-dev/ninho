@@ -1,12 +1,12 @@
 # PRD: Ninho
 
-24/11/2026 · Guto · Proposta, versão 0.1
+24/11/2026 · Proposta, versão 0.1
 
 Documento de requisitos do Ninho, o app da família usado como case do programa Expert autodidata. O contexto, a arquitetura e o encaixe no programa estão no [case](case.md); este PRD fecha o que o produto faz e o que a engenharia se obriga a usar.
 
 ## Resumo
 
-O Ninho é um app para a família (Guto, Flávia e Arthur), no navegador e no celular, com cinco módulos: Memória de gastos, Rotina, Agenda e lembretes, Consumo e Despensa. Cada módulo resolve um problema real da casa e entra num momento do programa de estudos.
+O Ninho é um app para uma família de três pessoas (dois responsáveis e um dependente), no navegador e no celular, com cinco módulos: Memória de gastos, Rotina, Agenda e lembretes, Consumo e Despensa. Cada módulo resolve um problema real da casa e entra num momento do programa de estudos.
 
 O PRD tem dois tipos de requisito não funcional. Os de produto são o que a família precisa (o lembrete chega na hora, a lista funciona sem internet). Os técnicos de estudo são tecnologias e padrões que o volume do Ninho não exige, mas que entram de propósito para praticar system design: fila, cache, banco SQL e NoSQL, outbox, tempo real, extração de serviço, observabilidade com SLOs. Cada um tem uma versão simplificada, e a comparação entre as duas vira ADR.
 
@@ -46,11 +46,11 @@ Todos na família usam Android. Os bancos são Itaú e Nubank, com cartões Ita�
 
 ## Usuários e papéis
 
-| Papel | Quem | O que pode |
-| --- | --- | --- |
-| Responsável administrador | Guto | Tudo, incluindo membros, módulos ligados por feature flag e integrações |
-| Responsável | Flávia | Tudo dos módulos, sem administração da família |
-| Dependente | Arthur | Rotina, Agenda e Despensa; não vê a Memória de gastos nem o valor das contas |
+| Papel | O que pode |
+| --- | --- |
+| Responsável administrador | Tudo, incluindo membros, módulos ligados por feature flag e integrações |
+| Responsável | Tudo dos módulos, sem administração da família |
+| Dependente | Rotina, Agenda e Despensa; não vê a Memória de gastos nem o valor das contas |
 
 O login é por família: cada pessoa tem sua conta, e todos os dados são compartilhados dentro da família, exceto o que o papel restringe.
 
@@ -62,18 +62,18 @@ Os identificadores (RF-G-01 etc.) são os usados nas issues e nas specs.
 
 **MVP (F1 M2 e M3)**
 
-- **RF-G-01** Anotação rápida: valor, o que foi, quem gastou (Guto ou Flávia), meio de pagamento (cartão Itaú ou Nubank, Visa ou Master, conta ou dinheiro), data e hora automáticas, foto opcional. Em até 3 toques a partir da tela inicial.
+- **RF-G-01** Anotação rápida: valor, o que foi, quem gastou (um dos responsáveis), meio de pagamento (cartão Itaú ou Nubank, Visa ou Master, conta ou dinheiro), data e hora automáticas, foto opcional. Em até 3 toques a partir da tela inicial.
 - **RF-G-02** Lista do mês para conciliar, com filtros por pessoa, meio de pagamento e período, e busca por valor.
 - **RF-G-03** Marcar a anotação como conciliada; uma anotação conciliada não volta a pendente sem ação explícita.
 - **RF-G-04** Fechamento do mês: o que ficou sem conciliar.
-- A classificação continua no Mobills, feita pelo Guto no fim do mês.
+- A classificação continua no Mobills, feita pelo administrador no fim do mês.
 
 **Fase 2 (F1 M4): captura automática**
 
 - **RF-G-05** O app Android lê só as notificações de compra dos apps do Itaú e do Nubank e as envia ao Ninho; sem internet, guarda e reenvia depois.
 - **RF-G-06** O Ninho extrai valor, estabelecimento e cartão de cada notificação e cria uma anotação pendente, sem duplicar se a mesma notificação chegar duas vezes.
 - **RF-G-07** Quem comprou recebe "o que foi isso?" e responde na hora, pela notificação ou no app.
-- **RF-G-08** Notificação que não deu para ler fica visível para o Guto, com o texto original.
+- **RF-G-08** Notificação que não deu para ler fica visível para o administrador, com o texto original.
 
 **Fase 3 e Formação 3**
 
@@ -142,7 +142,7 @@ Os identificadores (RF-G-01 etc.) são os usados nas issues e nas specs.
 | RNF-P-05 | Nada se perde | Nenhuma notificação de compra, anotação ou leitura perdida; falha vai para a DLQ e é reprocessável |
 | RNF-P-06 | Resposta da API com o serviço acordado | p95 abaixo de 300 ms nas leituras e 500 ms nas escritas |
 | RNF-P-07 | Disponibilidade | Backend sempre ligado, em melhor esforço numa única instância; nenhuma mensagem se perde durante uma queda ou um deploy ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)) |
-| RNF-P-08 | Privacidade | Dados financeiros, de saúde (perfil alimentar) e do filho só dentro da família; o app de captura lê apenas os apps do Itaú e do Nubank; repositório público sem dado real |
+| RNF-P-08 | Privacidade | Dados financeiros, de saúde (perfil alimentar) e do dependente só dentro da família; o app de captura lê apenas os apps do Itaú e do Nubank; repositório público sem dado real |
 | RNF-P-09 | Segurança | Login com sessão segura, papéis aplicados no backend, segredos fora do código, HTTPS em tudo |
 | RNF-P-10 | Backup | Cópia semanal automática do Postgres e do MongoDB, com restauração testada uma vez por formação |
 | RNF-P-11 | Custo | Planos gratuitos em tudo; a AWS só onde não houver opção gratuita (hoje, só o backend), até US$ 10 por mês com alerta de orçamento ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)) |
@@ -196,7 +196,7 @@ Estes requisitos não vêm do volume do Ninho: uma família de três cabe num Po
 | Risco ou premissa | Impacto | Mitigação |
 | --- | --- | --- |
 | O Android restringe o acesso a notificações para apps instalados fora da loja | A captura automática não funciona sem configuração | Passo a passo de instalação com a liberação manual das configurações restritas; testar nos 3 celulares no início do F1 M4 |
-| Os bancos mudam o texto do push | Notificações não lidas | Leitor por banco com testes sobre exemplos reais anonimizados; o que falhar vai para a DLQ e aparece para o Guto (RF-G-08) |
+| Os bancos mudam o texto do push | Notificações não lidas | Leitor por banco com testes sobre exemplos reais anonimizados; o que falhar vai para a DLQ e aparece para o administrador (RF-G-08) |
 | Supabase gratuito pausa após uma semana sem atividade | Projeto pausado | Tarefa agendada que mantém o banco ativo; app Android guarda e reenvia |
 | Limites de planos gratuitos de terceiros mudam ou são atingidos (cota da SQS, Upstash, e-mail) | Fila, cache ou e-mail param | Limites conferidos antes do deploy e monitorados; troca de adaptador pela porta (RNT-02); AWS só se não houver outra opção gratuita |
 | Conta da AWS passa do orçamento | Custo inesperado | Alerta no AWS Budgets em 50%, 80% e 100% de US$ 10 |
@@ -222,7 +222,7 @@ Estes requisitos não vêm do volume do Ninho: uma família de três cabe num Po
 
 ## Perguntas em aberto
 
-1. O filho usa o app com conta própria desde o início, ou entra só na Rotina e na Agenda mais tarde?
+1. O dependente usa o app com conta própria desde o início, ou entra só na Rotina e na Agenda mais tarde?
 2. ~~Fila: RabbitMQ ou BullMQ?~~ Decidido: Amazon SNS + SQS, na cota gratuita ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)).
 3. Conflito offline nas listas: last-write-wins por campo ou CRDT?
 4. Provedor de e-mail com plano gratuito para os lembretes: Resend ou Brevo. Escolha final no F1 M5.1.

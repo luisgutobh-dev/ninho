@@ -25,7 +25,7 @@ Aplicando a regra, a única peça sem opção gratuita adequada é o backend sem
 | Front (PWA) | Vercel, plano gratuito | Sem mudança |
 | Monólito NestJS | **AWS Lightsail**, plano de 1 GB sempre ligado (cerca de US$ 7 por mês, com IPv4 e tráfego incluídos) | Única peça paga. Com o backend sempre ligado, os lembretes saem do próprio backend, sem agendador externo |
 | Serviço de Notificações (extraído no F1 M5.1) | Container separado em Go, na mesma instância do Lightsail | Go pelo estudo da linguagem. Deploy e processo independentes do monólito, sem custo extra; banco próprio exigido pelo RNT-11, decidido no ADR de extração |
-| Mensageria | **Amazon SNS** (tópicos de eventos) e **Amazon SQS** (uma fila por consumidor, cada uma com DLQ), dentro da cota gratuita permanente da AWS | Escolha do Guto. Não é recurso pago: SNS e SQS têm cota gratuita permanente (1 milhão de publicações e 1 milhão de requisições por mês). Desenho em "Mensageria" abaixo. Resolve a pergunta em aberto 2 do PRD |
+| Mensageria | **Amazon SNS** (tópicos de eventos) e **Amazon SQS** (uma fila por consumidor, cada uma com DLQ), dentro da cota gratuita permanente da AWS | Escolha do mantenedor. Não é recurso pago: SNS e SQS têm cota gratuita permanente (1 milhão de publicações e 1 milhão de requisições por mês). Desenho em "Mensageria" abaixo. Resolve a pergunta em aberto 2 do PRD |
 | Postgres | Supabase, plano gratuito | Pausa depois de 7 dias sem atividade; o uso semanal e uma tarefa agendada evitam isso |
 | MongoDB | Atlas, plano gratuito | Sem mudança |
 | Redis | Upstash, plano gratuito | Só cache, placar e rate limit, sem fila |

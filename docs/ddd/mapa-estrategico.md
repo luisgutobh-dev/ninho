@@ -1,6 +1,6 @@
 # Ninho: mapa estratégico de DDD
 
-24/11/2026 · Guto
+24/11/2026
 
 ## Resumo
 
@@ -142,7 +142,7 @@ Comando é intenção, no imperativo, para um destinatário que pode recusar. Ev
 
 ### Consumo
 
-Três agregados e um serviço de domínio, fechados com o Guto em 26/11. O mesmo Ciclo serve água e energia; a energia só não tem hidrômetro nem leitura semanal.
+Três agregados e um serviço de domínio, fechados em 26/11. O mesmo Ciclo serve água e energia; a energia só não tem hidrômetro nem leitura semanal.
 
 | Bloco | Tipo | Guarda | Invariante ou papel |
 | --- | --- | --- | --- |
@@ -192,7 +192,7 @@ As mensagens públicas são contrato e se versionam; as internas mudam livrement
 | Origem | Mensagem | Tipo | Quem recebe | Alcance |
 | --- | --- | --- | --- | --- |
 | Captura (ACL) | Compra capturada | Evento | Conciliação, que cria a anotação pendente (RF-G-06) | Interno ao contexto |
-| Captura (ACL) | Notificação não lida | Evento | Tela de pendências do Guto, com o texto original (RF-G-08) | Interno ao contexto |
+| Captura (ACL) | Notificação não lida | Evento | Tela de pendências do administrador, com o texto original (RF-G-08) | Interno ao contexto |
 | Conciliação | Enviar "o que foi isso?" | Comando | Notificações, para quem comprou (RF-G-07) | Público |
 | Conciliação | Lançamento conciliado | Evento | Anotação | Interno |
 | Consumo | ver "Mensagens do Consumo", acima | | | |
@@ -204,7 +204,7 @@ As mensagens públicas são contrato e se versionam; as internas mudam livrement
 | Agenda | Enviar lembrete | Comando | Notificações (RF-A-04) | Público |
 | Agenda | Lembrete confirmado | Evento | O próprio Lembrete, que para de repetir (RF-A-05) | Interno |
 | Agenda | Evento alterado | Evento | ACL do Google Calendar, para a sincronia (RF-A-02) | Interno |
-| Notificações | Envio falhou | Evento | DLQ e Guto (RNF-P-05) | Público, opcional |
+| Notificações | Envio falhou | Evento | DLQ e administrador (RNF-P-05) | Público, opcional |
 | Identidade | Membro adicionado, Papel alterado | Evento, ECST | Todos os contextos, que guardam uma cópia local de membro e papel | Público, versionado |
 
 Decidido em 26/11: não há lembrete semanal da leitura de água, então o Consumo não envia nenhuma mensagem de lembrete.
