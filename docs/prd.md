@@ -303,6 +303,7 @@ Estes requisitos não vêm do volume do Ninho: uma família de três cabe num Po
 | 9 | Despensa (MVP) com processo de produto e métricas de negócio |
 | 10 | IA no Ninho com evals |
 
+
 ## Perguntas em aberto
 
 1. ~~O dependente usa o app com conta própria desde o início?~~ Decidido: sim, com o papel de Dependente.
