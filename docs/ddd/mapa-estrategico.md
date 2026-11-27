@@ -208,17 +208,3 @@ As mensagens públicas são contrato e se versionam; as internas mudam livrement
 | Identidade | Membro adicionado, Papel alterado | Evento, ECST | Todos os contextos, que guardam uma cópia local de membro e papel | Público, versionado |
 
 Decidido em 26/11: não há lembrete semanal da leitura de água, então o Consumo não envia nenhuma mensagem de lembrete.
-
-## Referências
-
-| Tema | Livro Full Cycle | Mind map de DDD |
-| --- | --- | --- |
-| Subdomínios e tipos | p. 138–140 | Ramo verde "Domínio e subdomínios" e ramo salmão "Aplicando na prática › 2. Identifique os subdomínios" |
-| Evolução do tipo de subdomínio | não cobre | Ramo verde-água "Evoluções", canto superior direito |
-| Espaço do problema vs solução | p. 140–141 | Ramo verde |
-| Bounded contexts e linguagem ubíqua | p. 142–148 | Ramo lilás "Contexto delimitado" (Módulos, Dicas de tamanho) e ramo verde-água "Linguagem Ubíqua" |
-| Mapa de contextos e padrões | p. 149–155 | Ramo lilás "Integração entre contextos" |
-
-O Learning Domain-Driven Design (Vlad Khononov) cobre os mesmos temas nos capítulos 1 a 4. Os critérios de complexidade e diferencial usados aqui são dele.
-
-Para desenhar o mapa: [ddd-crew/context-mapping](https://github.com/ddd-crew/context-mapping), indicado no livro na p. 155.
