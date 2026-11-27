@@ -1,6 +1,6 @@
 # Case pessoal: app Ninho
 
-Nov 20, 2026 · @Guto
+Nov 20, 2026
 
 O case do programa é o **Ninho**, um app para a família usar no dia a dia, no navegador e no celular (PWA, mais um app Android de captura), com cinco módulos que entram ao longo das três formações. A arquitetura usa de propósito fila, cache, SQL e NoSQL, mesmo sem volume que justifique, para exercitar system design. Depois vem uma versão simplificada só com Postgres, e a comparação vira um ADR.
 
@@ -20,11 +20,11 @@ O case do programa é o **Ninho**, um app para a família usar no dia a dia, no 
 
 **MVP (F1 M2 e M3)**
 
-- Anotação rápida no app: valor, o que foi, quem gastou (Guto ou a esposa), meio de pagamento (cartão Itaú ou Nubank, Visa ou Master, conta ou dinheiro), data e hora automáticas, foto opcional.
+- Anotação rápida no app: valor, o que foi, quem gastou (um dos responsáveis), meio de pagamento (cartão Itaú ou Nubank, Visa ou Master, conta ou dinheiro), data e hora automáticas, foto opcional.
 - Lista do mês para conciliar, com filtros por pessoa, cartão e período e busca por valor.
 - Marcar a anotação como conciliada.
 - Fechamento do mês: o que ficou sem conciliar.
-- A classificação continua no Mobills, feita pelo Guto, no fim do mês.
+- A classificação continua no Mobills, feita pelo administrador, no fim do mês.
 
 **Fase 2 (F1 M4): captura automática.** Um app Android lê as notificações de compra dos apps do Itaú e do Nubank, envia à API (guardando e reenviando se estiver sem internet), um leitor por banco extrai valor, estabelecimento e cartão, e quem comprou recebe "o que foi isso?" para responder na hora. Só esses dois apps são lidos, e nenhum dado vai para o repositório.
 
@@ -204,7 +204,7 @@ Fora da prioridade agora, porque o controle financeiro já é feito pelo dashboa
 5. Transferências entre contas (ex.: pagamento de fatura), fora da despesa.
 6. Saldo por conta e extrato filtrável.
 7. Resumo do mês: entradas, saídas, gastos por categoria, contas a vencer.
-8. Mesada: crédito pelos responsáveis, extrato próprio do filho.
+8. Mesada: crédito pelos responsáveis, extrato próprio do dependente.
 9. Importação de extrato sem duplicar lançamentos.
 10. Categorização automática dos importados.
 11. Conciliação com o saldo real do banco.
