@@ -2,7 +2,7 @@
 
 27/11/2026 · Proposta, versão 0.2
 
-Documento de requisitos do Ninho, o app da família usado como case do programa Expert autodidata. O contexto, a arquitetura e o encaixe no programa estão no [case](case.md); este PRD fecha o que o produto faz e o que a engenharia se obriga a usar.
+Documento de requisitos do Ninho, o app da família usado como case de system design. O contexto, a arquitetura e a ordem de construção estão no [case](case.md); este PRD fecha o que o produto faz e o que a engenharia se obriga a usar.
 
 **Status:** proposta em revisão (issue #1).
 
@@ -13,7 +13,7 @@ Documento de requisitos do Ninho, o app da família usado como case do programa 
 
 ## Resumo
 
-O Ninho é um app para uma família de três pessoas (dois responsáveis e um dependente), no navegador e no celular, com cinco módulos: Memória de gastos, Rotina, Agenda e lembretes, Consumo e Despensa. Cada módulo resolve um problema real da casa e entra num momento do programa de estudos.
+O Ninho é um app para uma família de três pessoas (dois responsáveis e um dependente), no navegador e no celular, com cinco módulos: Memória de gastos, Rotina, Agenda e lembretes, Consumo e Despensa. Cada módulo resolve um problema real da casa.
 
 O PRD tem dois tipos de requisito não funcional. Os de produto são o que a família precisa (o lembrete chega na hora, a lista funciona sem internet). Os técnicos de estudo são tecnologias e padrões que o volume do Ninho não exige, mas que entram de propósito para praticar system design: fila, cache, banco SQL e NoSQL, outbox, tempo real, extração de serviço, observabilidade com SLOs. Cada um tem uma versão simplificada, e a comparação entre as duas vira ADR.
 
@@ -25,7 +25,7 @@ O PRD tem dois tipos de requisito não funcional. Os de produto são o que a fam
 - **Consumo sem alerta:** as leituras de água e energia já são anotadas (101 leituras no painel Consumo da Casa), mas um vazamento só aparece quando a conta chega.
 - **Despensa:** o que acabou não chega à lista de compras.
 
-Todos na família usam Android. Os bancos são Itaú e Nubank, com cartões Itaú e Nubank (Visa e Master), e os apps dos dois mandam push a cada compra.
+Todos na família usam Android. A família usa dois bancos, com cartões de crédito de cada um, e os apps dos bancos mandam push a cada compra.
 
 **Evidências.** As conversas com a família estão em [discovery/conversas-familia.md](discovery/conversas-familia.md). As primeiras, sobre o Consumo:
 
@@ -57,7 +57,7 @@ As evidências da Memória de gastos, da Rotina, da Agenda e da Despensa entram 
 | Leituras semanais de água feitas no prazo | 90% ou mais | Semanas com pelo menos uma leitura de água ÷ semanas do período | Calcular no histórico do painel Consumo da Casa durante a migração (RF-C-04) |
 | Alertas de consumo | Nenhum incidente real perdido; no máximo 1 alarme falso por trimestre | Respostas a "era mesmo um problema?" (sim = incidente, não = alarme falso), por trimestre; incidente perdido = falha descoberta na conta sem alerta antes | Hoje, vazamento descoberto só na conta ou na planilha (4 incidentes no histórico) |
 | Lembretes com confirmação marcados como "feito" | 95% ou mais | Lembretes com confirmação marcados "feito" ÷ lembretes com confirmação disparados, no mês | Contar nas conversas os compromissos esquecidos no último mês |
-| Conceitos de estudo com ADR e medição | Todos os da tabela de requisitos técnicos, no fim da Formação 1 (exceto os da Formação 3) | RNT com ADR em `docs/adr/` e medição registrada ÷ RNT da Formação 1 | Zero |
+| Conceitos de estudo com ADR e medição | Todos os da tabela de requisitos técnicos (exceto os de IA) | RNT com ADR em `docs/adr/` e medição registrada ÷ RNT fora os de IA | Zero |
 
 ## Usuários e papéis
 
@@ -75,7 +75,7 @@ Os identificadores (RF-G-01 etc.) são os usados nas issues e nas specs.
 
 ### Identidade e família (base de todos os módulos)
 
-**MVP (F1 M1.2, o walking skeleton)**
+**MVP, o walking skeleton**
 
 - **RF-I-01** Criar a família: quem cria vira Responsável administrador.
 - **RF-I-02** Convidar um membro por link, já com o papel definido; o convite vale 7 dias e serve uma vez só.
@@ -86,30 +86,30 @@ Os identificadores (RF-G-01 etc.) são os usados nas issues e nas specs.
 
 ### 1. Memória de gastos
 
-**MVP (F1 M2 e M3)**
+**MVP**
 
-- **RF-G-01** Anotação rápida: valor, o que foi, quem gastou (um dos responsáveis), meio de pagamento (cartão Itaú ou Nubank, Visa ou Master, conta ou dinheiro), data e hora automáticas, foto opcional. Em até 3 toques a partir da tela inicial.
+- **RF-G-01** Anotação rápida: valor, o que foi, quem gastou (um dos responsáveis), meio de pagamento (cartão de crédito, conta ou dinheiro), data e hora automáticas, foto opcional. Em até 3 toques a partir da tela inicial.
 - **RF-G-02** Lista do mês para conciliar, com filtros por pessoa, meio de pagamento e período, e busca por valor.
 - **RF-G-03** Marcar a anotação como conciliada; uma anotação conciliada não volta a pendente sem ação explícita.
 - **RF-G-04** Fechamento do mês: o que ficou sem conciliar.
 - A classificação continua no Mobills, feita pelo administrador no fim do mês.
 
-**Fase 2 (F1 M4): captura automática**
+**Fase 2: captura automática**
 
-- **RF-G-05** O app Android lê só as notificações de compra dos apps do Itaú e do Nubank e as envia ao Ninho; sem internet, guarda e reenvia depois.
+- **RF-G-05** O app Android lê só as notificações de compra dos apps dos bancos e as envia ao Ninho; sem internet, guarda e reenvia depois.
 - **RF-G-06** O Ninho extrai valor, estabelecimento e cartão de cada notificação e cria uma anotação pendente, sem duplicar se a mesma notificação chegar duas vezes.
 - **RF-G-07** Quem comprou recebe "o que foi isso?" e responde na hora, pela notificação ou no app.
 - **RF-G-08** Notificação que não deu para ler fica visível para o administrador, com o texto original.
 
-**Fase 3 e Formação 3**
+**Fase 3 e fase de IA**
 
 - **RF-G-09** Importação do relatório do Mobills com casamento automático entre anotação e lançamento.
 - **RF-G-10** Memória por estabelecimento ("da última vez, isso foi farmácia").
-- **RF-G-11** Anotação por foto do cupom e por voz, com IA (Formação 3).
+- **RF-G-11** Anotação por foto do cupom e por voz, com IA.
 
 ### 2. Rotina
 
-**MVP (F1 M4)**
+**MVP**
 
 - **RF-R-01** Tarefas para todos da família: única ou recorrente, responsável, prazo e pontos.
 - **RF-R-02** Conclusão sem aprovação (vale o que a pessoa marcar), com foto opcional.
@@ -122,7 +122,7 @@ Os identificadores (RF-G-01 etc.) são os usados nas issues e nas specs.
 
 ### 3. Agenda e lembretes
 
-**MVP (F1 M5.1)**
+**MVP**
 
 - **RF-A-01** Calendário compartilhado por todos, uma cor por pessoa, visões de dia, semana e mês.
 - **RF-A-02** Sincronização nos dois sentidos com uma agenda "Família" no Google Calendar; em conflito, vale a última edição e o app avisa.
@@ -135,7 +135,7 @@ Os identificadores (RF-G-01 etc.) são os usados nas issues e nas specs.
 
 ### 4. Consumo
 
-**MVP (F1 M5.3)**
+**MVP**
 
 - **RF-C-01** Água: leitura semanal do hidrômetro (m³, contador de 3 dígitos que volta a 000) e leitura da conta, que fecha o ciclo.
 - **RF-C-02** Energia: só pela conta, em kWh, com os dias do ciclo.
@@ -145,21 +145,21 @@ Os identificadores (RF-G-01 etc.) são os usados nas issues e nas specs.
 - **RF-C-06** Detecção de falhas: escore z modificado por ciclo, M = 0,6745 × (x − mediana) / MAD, sobre os últimos 12 ciclos sem alerta confirmado (um alerta descartado devolve o ciclo à base); atenção com M ≥ 2 e alerta com M ≥ 3. Na leitura semanal, banda de ±1 m³ pelo arredondamento do hidrômetro. CUSUM (k = 0,5σ, h = 4σ, com σ = 1,4826 × MAD) para tendência de alta. No histórico real, o método pegou os 4 incidentes anotados sem alarme falso em 41 ciclos.
 - **RF-C-07** Alerta pelo serviço de notificações, com a confirmação "era mesmo um problema?", que alimenta a métrica de alarme falso.
 
-**Depois do MVP:** gás, custo estimado pela tarifa, leitura do medidor por foto (Formação 3), metas de redução.
+**Depois do MVP:** gás, custo estimado pela tarifa, leitura do medidor por foto (fase de IA), metas de redução.
 
 ### 5. Despensa
 
-**MVP (Formação 2)**
+**MVP**
 
 - **RF-D-01** Itens da casa com estado "tem" ou "acabou", por categoria.
 - **RF-D-02** Item marcado como "acabou" entra sozinho na lista de compras certa da Rotina; comprado, volta para "tem".
 - **RF-D-03** Perfil alimentar da família, cadastrado aos poucos: preferências, restrições e o que cada um não gosta.
 
-**Depois do MVP:** quantidade em estoque; receitas com cadastro manual e importação por link de sites; cardápio da semana para todas as refeições, respeitando o perfil alimentar; lista de compras gerada do cardápio; busca por nome e ingrediente; validade dos itens; assistente de IA que monta o cardápio (Formação 3).
+**Depois do MVP:** quantidade em estoque; receitas com cadastro manual e importação por link de sites; cardápio da semana para todas as refeições, respeitando o perfil alimentar; lista de compras gerada do cardápio; busca por nome e ingrediente; validade dos itens; assistente de IA que monta o cardápio.
 
 ### Notificações (serviço usado por todos os módulos)
 
-**MVP (F1 M5.1, quando vira serviço separado; antes disso, módulo do monólito)**
+**MVP (como serviço separado; antes disso, módulo do monólito)**
 
 - **RF-N-01** Canais: push (Web Push no PWA e notificação do app Android) e e-mail.
 - **RF-N-02** Preferências por pessoa e por tipo de aviso (lembrete, "o que foi isso?", alerta de consumo, item que acabou): cada pessoa liga e desliga cada canal.
@@ -181,10 +181,10 @@ Os identificadores (RF-G-01 etc.) são os usados nas issues e nas specs.
 | RNF-P-05 | Nada se perde | Nenhuma notificação de compra, anotação ou leitura perdida; falha vai para a DLQ e é reprocessável |
 | RNF-P-06 | Resposta da API com o serviço acordado | p95 abaixo de 300 ms nas leituras e 500 ms nas escritas |
 | RNF-P-07 | Disponibilidade | Backend sempre ligado, em melhor esforço numa única instância; nenhuma mensagem se perde durante uma queda ou um deploy ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)) |
-| RNF-P-08 | Privacidade | Dados financeiros, de saúde (perfil alimentar) e do dependente só dentro da família; o app de captura lê apenas os apps do Itaú e do Nubank; repositório público sem dado real |
+| RNF-P-08 | Privacidade | Dados financeiros, de saúde (perfil alimentar) e do dependente só dentro da família; o app de captura lê apenas os apps dos bancos; repositório público sem dado real |
 | RNF-P-09 | Segurança | Login com sessão segura, papéis aplicados no backend, segredos fora do código, HTTPS em tudo |
 | RNF-P-10 | Backup | Cópia semanal automática do Postgres e do MongoDB, com restauração testada uma vez por formação |
-| RNF-P-11 | Custo | Planos gratuitos em tudo; a AWS só onde não houver opção gratuita (hoje, só o backend), até US$ 10 por mês com alerta de orçamento ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)). IA (Formação 3): orçamento próprio de até R$ 50 por mês, alerta em 80% e corte automático em 100% (RNT-23) |
+| RNF-P-11 | Custo | Planos gratuitos em tudo; a AWS só onde não houver opção gratuita (hoje, só o backend), até US$ 10 por mês com alerta de orçamento ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)). IA: orçamento próprio de até R$ 50 por mês, alerta em 80% e corte automático em 100% (RNT-23) |
 | RNF-P-12 | Idioma, fuso e moeda | Português do Brasil, America/Sao_Paulo, reais |
 | RNF-P-13 | Usabilidade | Ação principal de cada módulo em até 3 toques; funciona bem em tela de celular |
 
@@ -214,32 +214,32 @@ Detalha o RNF-P-08. Nenhum dado desta tabela vai para o repositório.
 
 Estes requisitos não vêm do volume do Ninho: uma família de três cabe num Postgres com uma aplicação simples. Eles entram de propósito, porque são o que uma entrevista de system design cobra, e porque o Ninho dá um caso real para medir cada um. A regra é a mesma para todos: implementar atrás de uma porta (arquitetura hexagonal), medir com OpenTelemetry, registrar a decisão em ADR e ter uma versão simplificada que só troca o adaptador.
 
-| ID e requisito | Onde aparece no Ninho | O que exercita | Versão simplificada | Quando |
-| --- | --- | --- | --- | --- |
-| RNT-01 Monólito modular com 7 bounded contexts | Conciliação de gastos, Consumo, Rotina, Despensa, Agenda e lembretes, Notificações e Identidade como módulos NestJS isolados, falando por eventos. A Captura é a ACL da Conciliação; Itaú/Nubank, Mobills e Google Calendar são contextos externos. Mapa em [ddd/mapa-estrategico.md](ddd/mapa-estrategico.md) | DDD estratégico, fronteiras, mapa de contextos | A mesma, é a base das duas versões | F1 M2 e M5.2 |
-| RNT-02 Arquitetura hexagonal | Domínio sem framework; portas para banco, fila, cache, notificações e leitores de banco (Itaú e Nubank como adaptadores) | Inversão de dependência, testabilidade, troca de infraestrutura | É o mecanismo da simplificação | F1 M3 em diante |
-| RNT-03 PostgreSQL como banco transacional | Família, membros, anotações, tarefas, eventos, itens | Modelagem relacional, transações, constraints, índices, migrações | A mesma | F1 M3 |
-| RNT-04 MongoDB como banco de documentos | Notificações brutas do banco, mural, auditoria, séries de consumo | Quando usar documento em vez de tabela, esquema flexível, coleções de série temporal | Tabelas com JSONB no Postgres | F1 M4 e M5.3 |
-| RNT-05 Redis para cache, placar e rate limit | Cache-aside da agenda e do consumo agregado; placar da Rotina em sorted set; rate limit da API de captura | Cache-aside, TTL, invalidação, hit ratio, estruturas do Redis | Cache em memória e placar por consulta SQL | F1 M4 |
-| RNT-06 Fila de mensagens com DLQ | Captura de compra, envio de lembretes, detecção de falhas no consumo; Amazon SNS (tópicos por contexto) e SQS (uma fila por consumidor, com DLQ), na cota gratuita permanente; desenho no [ADR 0002](adr/0002-hospedagem-e-infraestrutura.md) | Entrega at-least-once, retry com backoff e jitter, DLQ, mensagens com atraso, consumidores concorrentes | Tabela de jobs no Postgres com SELECT … FOR UPDATE SKIP LOCKED | F1 M4 e M5.1 |
-| RNT-07 Outbox transacional | Evento gravado na mesma transação da mudança (compra capturada, item acabou, leitura registrada) e publicado depois | Consistência entre banco e fila, dual write | Outbox lido direto pelo worker, sem broker | F1 M5.1 |
-| RNT-08 Idempotência de ponta a ponta | Chave por notificação no app Android, por mensagem no consumidor, por lembrete na entrega, por URL na importação de receitas | Exactly-once efetivo sobre at-least-once | A mesma | F1 M3 a M5.1 |
-| RNT-09 Tempo real por WebSocket | Listas de compras e mural atualizados ao vivo para todos | Fan-out, reconexão, presença, escala horizontal com pub/sub | Atualização ao abrir a tela ou polling | F1 M4 |
-| RNT-10 Offline-first com resolução de conflito | Listas e anotações no PWA; fila local no app Android | Sincronização, relógio e versão por item, last-write-wins por campo ou CRDT (ADR) | Bloquear edição sem internet | F1 M4 |
-| RNT-11 Extração de um serviço | Notificações vira serviço separado, escrito em Go, num container próprio na mesma instância do monólito, com seu próprio banco | Quando extrair, contrato entre serviços, consistência eventual, deploy independente | Notificações de volta como módulo do monólito | F1 M5.1 |
-| RNT-12 Integração externa resiliente | Google Calendar nos dois sentidos com webhooks; push e e-mail | Webhooks, renovação de canais, retry, circuit breaker, timeout, conflito de edição | Só exportar para o Google, sem webhooks | F1 M5.1 |
-| RNT-13 CQRS leve | Modelos de leitura do placar e do consumo agregado, alimentados por eventos | Separar escrita e leitura, projeções, reconstrução | Consulta direta nas tabelas | F1 M5.1 |
-| RNT-14 Pipeline de migração de dados | 101 leituras do painel Consumo da Casa para o Ninho | Extração, validação, idempotência da carga, relatório de divergências | Script único | F1 M5.3 |
-| RNT-15 Observabilidade com SLOs | Traces, métricas e logs com OpenTelemetry no Grafana; erros no Sentry; SLOs dos RNF-P-01 a 03 com alerta e error budget; política de logs: JSON com nível, trace id, módulo e família, e mascaramento de valores, estabelecimentos e dados pessoais antes de gravar (o texto das notificações de banco nunca vai cru para o log) | Instrumentação, SLI e SLO, alertas por sintoma, runbook | Logs estruturados e Sentry | F1 M3 (base) e M5.3 |
-| RNT-16 Métricas de negócio e de produto | Dashboard de negócio no Grafana; PostHog para uso, funil e retenção | Separar saúde técnica de resultado de produto | Consultas SQL num relatório mensal | F2 M2 e M5 |
-| RNT-17 Estimativa de capacidade e carga sintética | Estimativa de ordem de grandeza para 10 mil famílias e teste de carga com k6 contra o ambiente local | Back-of-the-envelope, gargalos, onde a fila e o cache fazem diferença | Sem teste de carga | F1 M5.3 |
-| RNT-18 Teste de falha | Derrubar a fila, o Redis ou o Google no Docker Compose e ver o que acontece | Degradação graciosa, recuperação, validação do runbook | Não se aplica | F1 M5.3 |
-| RNT-19 Feature flags | Todo módulo novo entra desligado e é liberado aos poucos | Entrega contínua, lançamento separado do deploy | Variável de ambiente | F1 M4 e F2 M4 |
-| RNT-20 Fitness functions e testes | Build quebra se um módulo importar o domínio de outro ou se o domínio depender de framework; pirâmide com containers reais e contrato entre front e API | Arquitetura evolutiva, testes como harness para agentes | A mesma | F1 M3 e M5.1 |
-| RNT-21 CI/CD e métricas de engenharia | GitHub Actions com testes, revisor automático e deploy; DORA do repositório | Pipeline, ambientes, frequência de deploy, lead time | A mesma | F1 M3 e M7 |
-| RNT-22 IA com evals | Cupom, voz, leitura do medidor por foto e assistente de cardápio com RAG e ferramentas; conjunto dourado no CI; tracing | Evals, RAG, uso de ferramentas, limite de autonomia, segurança de LLM | Entrada manual | Formação 3 |
-| RNT-23 Observabilidade de uso de IA e tokens | Toda chamada a modelo das features de IA (cupom, voz, medidor, cardápio) gera um span com modelo, tokens de entrada, saída e cache, latência, custo estimado, feature e pessoa; dashboard de tokens e custo por feature e por semana; orçamento mensal com alerta e corte automático | Convenções de GenAI do OpenTelemetry, FinOps de IA, cache de prompt, custo por unidade de valor (por cupom lido, por cardápio gerado) | Tabela de chamadas no Postgres com tokens e custo, e uma consulta mensal | F3 M2 (base) e M7 (orçamento e alerta) |
-| RNT-24 Telemetria dos agentes de desenvolvimento | Uso e custo do Claude Code, do revisor de PR e do agente de operação exportados por OpenTelemetry para o mesmo Grafana do Ninho: tokens e custo por sessão, por PR e por issue, ao lado do DORA do repositório | Medir o custo de construir com agentes; a dimensão custo do DX AI Measurement Framework com dados reais | Anotar o custo da sessão em cada PR | F1 M3 (liga), M6.2 (custo por PR) e M7 (one-pager) |
+| ID e requisito | Onde aparece no Ninho | O que exercita | Versão simplificada |
+| --- | --- | --- | --- |
+| RNT-01 Monólito modular com 7 bounded contexts | Conciliação de gastos, Consumo, Rotina, Despensa, Agenda e lembretes, Notificações e Identidade como módulos NestJS isolados, falando por eventos. A Captura é a ACL da Conciliação; os bancos, o Mobills e o Google Calendar são contextos externos. Mapa em [ddd/mapa-estrategico.md](ddd/mapa-estrategico.md) | DDD estratégico, fronteiras, mapa de contextos | A mesma, é a base das duas versões |
+| RNT-02 Arquitetura hexagonal | Domínio sem framework; portas para banco, fila, cache, notificações e leitores de banco (um adaptador por banco) | Inversão de dependência, testabilidade, troca de infraestrutura | É o mecanismo da simplificação |
+| RNT-03 PostgreSQL como banco transacional | Família, membros, anotações, tarefas, eventos, itens | Modelagem relacional, transações, constraints, índices, migrações | A mesma |
+| RNT-04 MongoDB como banco de documentos | Notificações brutas do banco, mural, auditoria, séries de consumo | Quando usar documento em vez de tabela, esquema flexível, coleções de série temporal | Tabelas com JSONB no Postgres |
+| RNT-05 Redis para cache, placar e rate limit | Cache-aside da agenda e do consumo agregado; placar da Rotina em sorted set; rate limit da API de captura | Cache-aside, TTL, invalidação, hit ratio, estruturas do Redis | Cache em memória e placar por consulta SQL |
+| RNT-06 Fila de mensagens com DLQ | Captura de compra, envio de lembretes, detecção de falhas no consumo; Amazon SNS (tópicos por contexto) e SQS (uma fila por consumidor, com DLQ), na cota gratuita permanente; desenho no [ADR 0002](adr/0002-hospedagem-e-infraestrutura.md) | Entrega at-least-once, retry com backoff e jitter, DLQ, mensagens com atraso, consumidores concorrentes | Tabela de jobs no Postgres com SELECT … FOR UPDATE SKIP LOCKED |
+| RNT-07 Outbox transacional | Evento gravado na mesma transação da mudança (compra capturada, item acabou, leitura registrada) e publicado depois | Consistência entre banco e fila, dual write | Outbox lido direto pelo worker, sem broker |
+| RNT-08 Idempotência de ponta a ponta | Chave por notificação no app Android, por mensagem no consumidor, por lembrete na entrega, por URL na importação de receitas | Exactly-once efetivo sobre at-least-once | A mesma |
+| RNT-09 Tempo real por WebSocket | Listas de compras e mural atualizados ao vivo para todos | Fan-out, reconexão, presença, escala horizontal com pub/sub | Atualização ao abrir a tela ou polling |
+| RNT-10 Offline-first com resolução de conflito | Listas e anotações no PWA; fila local no app Android | Sincronização, relógio e versão por item, last-write-wins por campo ou CRDT (ADR) | Bloquear edição sem internet |
+| RNT-11 Extração de um serviço | Notificações vira serviço separado, escrito em Go, num container próprio na mesma instância do monólito, com seu próprio banco | Quando extrair, contrato entre serviços, consistência eventual, deploy independente | Notificações de volta como módulo do monólito |
+| RNT-12 Integração externa resiliente | Google Calendar nos dois sentidos com webhooks; push e e-mail | Webhooks, renovação de canais, retry, circuit breaker, timeout, conflito de edição | Só exportar para o Google, sem webhooks |
+| RNT-13 CQRS leve | Modelos de leitura do placar e do consumo agregado, alimentados por eventos | Separar escrita e leitura, projeções, reconstrução | Consulta direta nas tabelas |
+| RNT-14 Pipeline de migração de dados | 101 leituras do painel Consumo da Casa para o Ninho | Extração, validação, idempotência da carga, relatório de divergências | Script único |
+| RNT-15 Observabilidade com SLOs | Traces, métricas e logs com OpenTelemetry no Grafana; erros no Sentry; SLOs dos RNF-P-01 a 03 com alerta e error budget; política de logs: JSON com nível, trace id, módulo e família, e mascaramento de valores, estabelecimentos e dados pessoais antes de gravar (o texto das notificações de banco nunca vai cru para o log) | Instrumentação, SLI e SLO, alertas por sintoma, runbook | Logs estruturados e Sentry |
+| RNT-16 Métricas de negócio e de produto | Dashboard de negócio no Grafana; PostHog para uso, funil e retenção | Separar saúde técnica de resultado de produto | Consultas SQL num relatório mensal |
+| RNT-17 Estimativa de capacidade e carga sintética | Estimativa de ordem de grandeza para 10 mil famílias e teste de carga com k6 contra o ambiente local | Back-of-the-envelope, gargalos, onde a fila e o cache fazem diferença | Sem teste de carga |
+| RNT-18 Teste de falha | Derrubar a fila, o Redis ou o Google no Docker Compose e ver o que acontece | Degradação graciosa, recuperação, validação do runbook | Não se aplica |
+| RNT-19 Feature flags | Todo módulo novo entra desligado e é liberado aos poucos | Entrega contínua, lançamento separado do deploy | Variável de ambiente |
+| RNT-20 Fitness functions e testes | Build quebra se um módulo importar o domínio de outro ou se o domínio depender de framework; pirâmide com containers reais e contrato entre front e API | Arquitetura evolutiva, testes como harness para agentes | A mesma |
+| RNT-21 CI/CD e métricas de engenharia | GitHub Actions com testes, revisor automático e deploy; DORA do repositório | Pipeline, ambientes, frequência de deploy, lead time | A mesma |
+| RNT-22 IA com evals | Cupom, voz, leitura do medidor por foto e assistente de cardápio com RAG e ferramentas; conjunto dourado no CI; tracing | Evals, RAG, uso de ferramentas, limite de autonomia, segurança de LLM | Entrada manual |
+| RNT-23 Observabilidade de uso de IA e tokens | Toda chamada a modelo das features de IA (cupom, voz, medidor, cardápio) gera um span com modelo, tokens de entrada, saída e cache, latência, custo estimado, feature e pessoa; dashboard de tokens e custo por feature e por semana; orçamento mensal com alerta e corte automático | Convenções de GenAI do OpenTelemetry, FinOps de IA, cache de prompt, custo por unidade de valor (por cupom lido, por cardápio gerado) | Tabela de chamadas no Postgres com tokens e custo, e uma consulta mensal |
+| RNT-24 Telemetria dos agentes de desenvolvimento | Uso e custo do Claude Code, do revisor de PR e do agente de operação exportados por OpenTelemetry para o mesmo Grafana do Ninho: tokens e custo por sessão, por PR e por issue, ao lado do DORA do repositório | Medir o custo de construir com agentes; a dimensão custo do DX AI Measurement Framework com dados reais | Anotar o custo da sessão em cada PR |
 
 **Stack de referência:** React como PWA na Vercel; app Android (Kotlin ou React Native) instalado fora da loja; NestJS no AWS Lightsail (única peça paga); PostgreSQL no Supabase usado só como banco (Data API desligada ou RLS ligado); MongoDB Atlas; Redis no Upstash; Amazon SNS e SQS (LocalStack em desenvolvimento); Notificações em Go; e-mail por provedor gratuito; backups no Cloudflare R2; Socket.IO; Web Push e e-mail; OpenTelemetry com Grafana; Sentry; PostHog; GitHub Actions. Localmente, tudo sobe com Docker Compose.
 
@@ -251,7 +251,7 @@ Estes requisitos não vêm do volume do Ninho: uma família de três cabe num Po
 | --- | --- | --- | --- |
 | Google Calendar | RF-A-02 | App OAuth em modo de teste: tokens de atualização expiram em 7 dias; cotas por minuto; os canais de webhook expiram e precisam ser renovados | Reautorização avisada no app; sincronização periódica sem webhook |
 | Acesso a notificações do Android | RF-G-05 | Permissão dada à mão; Android 13 ou mais novo restringe essa permissão para apps de fora da loja; economia de bateria pode parar o serviço | Anotação manual (MVP) |
-| Push dos apps do Itaú e do Nubank | RF-G-06 | Sem contrato: o texto muda sem aviso | Leitor por banco com testes; RF-G-08 |
+| Push dos apps dos bancos | RF-G-06 | Sem contrato: o texto muda sem aviso | Leitor por banco com testes; RF-G-08 |
 | Mobills | RF-G-09 | Sem API; só relatório exportado em arquivo | Conciliação manual |
 | Web Push | RF-N-01 | Precisa da permissão do navegador; fora do Chrome do Android, a entrega é menos confiável | E-mail (RF-N-05) |
 | Provedor de e-mail (Resend ou Brevo) | RF-N-01 | Plano gratuito com limite diário | Só push |
@@ -278,52 +278,39 @@ Estes requisitos não vêm do volume do Ninho: uma família de três cabe num Po
 | Risco ou premissa | Impacto | Mitigação |
 | --- | --- | --- |
 | A família não adota o Ninho ou não responde "o que foi isso?" (risco de valor, o maior) | O app vira mais uma coisa para manter, e as métricas de uso não saem do zero | Conversas com a família antes de cada módulo (`docs/discovery/`); MVP manual antes da captura automática; anotação e uso semanal medidos desde o primeiro mês; módulo sem uso por 4 semanas volta para o passo 1 do processo |
-| O Android restringe o acesso a notificações para apps instalados fora da loja | A captura automática não funciona sem configuração | Passo a passo de instalação com a liberação manual das configurações restritas; testar nos 3 celulares no início do F1 M4 |
+| O Android restringe o acesso a notificações para apps instalados fora da loja | A captura automática não funciona sem configuração | Passo a passo de instalação com a liberação manual das configurações restritas; testar nos 3 celulares antes da captura automática |
 | Os bancos mudam o texto do push | Notificações não lidas | Leitor por banco com testes sobre exemplos reais anonimizados; o que falhar vai para a DLQ e aparece para o administrador (RF-G-08) |
 | Supabase gratuito pausa após uma semana sem atividade | Projeto pausado | Tarefa agendada que mantém o banco ativo; app Android guarda e reenvia |
 | Limites de planos gratuitos de terceiros mudam ou são atingidos (cota da SQS, Upstash, e-mail) | Fila, cache ou e-mail param | Limites conferidos antes do deploy e monitorados; troca de adaptador pela porta (RNT-02); AWS só se não houver outra opção gratuita |
 | Conta da AWS passa do orçamento | Custo inesperado | Alerta no AWS Budgets em 50%, 80% e 100% de US$ 10 |
 | Sem backup no plano gratuito do Supabase | Perda de dados | Dump semanal criptografado pelo GitHub Actions para o Cloudflare R2 (RNF-P-10) |
-| Limites do app OAuth do Google em modo de teste | Sincronização para depois de alguns dias | Verificar no F1 M5.1 o estado de publicação e a validade do token; ADR com a escolha |
+| Limites do app OAuth do Google em modo de teste | Sincronização para depois de alguns dias | Verificar, ao construir a Agenda, o estado de publicação e a validade do token; ADR com a escolha |
 | Excesso de engenharia para 3 a 4 horas por semana | O módulo não fica pronto e a família não usa | A versão simplificada de cada requisito técnico é o plano B; o MVP funcional vem antes da peça extra |
-| Dados reais num repositório público | Vazamento | Seeds e fixtures fictícios; segredos no ambiente; revisão no modelo de ameaças (F1 M6.1) |
+| Dados reais num repositório público | Vazamento | Seeds e fixtures fictícios; segredos no ambiente; revisão no modelo de ameaças |
 
-## Roadmap ligado ao programa
+## Roadmap
 
-Com este roadmap, o fim da Formação 3 entrega o escopo inteiro dos cinco módulos, incluindo os itens "depois do MVP".
-
-| Momento | Entrega |
+| Etapa | Entrega |
 | --- | --- |
-| F1 M1.2 | Repositório, CLAUDE.md, primeira skill; Identidade e família (RF-I-01 a 05) no ar como walking skeleton |
-| F1 M2 | Este PRD revisado, design doc da Memória de gastos, primeiros ADRs |
-| F1 M3 | Memória de gastos (MVP, RF-G-01 a 04) com spec, testes antes do código, revisor no CI e observabilidade básica |
-| F1 M4 | Rotina (MVP, RF-R-01 a 06) e captura automática no Android (RF-G-05 a 08); fila, cache, tempo real e offline |
-| F1 M5.1 | Agenda e lembretes (RF-A-01 a 06), Notificações extraído como serviço (RF-N-01 a 06), preferências de aviso (RF-I-06) e lembretes de tarefa da Rotina pela Agenda; outbox, Google Calendar, CQRS leve; versão simplificada e ADR comparativo |
-| F1 M5.2 | Refatoração com DDD |
-| F1 M5.3 | Consumo (MVP, RF-C-01 a 07): migração, detecção de falhas, SLOs, carga sintética e teste de falha |
-| F1 M5.4 | ADR do front |
-| F1 M6.1 | Contexto e modelo de ameaças; exportar e apagar dados (RNF-P-14 e 15); Agenda com resumo do dia seguinte e aviso de conflito; resumo diário das notificações |
-| F1 M6.2 e M7 | Agentes revisor e de operação, DORA; Consumo com custo estimado pela tarifa, metas de redução e gás |
-| F2 M2 | Rotina com recompensas e conquistas, medidas no funil de uso semanal |
-| F2 M3 e M4 | Despensa (MVP, RF-D-01 a 03): PRD e design, construção e liberação por feature flag |
-| F2 M5 | Despensa com quantidade em estoque, validade e receitas (cadastro manual e importação por link) com busca |
-| F2 M6 | Despensa com cardápio da semana e lista de compras gerada do cardápio |
-| F3 M1 | Memória por estabelecimento (RF-G-10) com sugestão por IA |
-| F3 M2 | Cupom por foto (RF-G-11) e leitura do medidor por foto, na mesma porta de visão |
-| F3 M3 e M4 | RAG de receitas e perfil alimentar; assistente de cardápio |
-| F3 M5 | Fechamento do mês automatizado, começando pela importação do Mobills com casamento automático (RF-G-09) |
-| F3 M6 | Evals das features de IA |
-| F3 M7 | Anotação de gasto por voz (RF-G-11); orçamento e checklist de produção da IA |
+| 1 | Repositório, CLAUDE.md, primeira skill, login, família, membros e papéis |
+| 2 | Este PRD revisado, design doc da Memória de gastos, primeiros ADRs |
+| 3 | Memória de gastos (MVP) com spec, testes antes do código, revisor no CI e observabilidade básica |
+| 4 | Rotina (MVP), captura automática no Android, fila, cache, tempo real e offline |
+| 5 | Agenda e lembretes; Notificações extraído como serviço; outbox, Google Calendar, CQRS leve; versão simplificada e ADR comparativo |
+| 6 | Refatoração com DDD |
+| 7 | Consumo: migração, detecção de falhas, SLOs, carga sintética e teste de falha |
+| 8 | ADR do front, contexto e modelo de ameaças, agentes revisor e de operação, DORA |
+| 9 | Despensa (MVP) com processo de produto e métricas de negócio |
+| 10 | IA no Ninho com evals |
 
-**Momentos mais carregados:** F1 M4 e F1 M5.1. Se o F1 M5.1 apertar, o primeiro a sair é o aviso de conflito da Agenda.
 
 ## Perguntas em aberto
 
 1. ~~O dependente usa o app com conta própria desde o início?~~ Decidido: sim, com o papel de Dependente.
 2. ~~Fila: RabbitMQ ou BullMQ?~~ Decidido: Amazon SNS + SQS, na cota gratuita ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)).
 3. Conflito offline nas listas: last-write-wins por campo ou CRDT?
-4. Provedor de e-mail com plano gratuito para os lembretes: Resend ou Brevo. Escolha final no F1 M5.1.
+4. Provedor de e-mail com plano gratuito para os lembretes: Resend ou Brevo. Escolha final ao construir a Agenda.
 5. Formato do relatório do Mobills para a importação da fase 3.
 6. ~~Onde guardar os backups semanais?~~ Decidido: Cloudflare R2 gratuito, com dump criptografado ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)).
-7. Login: conta Google ou e-mail com link mágico? Decidir no ADR do F1 M1.2.
+7. Login: conta Google ou e-mail com link mágico? Decidir em ADR antes do login.
 8. Versão do Android dos três celulares, para fechar a versão mínima do app de captura.

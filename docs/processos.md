@@ -68,7 +68,7 @@ Depois, um **walking skeleton**: uma fatia fina de ponta a ponta já no ar (logi
 
 ## 7. Backlog
 
-- **O quê:** stories por bounded context, como issues do GitHub com critérios de aceite, label de contexto e de tipo, milestone do módulo do programa.
+- **O quê:** stories por bounded context, como issues do GitHub com critérios de aceite, label de contexto e de tipo, milestone da etapa de construção.
 - **Priorização:** RICE; o que não tem métrica de sucesso não entra.
 - **Saída:** quadro "Ninho" no GitHub Projects (Backlog → Pronto para o agente → Em andamento → Em revisão → Feito).
 

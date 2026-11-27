@@ -16,4 +16,4 @@ Registrar cada decisão de arquitetura significativa como um ADR no formato de M
 
 ## Consequências
 
-O histórico das decisões fica no repositório e passa por pull request. Os ADRs previstos no PRD (hexagonal, fila, conflito offline, extração de Notificações, versão completa × simplificada, detecção de falhas, front) entram a partir do F1 M2.
+O histórico das decisões fica no repositório e passa por pull request. Os ADRs previstos no PRD (hexagonal, fila, conflito offline, extração de Notificações, versão completa × simplificada, detecção de falhas, front) entram conforme cada decisão for tomada.
