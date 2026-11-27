@@ -1,8 +1,15 @@
 # PRD: Ninho
 
-24/11/2026 · Proposta, versão 0.1
+27/11/2026 · Proposta, versão 0.2
 
 Documento de requisitos do Ninho, o app da família usado como case do programa Expert autodidata. O contexto, a arquitetura e o encaixe no programa estão no [case](case.md); este PRD fecha o que o produto faz e o que a engenharia se obriga a usar.
+
+**Status:** proposta em revisão (issue #1).
+
+| Versão | Data | O que mudou |
+| --- | --- | --- |
+| 0.1 | 24/11/2026 | Proposta inicial |
+| 0.2 | 27/11/2026 | Identidade e família, Notificações, dados e privacidade, integrações, plataformas, métricas com definição e linha de base, evidências, risco de valor, orçamento de IA; conta própria do dependente decidida |
 
 ## Resumo
 
@@ -20,6 +27,14 @@ O PRD tem dois tipos de requisito não funcional. Os de produto são o que a fam
 
 Todos na família usam Android. Os bancos são Itaú e Nubank, com cartões Itaú e Nubank (Visa e Master), e os apps dos dois mandam push a cada compra.
 
+**Evidências.** As conversas com a família estão em [discovery/conversas-familia.md](discovery/conversas-familia.md). As primeiras, sobre o Consumo:
+
+- "Houve um vazamento que não havíamos identificado e só fomos descobrir quando a conta veio."
+- "Hoje eu olho o consumo no relógio periodicamente e anoto em uma planilha que indica se teve uma divergência grande."
+- "Somente eu olho o valor." (o alerta precisa chegar a quem acompanha as contas)
+
+As evidências da Memória de gastos, da Rotina, da Agenda e da Despensa entram depois das conversas com os outros dois membros da família.
+
 ## Objetivos e métricas
 
 **Objetivos de produto**
@@ -34,15 +49,15 @@ Todos na família usam Android. Os bancos são Itaú e Nubank, com cartões Ita�
 2. Cada conceito de system design dos requisitos técnicos de estudo implementado, medido e registrado em ADR.
 3. Um harness de desenvolvimento com agentes (CLAUDE.md, skills, spec, testes antes do código, revisor no CI) que pegou pelo menos um erro real.
 
-| Métrica | Meta |
-| --- | --- |
-| Lançamentos do mês com anotação (Memória de gastos) | 80% ou mais |
-| Tempo entre a compra e a resposta "o que foi isso?" (fase 2) | Mediana abaixo de 10 minutos |
-| Pessoas com uso semanal | As 3, por 4 semanas seguidas depois de cada lançamento |
-| Leituras semanais de água feitas no prazo | 90% ou mais |
-| Alertas de consumo | Nenhum incidente real perdido; no máximo 1 alarme falso por trimestre |
-| Lembretes com confirmação marcados como "feito" | 95% ou mais |
-| Conceitos de estudo com ADR e medição | Todos os da tabela de requisitos técnicos, no fim da Formação 1 (exceto os da Formação 3) |
+| Métrica | Meta | Como medir | Linha de base |
+| --- | --- | --- | --- |
+| Lançamentos do mês com anotação (Memória de gastos) | 80% ou mais | Lançamentos do relatório do Mobills com anotação conciliada ÷ total de lançamentos do relatório, no fechamento do mês (RF-G-04) | Medir no fechamento de dezembro, antes do Ninho: quantos lançamentos ficaram sem lembrança |
+| Tempo entre a compra e a resposta "o que foi isso?" (fase 2) | Mediana abaixo de 10 minutos | Horário da resposta menos horário do push do banco (eventos `compra_capturada` e `anotacao_respondida`), por pessoa e por semana | Não existe hoje; primeira medição na fase 2 |
+| Pessoas com uso semanal | As 3, por 4 semanas seguidas depois de cada lançamento | Pessoa com pelo menos uma ação principal do módulo na semana (evento `acao_principal` no PostHog, por módulo) | Zero; a comparação é com o jeito atual descrito nas conversas |
+| Leituras semanais de água feitas no prazo | 90% ou mais | Semanas com pelo menos uma leitura de água ÷ semanas do período | Calcular no histórico do painel Consumo da Casa durante a migração (RF-C-04) |
+| Alertas de consumo | Nenhum incidente real perdido; no máximo 1 alarme falso por trimestre | Respostas a "era mesmo um problema?" (sim = incidente, não = alarme falso), por trimestre; incidente perdido = falha descoberta na conta sem alerta antes | Hoje, vazamento descoberto só na conta ou na planilha (4 incidentes no histórico) |
+| Lembretes com confirmação marcados como "feito" | 95% ou mais | Lembretes com confirmação marcados "feito" ÷ lembretes com confirmação disparados, no mês | Contar nas conversas os compromissos esquecidos no último mês |
+| Conceitos de estudo com ADR e medição | Todos os da tabela de requisitos técnicos, no fim da Formação 1 (exceto os da Formação 3) | RNT com ADR em `docs/adr/` e medição registrada ÷ RNT da Formação 1 | Zero |
 
 ## Usuários e papéis
 
@@ -52,11 +67,22 @@ Todos na família usam Android. Os bancos são Itaú e Nubank, com cartões Ita�
 | Responsável | Tudo dos módulos, sem administração da família |
 | Dependente | Rotina, Agenda e Despensa; não vê a Memória de gastos nem o valor das contas |
 
-O login é por família: cada pessoa tem sua conta, e todos os dados são compartilhados dentro da família, exceto o que o papel restringe.
+O login é por família: cada pessoa tem sua conta, e todos os dados são compartilhados dentro da família, exceto o que o papel restringe. O dependente tem conta própria desde o início.
 
 ## Requisitos funcionais
 
 Os identificadores (RF-G-01 etc.) são os usados nas issues e nas specs.
+
+### Identidade e família (base de todos os módulos)
+
+**MVP (F1 M1.2, o walking skeleton)**
+
+- **RF-I-01** Criar a família: quem cria vira Responsável administrador.
+- **RF-I-02** Convidar um membro por link, já com o papel definido; o convite vale 7 dias e serve uma vez só.
+- **RF-I-03** Trocar o papel de um membro (só o administrador); a família nunca fica sem administrador.
+- **RF-I-04** Remover um membro: o acesso acaba na hora, e o que ele criou continua na família.
+- **RF-I-05** Login e recuperação de acesso, com o método decidido em ADR (ver Perguntas em aberto).
+- **RF-I-06** Perfil de cada pessoa: nome, cor (usada na Agenda) e preferências de notificação (RF-N-02).
 
 ### 1. Memória de gastos
 
@@ -101,7 +127,7 @@ Os identificadores (RF-G-01 etc.) são os usados nas issues e nas specs.
 - **RF-A-01** Calendário compartilhado por todos, uma cor por pessoa, visões de dia, semana e mês.
 - **RF-A-02** Sincronização nos dois sentidos com uma agenda "Família" no Google Calendar; em conflito, vale a última edição e o app avisa.
 - **RF-A-03** Recorrência e categorias (escola, saúde, aniversários, casa, lazer).
-- **RF-A-04** Lembretes por push e e-mail com antecedência configurável; cada pessoa liga e desliga cada canal quando quiser.
+- **RF-A-04** Lembretes por push e e-mail com antecedência configurável; o canal segue as preferências de cada pessoa (RF-N-02).
 - **RF-A-05** Lembrete com confirmação: repete até alguém marcar "feito".
 - **RF-A-06** Os lembretes saem pelo serviço de Notificações, um contexto próprio que os outros módulos também usam ("o que foi isso?", alerta de consumo, item que acabou).
 
@@ -131,6 +157,19 @@ Os identificadores (RF-G-01 etc.) são os usados nas issues e nas specs.
 
 **Depois do MVP:** quantidade em estoque; receitas com cadastro manual e importação por link de sites; cardápio da semana para todas as refeições, respeitando o perfil alimentar; lista de compras gerada do cardápio; busca por nome e ingrediente; validade dos itens; assistente de IA que monta o cardápio (Formação 3).
 
+### Notificações (serviço usado por todos os módulos)
+
+**MVP (F1 M5.1, quando vira serviço separado; antes disso, módulo do monólito)**
+
+- **RF-N-01** Canais: push (Web Push no PWA e notificação do app Android) e e-mail.
+- **RF-N-02** Preferências por pessoa e por tipo de aviso (lembrete, "o que foi isso?", alerta de consumo, item que acabou): cada pessoa liga e desliga cada canal.
+- **RF-N-03** Destinatários por tipo: o módulo diz quem recebe (por exemplo, o alerta de consumo vai só para quem acompanha as contas).
+- **RF-N-04** Horário de silêncio por pessoa: o aviso espera o fim do horário, exceto os marcados como urgentes pelo módulo (vazamento).
+- **RF-N-05** Reenvio quando a entrega falha, com intervalo crescente, e e-mail como reserva do push; o mesmo aviso nunca chega duas vezes (RNT-08).
+- **RF-N-06** Histórico por pessoa: enviado, entregue, aberto e respondido.
+
+**Depois do MVP:** resumo diário em vez de avisos soltos, para os tipos que a pessoa escolher.
+
 ## Requisitos não funcionais de produto
 
 | ID | Requisito | Meta |
@@ -145,9 +184,31 @@ Os identificadores (RF-G-01 etc.) são os usados nas issues e nas specs.
 | RNF-P-08 | Privacidade | Dados financeiros, de saúde (perfil alimentar) e do dependente só dentro da família; o app de captura lê apenas os apps do Itaú e do Nubank; repositório público sem dado real |
 | RNF-P-09 | Segurança | Login com sessão segura, papéis aplicados no backend, segredos fora do código, HTTPS em tudo |
 | RNF-P-10 | Backup | Cópia semanal automática do Postgres e do MongoDB, com restauração testada uma vez por formação |
-| RNF-P-11 | Custo | Planos gratuitos em tudo; a AWS só onde não houver opção gratuita (hoje, só o backend), até US$ 10 por mês com alerta de orçamento ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)) |
+| RNF-P-11 | Custo | Planos gratuitos em tudo; a AWS só onde não houver opção gratuita (hoje, só o backend), até US$ 10 por mês com alerta de orçamento ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)). IA (Formação 3): orçamento próprio de até R$ 50 por mês, alerta em 80% e corte automático em 100% (RNT-23) |
 | RNF-P-12 | Idioma, fuso e moeda | Português do Brasil, America/Sao_Paulo, reais |
 | RNF-P-13 | Usabilidade | Ação principal de cada módulo em até 3 toques; funciona bem em tela de celular |
+
+## Dados e privacidade
+
+Detalha o RNF-P-08. Nenhum dado desta tabela vai para o repositório.
+
+| Dado | Sensibilidade | Onde fica | Quem vê | Por quanto tempo |
+| --- | --- | --- | --- | --- |
+| Conta e perfil (nome, e-mail, cor) | Pessoal | Postgres | A família | Enquanto a pessoa for membro |
+| Anotações de gasto e conciliação | Financeiro | Postgres | Responsáveis | Enquanto a família usar o Ninho |
+| Texto bruto das notificações de banco | Financeiro, o mais sensível | MongoDB | Só o administrador (RF-G-08) | 90 dias; depois fica só a anotação extraída |
+| Leituras e valores das contas | Doméstico; o valor é financeiro | Postgres e MongoDB (séries) | Responsáveis; o dependente não vê valores | Sem limite (série histórica) |
+| Tarefas, listas, pontos e mural | Baixa | Postgres e MongoDB (mural) | A família | Mural: 12 meses |
+| Agenda | Pessoal (saúde, escola) | Postgres e Google Calendar | A família | Segue o Google Calendar |
+| Perfil alimentar | Saúde | Postgres | A família | Enquanto a pessoa for membro |
+| Dados do dependente | De menor de idade | Os acima | Conforme o papel de Dependente | Apagados por completo a pedido |
+| Logs e traces | Mascarados (RNT-15) | Grafana e Sentry | Só o administrador | 30 dias |
+| Chamadas de IA | Metadados (tokens, custo); o conteúdo pode ter cupom ou voz | Postgres (RNT-23) | Só o administrador | Metadados por 12 meses; o conteúdo não é guardado |
+| Backups | Todos os acima, criptografados | Cloudflare R2 (RNF-P-10) | Só o administrador | Até a cópia expirar |
+
+- **RNF-P-14** Exportar: o administrador baixa todos os dados da família em JSON e CSV.
+- **RNF-P-15** Apagar: um membro ou a família inteira, de todos os bancos; nos backups, o dado some quando a cópia expira.
+- **RNF-P-16** IA: só o necessário vai ao provedor, sem nome nem dados pessoais, e com provedor que não usa os dados para treino.
 
 ## Requisitos não funcionais técnicos de estudo
 
@@ -184,6 +245,27 @@ Estes requisitos não vêm do volume do Ninho: uma família de três cabe num Po
 
 **ADRs previstos:** hospedagem e infraestrutura (feito: [ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)); hexagonal; conflito offline (last-write-wins ou CRDT); extração de Notificações; versão completa × simplificada, com as medições lado a lado; método de detecção de falhas no Consumo; front (PWA mais app Android de captura).
 
+## Integrações e dependências
+
+| Integração | Usada em | Limites e condições | Plano B |
+| --- | --- | --- | --- |
+| Google Calendar | RF-A-02 | App OAuth em modo de teste: tokens de atualização expiram em 7 dias; cotas por minuto; os canais de webhook expiram e precisam ser renovados | Reautorização avisada no app; sincronização periódica sem webhook |
+| Acesso a notificações do Android | RF-G-05 | Permissão dada à mão; Android 13 ou mais novo restringe essa permissão para apps de fora da loja; economia de bateria pode parar o serviço | Anotação manual (MVP) |
+| Push dos apps do Itaú e do Nubank | RF-G-06 | Sem contrato: o texto muda sem aviso | Leitor por banco com testes; RF-G-08 |
+| Mobills | RF-G-09 | Sem API; só relatório exportado em arquivo | Conciliação manual |
+| Web Push | RF-N-01 | Precisa da permissão do navegador; fora do Chrome do Android, a entrega é menos confiável | E-mail (RF-N-05) |
+| Provedor de e-mail (Resend ou Brevo) | RF-N-01 | Plano gratuito com limite diário | Só push |
+| Provedor de IA | RNT-22 | Custo por token e limites de taxa; orçamento do RNF-P-11 | Feature desligada por flag; entrada manual |
+| AWS (Lightsail, SNS, SQS) | Backend e fila | Orçamento de US$ 10 por mês; cota gratuita da SQS e do SNS ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)) | Versões simplificadas dos RNT (fila no Postgres) |
+| Planos gratuitos (Vercel, Supabase, MongoDB Atlas, Upstash, Cloudflare R2) | Tudo | Pausam e têm cotas (ver Premissas e riscos) | Docker Compose local; troca de adaptador (RNT-02) |
+
+## Plataformas suportadas
+
+- **App Android de captura:** Android 10 ou mais novo, a confirmar com a versão dos três celulares.
+- **PWA no celular:** Chrome no Android, que é o que a família usa; telas a partir de 360 px de largura.
+- **PWA no computador:** as duas últimas versões do Chrome, Edge e Firefox.
+- **Fora:** iPhone e Safari, porque ninguém da família usa (ver Fora de escopo).
+
 ## Fora de escopo
 
 - Publicação em loja de apps e uso por outras famílias.
@@ -195,6 +277,7 @@ Estes requisitos não vêm do volume do Ninho: uma família de três cabe num Po
 
 | Risco ou premissa | Impacto | Mitigação |
 | --- | --- | --- |
+| A família não adota o Ninho ou não responde "o que foi isso?" (risco de valor, o maior) | O app vira mais uma coisa para manter, e as métricas de uso não saem do zero | Conversas com a família antes de cada módulo (`docs/discovery/`); MVP manual antes da captura automática; anotação e uso semanal medidos desde o primeiro mês; módulo sem uso por 4 semanas volta para o passo 1 do processo |
 | O Android restringe o acesso a notificações para apps instalados fora da loja | A captura automática não funciona sem configuração | Passo a passo de instalação com a liberação manual das configurações restritas; testar nos 3 celulares no início do F1 M4 |
 | Os bancos mudam o texto do push | Notificações não lidas | Leitor por banco com testes sobre exemplos reais anonimizados; o que falhar vai para a DLQ e aparece para o administrador (RF-G-08) |
 | Supabase gratuito pausa após uma semana sem atividade | Projeto pausado | Tarefa agendada que mantém o banco ativo; app Android guarda e reenvia |
@@ -222,9 +305,11 @@ Estes requisitos não vêm do volume do Ninho: uma família de três cabe num Po
 
 ## Perguntas em aberto
 
-1. O dependente usa o app com conta própria desde o início, ou entra só na Rotina e na Agenda mais tarde?
+1. ~~O dependente usa o app com conta própria desde o início?~~ Decidido: sim, com o papel de Dependente.
 2. ~~Fila: RabbitMQ ou BullMQ?~~ Decidido: Amazon SNS + SQS, na cota gratuita ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)).
 3. Conflito offline nas listas: last-write-wins por campo ou CRDT?
 4. Provedor de e-mail com plano gratuito para os lembretes: Resend ou Brevo. Escolha final no F1 M5.1.
 5. Formato do relatório do Mobills para a importação da fase 3.
 6. ~~Onde guardar os backups semanais?~~ Decidido: Cloudflare R2 gratuito, com dump criptografado ([ADR 0002](adr/0002-hospedagem-e-infraestrutura.md)).
+7. Login: conta Google ou e-mail com link mágico? Decidir no ADR do F1 M1.2.
+8. Versão do Android dos três celulares, para fechar a versão mínima do app de captura.
