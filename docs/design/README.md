@@ -4,7 +4,6 @@ Design system v0.1 e protótipos dos nove fluxos do MVP, aprovados em 28/11/2026
 
 - **Canvas para ver e clicar:** https://claude.ai/artifact/674JfiUxmA6QvYQzopf9iY (privado do mantenedor)
 - **Fontes do canvas:** [`prototipos/`](prototipos/), um arquivo `.dc.html` por prancha e o índice `canvas.json`
-- **Prompts que geraram os fluxos:** [`prompts.md`](prompts.md)
 
 Os arquivos de `prototipos/` dependem do runtime do canvas (`support.js`), que não está no repositório. Eles servem como fonte versionada: toda mudança no canvas entra aqui por pull request. Para ver as telas, use o canvas.
 
