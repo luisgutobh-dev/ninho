@@ -65,7 +65,7 @@ As evidências da Memória de gastos, da Rotina, da Agenda e da Despensa entram 
 | --- | --- |
 | Responsável administrador | Tudo, incluindo membros, módulos ligados por feature flag e integrações |
 | Responsável | Tudo dos módulos, sem administração da família |
-| Dependente | Rotina, Agenda e Despensa; não vê a Memória de gastos nem o valor das contas |
+| Dependente | Rotina, Agenda e Despensa; não vê a Memória de gastos nem o Consumo (leituras, consumo e contas) |
 
 O login é por família: cada pessoa tem sua conta, e todos os dados são compartilhados dentro da família, exceto o que o papel restringe. O dependente tem conta própria desde o início.
 
@@ -197,7 +197,7 @@ Detalha o RNF-P-08. Nenhum dado desta tabela vai para o repositório.
 | Conta e perfil (nome, e-mail, cor) | Pessoal | Postgres | A família | Enquanto a pessoa for membro |
 | Anotações de gasto e conciliação | Financeiro | Postgres | Responsáveis | Enquanto a família usar o Ninho |
 | Texto bruto das notificações de banco | Financeiro, o mais sensível | MongoDB | Só o administrador (RF-G-08) | 90 dias; depois fica só a anotação extraída |
-| Leituras e valores das contas | Doméstico; o valor é financeiro | Postgres e MongoDB (séries) | Responsáveis; o dependente não vê valores | Sem limite (série histórica) |
+| Leituras e valores das contas | Doméstico; o valor é financeiro | Postgres e MongoDB (séries) | Só os responsáveis; o dependente não acessa o Consumo | Sem limite (série histórica) |
 | Tarefas, listas, pontos e mural | Baixa | Postgres e MongoDB (mural) | A família | Mural: 12 meses |
 | Agenda | Pessoal (saúde, escola) | Postgres e Google Calendar | A família | Segue o Google Calendar |
 | Perfil alimentar | Saúde | Postgres | A família | Enquanto a pessoa for membro |
