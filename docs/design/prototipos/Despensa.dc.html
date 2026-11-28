@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ninho: despensa</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2F6B4F}a:hover{color:#22573D}
+button,input{font-family:inherit}
+.semscroll{scrollbar-width:none}.semscroll::-webkit-scrollbar{display:none}
+@keyframes ninhoVoltou{0%{background:#D3EBDD}100%{background:#FFFFFF}}
+.voltou{animation:ninhoVoltou 2.8s ease-out both}
+@media (prefers-reduced-motion: reduce){.voltou{animation:none}}
+</style>
+</helmet>
+<div style="position: relative; width: 360px; height: 760px; overflow: hidden; background: #FAF6F0; color: #2B2620; font-family: Inter, system-ui, sans-serif">
+
+  <!-- CABEÇALHO -->
+  <div style="position: absolute; left: 0; right: 0; top: 0; z-index: 1; padding: 20px 20px 12px; box-sizing: border-box; background: #FAF6F0; display: flex; flex-direction: column; gap: 14px">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <div style="font-family: Figtree, Inter, sans-serif; font-size: 26px; font-weight: 700">Despensa</div>
+        <div style="font-size: 13px; color: #6B6258; font-variant-numeric: tabular-nums">{{summary}}</div>
+      </div>
+      <span aria-label="{{viewerLabel}}" style="flex: none; width: 40px; height: 40px; border-radius: 999px; background: {{viewerColor}}; color: #FFFFFF; font-family: Figtree, Inter, sans-serif; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{viewer}}</span>
+    </div>
+    <div role="tablist" aria-label="Seções da despensa" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 14px; background: #F1EBE2">
+      <button role="tab" aria-selected="{{tabItensSel}}" onClick="{{goItens}}" style="height: 40px; border: 0; border-radius: 10px; background: {{tabItensBg}}; color: #2B2620; font-size: 14px; font-weight: 600; box-shadow: {{tabItensShadow}}; cursor: pointer">Itens da casa</button>
+      <button role="tab" aria-selected="{{tabPerfilSel}}" onClick="{{goPerfil}}" style="height: 40px; border: 0; border-radius: 10px; background: {{tabPerfilBg}}; color: #2B2620; font-size: 14px; font-weight: 600; box-shadow: {{tabPerfilShadow}}; cursor: pointer">Perfil alimentar</button>
+    </div>
+    <sc-if value="{{isItens}}" hint-placeholder-val="{{ true }}">
+      <div class="semscroll" style="display: flex; gap: 8px; overflow-x: auto; margin: 0 -20px; padding: 0 20px">
+        <sc-for list="{{cats}}" as="c" hint-placeholder-count="5">
+          <button onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="flex: none; height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: {{c.fg}}; font-size: 14px; font-weight: 600; cursor: pointer">{{c.label}}</button>
+        </sc-for>
+      </div>
+    </sc-if>
+  </div>
+
+  <!-- ITENS -->
+  <sc-if value="{{isItens}}" hint-placeholder-val="{{ true }}">
+    <div class="semscroll" style="position: absolute; left: 0; right: 0; top: 192px; bottom: 72px; overflow-y: auto; padding: 4px 20px 96px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px">
+      <div style="font-size: 13px; color: #6B6258">Toque no item para alternar entre tem e acabou.</div>
+      <sc-for list="{{groups}}" as="g" hint-placeholder-count="2">
+        <section style="display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; align-items: baseline; justify-content: space-between">
+            <h2 style="margin: 0; font-family: Figtree, Inter, sans-serif; font-size: 17px; font-weight: 600">{{g.name}}</h2>
+            <span style="font-size: 12px; color: #6B6258; font-variant-numeric: tabular-nums">{{g.count}}</span>
+          </div>
+          <div style="border-radius: 16px; background: #FFFFFF; border: 1px solid #E6DED3; overflow: hidden">
+            <sc-for list="{{g.items}}" as="it" hint-placeholder-count="3">
+              <button class="{{it.cls}}" onClick="{{it.toggle}}" aria-label="{{it.aria}}" style="width: 100%; min-height: 60px; padding: 10px 12px 10px 16px; box-sizing: border-box; border: 0; border-top: 1px solid {{it.divider}}; background: transparent; color: #2B2620; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer">
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+                  <span style="font-size: 16px; font-weight: 500">{{it.name}}</span>
+                  <span style="font-size: 12px; color: #6B6258">{{it.sub}}</span>
+                </span>
+                <span style="flex: none; height: 30px; min-width: 84px; padding: 0 12px; box-sizing: border-box; border-radius: 999px; background: {{it.pillBg}}; color: {{it.pillFg}}; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; font-weight: 600">
+                  <sc-if value="{{it.out}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M8 12h8"/></svg></sc-if>
+                  <sc-if value="{{it.has}}" hint-placeholder-val="{{ true }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></sc-if>
+                  {{it.pill}}
+                </span>
+              </button>
+            </sc-for>
+          </div>
+        </section>
+      </sc-for>
+    </div>
+    <button onClick="{{openSheet}}" style="position: absolute; right: 16px; bottom: {{fabBottom}}; z-index: 1; height: 56px; padding: 0 20px 0 16px; border: 0; border-radius: 18px; background: #2F6B4F; color: #FFFFFF; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; box-shadow: 0 8px 20px rgba(47,107,79,0.32); cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Adicionar item</button>
+  </sc-if>
+
+  <!-- PERFIL ALIMENTAR -->
+  <sc-if value="{{isPerfil}}" hint-placeholder-val="{{ false }}">
+    <div class="semscroll" style="position: absolute; left: 0; right: 0; top: 140px; bottom: 72px; overflow-y: auto; padding: 4px 20px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px">
+      <sc-if value="{{hasMissing}}" hint-placeholder-val="{{ true }}">
+        <div style="padding: 14px 16px; border-radius: 16px; background: #E1F0E7; color: #22573D; display: flex; gap: 12px; align-items: center">
+          <span style="flex: none; width: 40px; height: 40px; border-radius: 999px; background: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg></span>
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 15px; font-weight: 600">{{missingTitle}}</span>
+            <span style="font-size: 13px; line-height: 1.4">Sem pressa: dá para preencher aos poucos, um gosto de cada vez.</span>
+          </span>
+        </div>
+      </sc-if>
+      <sc-for list="{{people}}" as="p" hint-placeholder-count="3">
+        <section aria-label="Perfil de {{p.name}}" style="padding: 16px; border-radius: 18px; background: #FFFFFF; border: 1px solid #E6DED3; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; align-items: center; gap: 12px">
+            <span style="flex: none; width: 40px; height: 40px; border-radius: 999px; background: {{p.color}}; color: #FFFFFF; font-family: Figtree, Inter, sans-serif; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{p.initial}}</span>
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+              <span style="font-family: Figtree, Inter, sans-serif; font-size: 17px; font-weight: 600">{{p.name}}</span>
+              <span style="font-size: 12px; color: #6B6258">{{p.status}}</span>
+            </span>
+          </div>
+          <sc-for list="{{p.sections}}" as="sec" hint-placeholder-count="3">
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <span style="font-size: 13px; font-weight: 600; color: #5C5248">{{sec.label}}</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px">
+                <sc-for list="{{sec.chips}}" as="ch" hint-placeholder-count="2">
+                  <span style="height: 32px; padding: 0 12px; border-radius: 999px; background: {{sec.bg}}; color: {{sec.fg}}; display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500">
+                    <sc-if value="{{sec.isRestr}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 10v4"/></svg></sc-if>
+                    {{ch}}
+                  </span>
+                </sc-for>
+                <sc-if value="{{p.canEdit}}" hint-placeholder-val="{{ true }}">
+                  <button onClick="{{sec.add}}" aria-label="Adicionar em {{sec.label}} de {{p.name}}" style="height: 32px; padding: 0 12px; border-radius: 999px; border: 1.5px dashed #B9AE9F; background: transparent; color: #2F6B4F; font-size: 14px; font-weight: 600; cursor: pointer">+ Adicionar</button>
+                </sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </section>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <!-- AVISO -->
+  <sc-if value="{{hasToast}}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position: absolute; left: 16px; right: 16px; bottom: 88px; z-index: 2; min-height: 56px; padding: 8px 8px 8px 14px; box-sizing: border-box; border-radius: 16px; background: #2B2620; color: #FFFFFF; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 24px rgba(43,38,32,0.28)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9FD9BC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M4 9h16l-1.5 10h-13z"/><path d="M8 9l4-5 4 5"/></svg>
+      <span style="flex: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 600">{{toastTitle}}</span><sc-if value="{{hasToastText}}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: #CFC5B8">{{toastText}}</span></sc-if></span>
+      <sc-if value="{{hasUndo}}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{undo}}" style="flex: none; height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; color: #9FD9BC; font-size: 14px; font-weight: 600; cursor: pointer">Desfazer</button>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{isResp}}" hint-placeholder-val="{{ true }}">
+  <!-- BARRA INFERIOR: RESPONSÁVEL -->
+  <nav aria-label="Módulos" style="position: absolute; left: 0; right: 0; bottom: 0; height: 72px; padding-bottom: 4px; box-sizing: border-box; background: #FFFFFF; border-top: 1px solid #E6DED3; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr))">
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span>Hoje</a>
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M16 15h2"/></svg></span>Gastos</a>
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg></span>Rotina</a>
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>Agenda</a>
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/></svg></span>Consumo</a>
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #2F6B4F; font-size: 11px; font-weight: 600" aria-current="page"><span style="width: 44px; height: 28px; border-radius: 999px; background: #E1F0E7; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16l-1.5 10h-13z"/><path d="M8 9l4-5 4 5"/></svg></span>Despensa</a>
+  </nav>
+
+  </sc-if>
+
+    <!-- BARRA INFERIOR: DEPENDENTE -->
+  <sc-if value="{{isDep}}" hint-placeholder-val="{{ false }}">
+    <nav aria-label="Módulos" style="position: absolute; left: 0; right: 0; bottom: 0; height: 72px; padding-bottom: 4px; box-sizing: border-box; background: #FFFFFF; border-top: 1px solid #E6DED3; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
+      <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span>Hoje</a>
+      <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg></span>Rotina</a>
+      <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>Agenda</a>
+      <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #2F6B4F; font-size: 11px; font-weight: 600" aria-current="page"><span style="width: 48px; height: 28px; border-radius: 999px; background: #E1F0E7; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16l-1.5 10h-13z"/><path d="M8 9l4-5 4 5"/></svg></span>Despensa</a>
+    </nav>
+  </sc-if>
+
+  <!-- FOLHA: ADICIONAR ITEM -->
+  <sc-if value="{{sheet}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; justify-content: flex-end">
+      <div onClick="{{closeSheet}}" style="position: absolute; inset: 0; background: rgba(43,38,32,0.45)"></div>
+      <div role="dialog" aria-label="Adicionar item à despensa" style="position: relative; padding: 12px 20px 20px; border-radius: 24px 24px 0 0; background: #FFFFFF; display: flex; flex-direction: column; gap: 16px">
+        <div style="align-self: center; width: 40px; height: 4px; border-radius: 999px; background: #CFC5B8"></div>
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <span style="font-family: Figtree, Inter, sans-serif; font-size: 20px; font-weight: 700">Novo item</span>
+          <button onClick="{{closeSheet}}" aria-label="Fechar" style="width: 44px; height: 44px; margin-right: -8px; border: 0; border-radius: 12px; background: transparent; color: #6B6258; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #5C5248">Nome
+          <input value="{{draft}}" onChange="{{onDraft}}" placeholder="Ex.: esponja de louça" style="height: 52px; padding: 0 14px; box-sizing: border-box; border: 1px solid #E6DED3; border-radius: 14px; background: #FAF6F0; color: #2B2620; font-size: 16px; font-weight: 400">
+        </label>
+        <div role="radiogroup" aria-label="Categoria" style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 13px; font-weight: 600; color: #5C5248">Categoria</span>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px">
+            <sc-for list="{{sheetCats}}" as="c" hint-placeholder-count="4">
+              <button role="radio" aria-checked="{{c.pressed}}" onClick="{{c.pick}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: {{c.fg}}; font-size: 14px; font-weight: 600; cursor: pointer">{{c.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div role="radiogroup" aria-label="Lista de compras" style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 13px; font-weight: 600; color: #5C5248">Quando acabar, vai para a lista</span>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px">
+            <sc-for list="{{sheetLists}}" as="c" hint-placeholder-count="3">
+              <button role="radio" aria-checked="{{c.pressed}}" onClick="{{c.pick}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: {{c.fg}}; font-size: 14px; font-weight: 600; cursor: pointer">{{c.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <button onClick="{{addItem}}" aria-disabled="{{addDisabled}}" style="height: 52px; border: 0; border-radius: 16px; background: {{addBg}}; color: #FFFFFF; font-size: 16px; font-weight: 600; cursor: pointer">Adicionar à despensa</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"preset":{"editor":"enum","options":["itens","acabou","comprado","adicionar","perfil"],"default":"itens"},"viewer":{"editor":"enum","options":["A","B","D"],"default":"A"},"$preview":{"width":360,"height":760}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+const preset = (props && props.preset) || 'itens';
+const items = [
+{ id: 1, name: 'Detergente', cat: 'Limpeza', list: 'Mercado', out: false },
+{ id: 2, name: 'Sabão em pó', cat: 'Limpeza', list: 'Mercado', out: false },
+{ id: 3, name: 'Água sanitária', cat: 'Limpeza', list: 'Mercado', out: false },
+{ id: 4, name: 'Arroz', cat: 'Mercearia', list: 'Mercado', out: false },
+{ id: 5, name: 'Café', cat: 'Mercearia', list: 'Mercado', out: true, outBy: 'B' },
+{ id: 6, name: 'Azeite', cat: 'Mercearia', list: 'Mercado', out: false },
+{ id: 7, name: 'Pasta de dente', cat: 'Higiene', list: 'Farmácia', out: false },
+{ id: 8, name: 'Sabonete', cat: 'Higiene', list: 'Mercado', out: true, outBy: 'D' },
+{ id: 9, name: 'Leite integral', cat: 'Geladeira', list: 'Mercado', out: true, outBy: 'D' },
+{ id: 10, name: 'Ovos', cat: 'Geladeira', list: 'Feira', out: false },
+{ id: 11, name: 'Manteiga', cat: 'Geladeira', list: 'Mercado', out: false }
+];
+let toast = null;
+if (preset === 'acabou') { items[0].out = true; items[0].outBy = 'A'; toast = { title: 'Foi para a lista Mercado', text: 'Detergente acabou', undoId: 1 }; }
+if (preset === 'comprado') { items[8].out = false; items[8].back = true; toast = { title: 'Leite integral voltou para tem', text: 'Responsável B comprou na lista Mercado' }; }
+this.state = {
+tab: preset === 'perfil' ? 'perfil' : 'itens',
+cat: 'Todas',
+items: items,
+toast: toast,
+sheet: preset === 'adicionar',
+draft: preset === 'adicionar' ? 'Esponja de louça' : '',
+newCat: 'Limpeza',
+newList: 'Mercado',
+extra: {}
+};
+}
+componentDidMount() { if (this.state.toast) this.armToast(); }
+componentWillUnmount() { if (this.timer) clearTimeout(this.timer); }
+armToast() { if (this.timer) clearTimeout(this.timer); this.timer = setTimeout(() => this.setState({ toast: null }), 6000); }
+setToast(t) { this.setState({ toast: t }); this.armToast(); }
+toggle(id) {
+const s = this.state;
+const v = this.props.viewer || 'A';
+const it = s.items.find((x) => x.id === id);
+const nowOut = !it.out;
+this.setState({ items: s.items.map((x) => x.id === id ? { ...x, out: nowOut, outBy: v, back: false } : x) });
+if (nowOut) this.setToast({ title: 'Foi para a lista ' + it.list, text: it.name + ' acabou', undoId: id });
+else this.setToast({ title: it.name + ' voltou para tem', text: 'Saiu da lista ' + it.list });
+}
+chipStyle(on) { return on ? { bg: '#2F6B4F', fg: '#FFFFFF', border: '#2F6B4F', pressed: 'true' } : { bg: '#FFFFFF', fg: '#3D3630', border: '#E6DED3', pressed: 'false' }; }
+renderVals() {
+const s = this.state;
+const v = this.props.viewer || 'A';
+const colors = { A: '#24508F', B: '#7A4BB0', D: '#B4561A' };
+const names = { A: 'Responsável A', B: 'Responsável B', D: 'Dependente' };
+const catNames = ['Limpeza', 'Mercearia', 'Higiene', 'Geladeira'];
+const outCount = s.items.filter((x) => x.out).length;
+const shown = catNames.filter((c) => s.cat === 'Todas' || s.cat === c);
+const who = (p) => p === v ? 'você' : names[p];
+const groups = shown.map((c) => {
+const its = s.items.filter((x) => x.cat === c);
+const out = its.filter((x) => x.out).length;
+return {
+name: c,
+count: its.length + (its.length === 1 ? ' item' : ' itens') + (out ? ' · ' + out + (out === 1 ? ' acabou' : ' acabaram') : ''),
+items: its.map((x, i) => ({
+name: x.name,
+sub: x.out ? 'Na lista ' + x.list + ' · marcado por ' + who(x.outBy || 'A') : (x.back ? 'Comprado agora na lista ' + x.list : 'Vai para a lista ' + x.list),
+out: x.out, has: !x.out,
+pill: x.out ? 'Acabou' : 'Tem',
+pillBg: x.out ? '#F8E0DC' : '#E1F0E7',
+pillFg: x.out ? '#9A2B1E' : '#22573D',
+cls: x.back ? 'voltou' : '',
+divider: i === 0 ? 'transparent' : '#EFE8DE',
+aria: x.name + ': ' + (x.out ? 'acabou' : 'tem') + '. Tocar para marcar ' + (x.out ? 'que tem' : 'que acabou'),
+toggle: () => this.toggle(x.id)
+}))
+};
+});
+const profiles = [
+{ p: 'A', pref: ['Comida caseira', 'Peixe'], restr: ['Pouco sal'], nao: ['Coentro'] },
+{ p: 'B', pref: ['Massas'], restr: [], nao: [] },
+{ p: 'D', pref: [], restr: [], nao: [] }
+];
+const order = v === 'D' ? ['D', 'A', 'B'] : (v === 'B' ? ['B', 'A', 'D'] : ['A', 'B', 'D']);
+const ex = s.extra;
+const samples = { pref: 'Frutas', restr: 'Sem lactose', nao: 'Cebola crua' };
+const people = order.map((k) => {
+const pr = profiles.find((x) => x.p === k);
+const get = (key) => pr[key].concat(ex[k + key] ? [samples[key]] : []);
+const filled = ['pref', 'restr', 'nao'].filter((key) => get(key).length).length;
+const canEdit = v !== 'D' || k === 'D';
+const mk = (key, label, bg, fg, isRestr) => ({ label: label, chips: get(key), bg: bg, fg: fg, isRestr: isRestr, add: () => this.setState({ extra: { ...ex, [k + key]: true } }) });
+return {
+name: k === v ? names[k] + ' (você)' : names[k], initial: k, color: colors[k], canEdit: canEdit,
+status: filled === 3 ? 'Perfil completo' : (filled === 0 ? 'Ainda não começou' : filled + ' de 3 partes preenchidas'),
+complete: filled === 3,
+sections: [
+mk('pref', 'Gosta', '#F1EBE2', '#3D3630', false),
+mk('restr', 'Restrições', '#FCEFD6', '#7A4E00', true),
+mk('nao', 'Não gosta', '#EFE8DE', '#5C5248', false)
+]
+};
+});
+const missing = people.filter((p) => !p.complete).length;
+const tabOn = (on) => on ? { bg: '#FFFFFF', sh: '0 1px 3px rgba(43,38,32,0.14)', sel: 'true' } : { bg: 'transparent', sh: 'none', sel: 'false' };
+const ti = tabOn(s.tab === 'itens'), tp = tabOn(s.tab === 'perfil');
+const t = s.toast;
+return {
+viewer: v, viewerColor: colors[v], viewerLabel: 'Perfil de ' + names[v],
+isResp: v !== 'D', isDep: v === 'D',
+summary: s.tab === 'itens' ? s.items.length + ' itens · ' + outCount + (outCount === 1 ? ' acabou' : ' acabaram') : 'Gostos e restrições da família',
+isItens: s.tab === 'itens', isPerfil: s.tab === 'perfil',
+tabItensBg: ti.bg, tabItensShadow: ti.sh, tabItensSel: ti.sel,
+tabPerfilBg: tp.bg, tabPerfilShadow: tp.sh, tabPerfilSel: tp.sel,
+goItens: () => this.setState({ tab: 'itens' }),
+goPerfil: () => this.setState({ tab: 'perfil', toast: null }),
+cats: ['Todas'].concat(catNames).map((c) => ({ label: c, ...this.chipStyle(s.cat === c), pick: () => this.setState({ cat: c }) })),
+groups: groups,
+fabBottom: t && s.tab === 'itens' ? '156px' : '88px',
+hasMissing: missing > 0,
+missingTitle: 'Faltam ' + missing + (missing === 1 ? ' pessoa' : ' pessoas') + ' no perfil',
+people: people,
+hasToast: !!t,
+toastTitle: t ? t.title : '',
+toastText: t ? t.text : '',
+hasToastText: !!(t && t.text),
+hasUndo: !!(t && t.undoId),
+undo: () => { const id = t.undoId; this.setState({ items: s.items.map((x) => x.id === id ? { ...x, out: false } : x), toast: null }); },
+sheet: s.sheet,
+openSheet: () => this.setState({ sheet: true, toast: null }),
+closeSheet: () => this.setState({ sheet: false }),
+draft: s.draft,
+onDraft: (e) => this.setState({ draft: e.target.value }),
+sheetCats: catNames.map((c) => ({ label: c, ...this.chipStyle(s.newCat === c), pick: () => this.setState({ newCat: c }) })),
+sheetLists: ['Mercado', 'Farmácia', 'Feira'].map((c) => ({ label: c, ...this.chipStyle(s.newList === c), pick: () => this.setState({ newList: c }) })),
+addDisabled: s.draft.trim() ? 'false' : 'true',
+addBg: s.draft.trim() ? '#2F6B4F' : '#9DB8AA',
+addItem: () => {
+const n = s.draft.trim();
+if (!n) return;
+const name = n.charAt(0).toUpperCase() + n.slice(1);
+this.setState({ items: s.items.concat([{ id: Date.now(), name: name, cat: s.newCat, list: s.newList, out: false }]), sheet: false, draft: '', cat: 'Todas' });
+this.setToast({ title: name + ' entrou em ' + s.newCat, text: 'Quando acabar, vai para a lista ' + s.newList });
+}
+};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ninho: navegação por papel</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2F6B4F}a:hover{color:#22573D}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1020px; box-sizing: border-box; padding: 56px 72px; background: #EFE8DE; color: #2B2620; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; gap: 32px">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 32px">
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <div style="font-size: 14px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2F6B4F">Ninho · navegação</div>
+      <h1 style="margin: 0; font-family: Figtree, Inter, sans-serif; font-size: 40px; font-weight: 700">A mesma casa, vista por cada papel</h1>
+    </div>
+    <p style="margin: 0; max-width: 460px; font-size: 15px; line-height: 1.5; color: #5C5248">O dependente não tem as abas Gastos e Consumo. A barra fica com quatro destinos: Hoje, Rotina, Agenda e Despensa.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px; justify-items: center">
+
+    <!-- Responsável, claro -->
+    <div style="display: flex; flex-direction: column; gap: 14px; align-items: center">
+      <div style="font-size: 15px; font-weight: 600">Responsável · tema claro</div>
+      <div style="position: relative; width: 360px; height: 760px; border-radius: 32px; background: #FAF6F0; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <div style="padding: 24px 20px 0; display: flex; flex-direction: column; gap: 16px">
+          <div style="display: flex; align-items: center; justify-content: space-between">
+            <div style="display: flex; flex-direction: column; gap: 2px">
+              <div style="font-family: Figtree, Inter, sans-serif; font-size: 28px; font-weight: 700">Hoje</div>
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #6B6258"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F6B4F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Sincronizado · sex, 27/11</div>
+            </div>
+            <button aria-label="Perfil de Responsável A" style="width: 48px; height: 48px; border: 0; border-radius: 999px; background: #24508F; color: #FFFFFF; font-family: Figtree, Inter, sans-serif; font-size: 18px; font-weight: 700">A</button>
+          </div>
+          <button style="height: 64px; border: 0; border-radius: 18px; background: #2F6B4F; color: #FFFFFF; font-size: 18px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Anotar gasto</button>
+          <div style="padding: 14px 16px; border-radius: 16px; background: #FFFFFF; border: 1px solid #E6DED3; display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-family: Figtree, Inter, sans-serif; font-size: 17px; font-weight: 600">Anotações de hoje</span><span style="font-size: 13px; color: #6B6258">2</span></div>
+            <div style="display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 999px; background: #24508F; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">A</span><span style="flex: 1; font-size: 15px">Farmácia</span><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums">R$ 45,90</span></div>
+            <div style="display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 999px; background: #7A4BB0; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">B</span><span style="flex: 1; font-size: 15px">Padaria</span><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums">R$ 18,50</span></div>
+          </div>
+          <div style="padding: 14px 16px; border-radius: 16px; background: #FFFFFF; border: 1px solid #E6DED3; display: flex; flex-direction: column; gap: 4px">
+            <span style="font-family: Figtree, Inter, sans-serif; font-size: 17px; font-weight: 600">Para hoje</span>
+            <label style="display: flex; align-items: center; gap: 12px; min-height: 48px"><input type="checkbox" style="width: 22px; height: 22px; accent-color: #2F6B4F; margin: 0"><span style="flex: 1; font-size: 15px">Regar as plantas</span><span style="width: 10px; height: 10px; border-radius: 999px; background: #7A4BB0"></span></label>
+            <div style="display: flex; align-items: center; gap: 12px; min-height: 40px; font-size: 15px"><span style="width: 4px; height: 32px; border-radius: 4px; background: #B4561A"></span><span style="flex: 1">Dentista do Dependente</span><span style="font-size: 14px; color: #6B6258; font-variant-numeric: tabular-nums">16:00</span></div>
+          </div>
+          <div style="display: flex; gap: 10px; padding: 12px 14px; border-radius: 14px; background: #FCEFD6; color: #5A3A00; font-size: 14px; align-items: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7A4E00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>3 itens acabaram na Despensa</div>
+        </div>
+        <nav aria-label="Módulos" style="position: absolute; left: 0; right: 0; bottom: 0; height: 72px; padding-bottom: 4px; background: #FFFFFF; border-top: 1px solid #E6DED3; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr))">
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #2F6B4F; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: #E1F0E7; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span>Hoje</a>
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M16 15h2"/></svg></span>Gastos</a>
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg></span>Rotina</a>
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>Agenda</a>
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/></svg></span>Consumo</a>
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16l-1.5 10h-13z"/><path d="M8 9l4-5 4 5"/></svg></span>Despensa</a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Dependente, claro -->
+    <div style="display: flex; flex-direction: column; gap: 14px; align-items: center">
+      <div style="font-size: 15px; font-weight: 600">Dependente · sem Gastos nem Consumo</div>
+      <div style="position: relative; width: 360px; height: 760px; border-radius: 32px; background: #FAF6F0; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <div style="padding: 24px 20px 0; display: flex; flex-direction: column; gap: 16px">
+          <div style="display: flex; align-items: center; justify-content: space-between">
+            <div style="display: flex; flex-direction: column; gap: 2px">
+              <div style="font-family: Figtree, Inter, sans-serif; font-size: 28px; font-weight: 700">Hoje</div>
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #5C5248"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.3 9.5 4.5 4.5 0 0 0 7 18z"/><path d="M3 3l18 18"/></svg>Offline, vai sincronizar</div>
+            </div>
+            <button aria-label="Perfil de Dependente" style="width: 48px; height: 48px; border: 0; border-radius: 999px; background: #B4561A; color: #FFFFFF; font-family: Figtree, Inter, sans-serif; font-size: 18px; font-weight: 700">D</button>
+          </div>
+          <div style="padding: 14px 16px; border-radius: 16px; background: #FFFFFF; border: 1px solid #E6DED3; display: flex; flex-direction: column; gap: 4px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-family: Figtree, Inter, sans-serif; font-size: 17px; font-weight: 600">Minhas tarefas</span><span style="font-size: 13px; color: #6B6258">1 de 3</span></div>
+            <label style="display: flex; align-items: center; gap: 12px; min-height: 48px"><input type="checkbox" checked style="width: 22px; height: 22px; accent-color: #2F6B4F; margin: 0"><span style="flex: 1; font-size: 15px; color: #6B6258; text-decoration: line-through">Tirar o lixo reciclável</span></label>
+            <label style="display: flex; align-items: center; gap: 12px; min-height: 48px"><input type="checkbox" style="width: 22px; height: 22px; accent-color: #2F6B4F; margin: 0"><span style="flex: 1; font-size: 15px">Arrumar o quarto</span></label>
+            <label style="display: flex; align-items: center; gap: 12px; min-height: 48px"><input type="checkbox" style="width: 22px; height: 22px; accent-color: #2F6B4F; margin: 0"><span style="flex: 1; font-size: 15px">Dar comida ao peixe</span></label>
+          </div>
+          <div style="padding: 14px 16px; border-radius: 16px; background: #FFFFFF; border: 1px solid #E6DED3; display: flex; align-items: center; gap: 12px">
+            <span style="width: 4px; height: 36px; border-radius: 4px; background: #B4561A"></span>
+            <div style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 15px; font-weight: 500">Dentista</span><span style="font-size: 13px; color: #6B6258">Com Responsável B</span></div>
+            <span style="font-size: 14px; color: #6B6258; font-variant-numeric: tabular-nums">16:00</span>
+          </div>
+          <div style="padding: 14px 16px; border-radius: 16px; background: #FFFFFF; border: 1px solid #E6DED3; display: flex; flex-direction: column; gap: 4px">
+            <span style="font-family: Figtree, Inter, sans-serif; font-size: 17px; font-weight: 600">Placar da semana</span>
+            <span style="font-size: 15px; font-variant-numeric: tabular-nums">45 pontos · 5 tarefas feitas</span>
+          </div>
+          <button style="height: 56px; border: 1.5px solid #2F6B4F; border-radius: 16px; background: #FFFFFF; color: #2F6B4F; font-size: 16px; font-weight: 600">Avisar que algo acabou</button>
+        </div>
+        <nav aria-label="Módulos" style="position: absolute; left: 0; right: 0; bottom: 0; height: 72px; padding-bottom: 4px; background: #FFFFFF; border-top: 1px solid #E6DED3; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #2F6B4F; font-size: 11px; font-weight: 600"><span style="width: 48px; height: 28px; border-radius: 999px; background: #E1F0E7; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span>Hoje</a>
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg></span>Rotina</a>
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>Agenda</a>
+              <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16l-1.5 10h-13z"/><path d="M8 9l4-5 4 5"/></svg></span>Despensa</a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Responsável, escuro -->
+    <div style="display: flex; flex-direction: column; gap: 14px; align-items: center">
+      <div style="font-size: 15px; font-weight: 600">Responsável · tema escuro</div>
+      <div style="position: relative; width: 360px; height: 760px; border-radius: 32px; background: #1C1A17; color: #F2EDE6; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.30)">
+        <div style="padding: 24px 20px 0; display: flex; flex-direction: column; gap: 16px">
+          <div style="display: flex; align-items: center; justify-content: space-between">
+            <div style="display: flex; flex-direction: column; gap: 2px">
+              <div style="font-family: Figtree, Inter, sans-serif; font-size: 28px; font-weight: 700">Hoje</div>
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #B8AEA2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7CC4A0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Sincronizado · sex, 27/11</div>
+            </div>
+            <button aria-label="Perfil de Responsável B" style="width: 48px; height: 48px; border: 0; border-radius: 999px; background: #C9A6F0; color: #1C1A17; font-family: Figtree, Inter, sans-serif; font-size: 18px; font-weight: 700">B</button>
+          </div>
+          <button style="height: 64px; border: 0; border-radius: 18px; background: #7CC4A0; color: #13261C; font-size: 18px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Anotar gasto</button>
+          <div style="padding: 14px 16px; border-radius: 16px; background: #262320; border: 1px solid #3E3933; display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-family: Figtree, Inter, sans-serif; font-size: 17px; font-weight: 600">Anotações de hoje</span><span style="font-size: 13px; color: #B8AEA2">2</span></div>
+            <div style="display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 999px; background: #8DB3F2; color: #1C1A17; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">A</span><span style="flex: 1; font-size: 15px">Farmácia</span><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums">R$ 45,90</span></div>
+            <div style="display: flex; align-items: center; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 999px; background: #C9A6F0; color: #1C1A17; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">B</span><span style="flex: 1; font-size: 15px">Padaria</span><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums">R$ 18,50</span></div>
+          </div>
+          <div style="padding: 14px 16px; border-radius: 16px; background: #262320; border: 1px solid #3E3933; display: flex; flex-direction: column; gap: 4px">
+            <span style="font-family: Figtree, Inter, sans-serif; font-size: 17px; font-weight: 600">Para hoje</span>
+            <label style="display: flex; align-items: center; gap: 12px; min-height: 48px"><input type="checkbox" style="width: 22px; height: 22px; accent-color: #7CC4A0; margin: 0"><span style="flex: 1; font-size: 15px">Regar as plantas</span><span style="width: 10px; height: 10px; border-radius: 999px; background: #C9A6F0"></span></label>
+            <div style="display: flex; align-items: center; gap: 12px; min-height: 40px; font-size: 15px"><span style="width: 4px; height: 32px; border-radius: 4px; background: #F2A469"></span><span style="flex: 1">Dentista do Dependente</span><span style="font-size: 14px; color: #B8AEA2; font-variant-numeric: tabular-nums">16:00</span></div>
+          </div>
+          <div style="display: flex; gap: 10px; padding: 12px 14px; border-radius: 14px; background: #3A2E14; color: #F5D9A0; font-size: 14px; align-items: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>3 itens acabaram na Despensa</div>
+        </div>
+        <nav aria-label="Módulos" style="position: absolute; left: 0; right: 0; bottom: 0; height: 72px; padding-bottom: 4px; background: #262320; border-top: 1px solid #3E3933; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr))">
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #7CC4A0; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: #243A2E; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span>Hoje</a>
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #B8AEA2; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M16 15h2"/></svg></span>Gastos</a>
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #B8AEA2; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg></span>Rotina</a>
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #B8AEA2; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>Agenda</a>
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #B8AEA2; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/></svg></span>Consumo</a>
+          <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #B8AEA2; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16l-1.5 10h-13z"/><path d="M8 9l4-5 4 5"/></svg></span>Despensa</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1020}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

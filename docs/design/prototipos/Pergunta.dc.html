@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ninho: o que foi isso?</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2F6B4F}a:hover{color:#22573D}
+button,input{font-family:inherit}
+</style>
+</helmet>
+<div style="position: relative; width: 360px; height: 760px; overflow: hidden; background: #FAF6F0; color: #2B2620; font-family: Inter, system-ui, sans-serif">
+
+  <!-- NOTIFICAÇÃO DO ANDROID -->
+  <sc-if value="{{isNotif}}" hint-placeholder-val="{{ true }}">
+    <div style="position: absolute; inset: 0; background: #2E2A26; padding: 28px 12px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px">
+      <div style="padding: 0 8px 12px; display: flex; flex-direction: column; gap: 2px; color: #F2EDE6">
+        <span style="font-size: 44px; font-weight: 500; font-variant-numeric: tabular-nums">18:42</span>
+        <span style="font-size: 14px; color: #CFC5B8">Sexta, 27 de novembro</span>
+      </div>
+
+      <div style="padding: 14px 14px 12px; border-radius: 22px; background: #FFFFFF; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B6258">
+          <span style="width: 20px; height: 20px; border-radius: 6px; background: #2F6B4F; display: flex; align-items: center; justify-content: center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span>Ninho · agora
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 3px">
+          <span style="font-size: 16px; font-weight: 600">O que foi isso?</span>
+          <span style="font-size: 14px; line-height: 1.4; color: #3D3630">R$ 87,40 em ESTABELECIMENTO EXEMPLO, cartão do Banco 1.</span>
+        </div>
+        <sc-if value="{{notifOpen}}" hint-placeholder-val="{{ true }}">
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap">
+              <sc-for list="{{notifChips}}" as="c" hint-placeholder-count="3">
+                <button onClick="{{c.pick}}" style="height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: {{c.bg}}; color: {{c.fg}}; font-size: 14px; font-weight: 600; cursor: pointer">{{c.label}}</button>
+              </sc-for>
+            </div>
+            <div style="display: flex; gap: 8px">
+              <label for="resp" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Responder</label>
+              <input id="resp" value="{{notifInput}}" onChange="{{onNotifInput}}" placeholder="Responder" style="flex: 1; min-width: 0; height: 44px; padding: 0 14px; box-sizing: border-box; border: 0; border-radius: 999px; background: #F1EBE2; color: #2B2620; font-size: 15px">
+              <button onClick="{{notifSend}}" aria-label="Enviar resposta" style="flex: none; width: 44px; height: 44px; border: 0; border-radius: 999px; background: #2F6B4F; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{notifDone}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; background: #E1F0E7; color: #22573D; font-size: 14px; font-weight: 600"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Anotado como {{notifAnswer}}</div>
+        </sc-if>
+      </div>
+
+      <button onClick="{{openQueue}}" style="padding: 14px; border: 0; border-radius: 22px; background: #FFFFFF; color: #2B2620; display: flex; align-items: center; gap: 10px; text-align: left; cursor: pointer">
+        <span style="flex: none; width: 20px; height: 20px; border-radius: 6px; background: #2F6B4F; display: flex; align-items: center; justify-content: center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span>
+        <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">Mais 2 compras esperando resposta</span><span style="font-size: 13px; color: #6B6258">Toque para responder em sequência</span></span>
+      </button>
+    </div>
+  </sc-if>
+
+  <!-- PERGUNTA NO APP -->
+  <sc-if value="{{isPergunta}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; display: flex; flex-direction: column">
+      <div style="flex: none; height: 56px; padding: 0 16px 0 8px; display: flex; align-items: center; gap: 4px">
+        <button onClick="{{backNotif}}" aria-label="Voltar" style="width: 48px; height: 48px; border: 0; border-radius: 12px; background: transparent; color: #2B2620; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <span style="flex: 1; font-family: Figtree, Inter, sans-serif; font-size: 20px; font-weight: 600">O que foi isso?</span>
+        <span style="font-size: 14px; font-weight: 600; color: #5C5248; font-variant-numeric: tabular-nums">{{position}}</span>
+      </div>
+      <div style="flex: none; padding: 0 20px 8px; display: flex; gap: 6px">
+        <sc-for list="{{dots}}" as="d" hint-placeholder-count="3">
+          <span style="flex: 1; height: 6px; border-radius: 999px; background: {{d.bg}}"></span>
+        </sc-for>
+      </div>
+
+      <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 8px 20px 16px; display: flex; flex-direction: column; gap: 14px">
+        <div style="padding: 16px; border-radius: 18px; background: #F1EBE2; display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #5C5248"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Lido da notificação do banco</div>
+          <span style="font-size: 36px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em">{{q.value}}</span>
+          <div style="display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: #3D3630">
+            <span style="font-weight: 600; letter-spacing: 0.01em">{{q.place}}</span>
+            <span>{{q.card}} · {{q.when}}</span>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <label for="oquefoi" style="font-size: 15px; font-weight: 600">O que foi?</label>
+          <input id="oquefoi" value="{{answer}}" onChange="{{onAnswer}}" placeholder="Ex.: remédio da semana" style="height: 56px; padding: 0 16px; box-sizing: border-box; border: 2px solid #2F6B4F; border-radius: 14px; background: #FFFFFF; color: #2B2620; font-size: 18px">
+        </div>
+
+        <button onClick="{{useLast}}" style="padding: 12px 14px; border: 1px dashed #B9AE9F; border-radius: 14px; background: #FFFFFF; color: #2B2620; display: flex; align-items: center; gap: 10px; text-align: left; cursor: pointer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2F6B4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4h4"/></svg>
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 13px; color: #6B6258">Da última vez aqui foi:</span><span style="font-size: 16px; font-weight: 600">{{q.last}}</span></span>
+          <span style="font-size: 14px; font-weight: 600; color: #2F6B4F">Usar</span>
+        </button>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap">
+          <sc-for list="{{recents}}" as="r" hint-placeholder-count="4">
+            <button onClick="{{r.pick}}" style="height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: {{r.bg}}; color: {{r.fg}}; font-size: 14px; cursor: pointer">{{r.label}}</button>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="flex: none; padding: 12px 16px 16px; background: #FFFFFF; border-top: 1px solid #E6DED3; display: flex; flex-direction: column; gap: 6px">
+        <button onClick="{{saveNext}}" style="height: 56px; border: 0; border-radius: 16px; background: {{saveBg}}; color: {{saveFg}}; font-size: 17px; font-weight: 600; cursor: pointer">{{saveLabel}}</button>
+        <button onClick="{{skip}}" style="height: 44px; border: 0; border-radius: 12px; background: transparent; color: #2F6B4F; font-size: 15px; font-weight: 600; cursor: pointer">Responder depois</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- FILA CONCLUÍDA -->
+  <sc-if value="{{isFim}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center">
+      <div style="width: 72px; height: 72px; border-radius: 999px; background: #E1F0E7; display: flex; align-items: center; justify-content: center"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#22573D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></div>
+      <span style="font-family: Figtree, Inter, sans-serif; font-size: 24px; font-weight: 700">{{fimTitle}}</span>
+      <span style="font-size: 15px; line-height: 1.5; color: #5C5248">{{fimText}}</span>
+      <div style="align-self: stretch; display: flex; flex-direction: column; gap: 8px; margin-top: 8px; text-align: left">
+        <sc-for list="{{answered}}" as="a" hint-placeholder-count="3">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E6DED3">
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 500">{{a.label}}</span><span style="font-size: 12px; color: #6B6258">{{a.place}}</span></span>
+            <span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums">{{a.value}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <button onClick="{{restart}}" style="align-self: stretch; height: 56px; margin-top: 8px; border: 0; border-radius: 16px; background: #2F6B4F; color: #FFFFFF; font-size: 17px; font-weight: 600; cursor: pointer">Voltar para Hoje</button>
+    </div>
+  </sc-if>
+
+  <!-- ADMINISTRADOR -->
+  <sc-if value="{{isAdmin}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; display: flex; flex-direction: column">
+      <div style="flex: none; padding: 20px 20px 8px; display: flex; flex-direction: column; gap: 4px">
+        <span style="font-family: Figtree, Inter, sans-serif; font-size: 22px; font-weight: 700; line-height: 1.25">Notificações que não deu para ler</span>
+        <span style="font-size: 13px; color: #6B6258">Só o administrador vê esta lista.</span>
+      </div>
+      <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 8px 20px 20px; display: flex; flex-direction: column; gap: 12px">
+        <sc-for list="{{adminItems}}" as="n" hint-placeholder-count="2">
+          <div style="padding: 14px; border-radius: 18px; background: #FFFFFF; border: 1px solid #E6DED3; display: flex; flex-direction: column; gap: 10px">
+            <div style="display: flex; justify-content: space-between; font-size: 13px; color: #5C5248"><span style="font-weight: 600">{{n.app}}</span><span style="font-variant-numeric: tabular-nums">{{n.when}}</span></div>
+            <div style="padding: 10px 12px; border-radius: 10px; background: #F1EBE2; font-family: ui-monospace, Menlo, monospace; font-size: 13px; line-height: 1.45; color: #2B2620">{{n.text}}</div>
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #7A4E00"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>{{n.reason}}</div>
+            <sc-if value="{{n.open}}" hint-placeholder-val="{{ true }}">
+              <div style="display: flex; gap: 8px">
+                <button onClick="{{n.create}}" style="flex: 1; height: 44px; border: 0; border-radius: 12px; background: #2F6B4F; color: #FFFFFF; font-size: 14px; font-weight: 600; cursor: pointer">Criar anotação à mão</button>
+                <button onClick="{{n.discard}}" style="height: 44px; padding: 0 14px; border: 0; border-radius: 12px; background: transparent; color: #5C5248; font-size: 14px; font-weight: 600; cursor: pointer">Descartar</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{n.resolved}}" hint-placeholder-val="{{ false }}">
+              <span style="align-self: flex-start; display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 999px; background: {{n.badgeBg}}; color: {{n.badgeFg}}; font-size: 13px; font-weight: 600">{{n.resolvedLabel}}</span>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- FOLHA: CRIAR À MÃO -->
+  <sc-if value="{{hasSheet}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end">
+      <button onClick="{{closeSheet}}" aria-label="Fechar" style="position: absolute; inset: 0; border: 0; background: rgba(43,38,32,0.40); cursor: pointer"></button>
+      <div role="dialog" aria-label="Criar anotação à mão" style="position: relative; padding: 12px 20px 20px; border-radius: 24px 24px 0 0; background: #FFFFFF; display: flex; flex-direction: column; gap: 12px">
+        <div style="align-self: center; width: 40px; height: 4px; border-radius: 999px; background: #CFC5B8"></div>
+        <span style="font-family: Figtree, Inter, sans-serif; font-size: 20px; font-weight: 600">Criar anotação à mão</span>
+        <span style="font-size: 13px; color: #6B6258">{{sheetFrom}}</span>
+        <label for="valor" style="font-size: 13px; font-weight: 600; color: #5C5248">Valor</label>
+        <input id="valor" value="{{sheetValue}}" onChange="{{onSheetValue}}" inputmode="decimal" placeholder="R$ 0,00" style="height: 52px; padding: 0 14px; box-sizing: border-box; border: 1px solid #E6DED3; border-radius: 12px; font-size: 18px; font-variant-numeric: tabular-nums; color: #2B2620">
+        <label for="oq" style="font-size: 13px; font-weight: 600; color: #5C5248">O que foi?</label>
+        <input id="oq" value="{{sheetWhat}}" onChange="{{onSheetWhat}}" placeholder="Ex.: mercado" style="height: 52px; padding: 0 14px; box-sizing: border-box; border: 1px solid #E6DED3; border-radius: 12px; font-size: 16px; color: #2B2620">
+        <button onClick="{{sheetSave}}" style="height: 52px; border: 0; border-radius: 16px; background: #2F6B4F; color: #FFFFFF; font-size: 16px; font-weight: 600; cursor: pointer">Salvar anotação</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"preset":{"editor":"enum","options":["notificacao","respondida","pergunta","fim","admin"],"default":"notificacao"},"$preview":{"width":360,"height":760}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+const preset = (props && props.preset) || 'notificacao';
+const queue = [
+{ id: 1, value: 'R$ 87,40', place: 'ESTABELECIMENTO EXEMPLO', card: 'Cartão do Banco 1', when: 'Hoje, 18:42', last: 'Farmácia', answer: '', skipped: false },
+{ id: 2, value: 'R$ 23,90', place: 'PADARIA EXEMPLO LTDA', card: 'Cartão do Banco 2', when: 'Hoje, 08:05', last: 'Padaria', answer: '', skipped: false },
+{ id: 3, value: 'R$ 154,00', place: 'POSTO EXEMPLO', card: 'Cartão do Banco 1', when: 'Ontem, 19:30', last: 'Combustível', answer: '', skipped: false }
+];
+if (preset === 'fim') { queue[0].answer = 'Farmácia'; queue[1].answer = 'Pão e leite'; queue[2].skipped = true; }
+if (preset === 'respondida') { queue[0].answer = 'Farmácia'; }
+this.state = {
+screen: { notificacao: 'notif', respondida: 'notif', pergunta: 'pergunta', fim: 'fim', admin: 'admin' }[preset] || 'notif',
+queue: queue,
+idx: 0,
+input: '',
+notifInput: '',
+admin: [
+{ id: 1, app: 'Banco 2', when: '27/11, 13:02', text: 'Você tem uma nova movimentação na conta. Toque para ver os detalhes.', reason: 'O texto não traz o valor', status: 'open' },
+{ id: 2, app: 'Banco 1', when: '26/11, 20:15', text: 'Compra aprovada no cartão final ****. Valor disponível no app.', reason: 'O texto não traz valor nem estabelecimento', status: 'open' },
+{ id: 3, app: 'Banco 1', when: '25/11, 09:47', text: 'Compra de R$ 1O,5O aprovada em LOJA EXEMPL0*', reason: 'Valor com caracteres estranhos', status: 'created', created: 'Lanche · R$ 10,50' }
+],
+sheetId: null,
+sheetValue: '',
+sheetWhat: ''
+};
+}
+current() { return this.state.queue[this.state.idx]; }
+answerNotif(text) {
+const t = (text || '').trim();
+if (!t) return;
+this.setState({ queue: this.state.queue.map((x, i) => i === 0 ? { ...x, answer: t } : x), notifInput: '' });
+}
+nextPendingFrom(queue, start) {
+for (let i = start; i < queue.length; i++) if (!queue[i].answer && !queue[i].skipped) return i;
+return -1;
+}
+advance(queue) {
+const n = this.nextPendingFrom(queue, this.state.idx + 1);
+if (n === -1) this.setState({ queue: queue, screen: 'fim', input: '' });
+else this.setState({ queue: queue, idx: n, input: '' });
+}
+renderVals() {
+const s = this.state;
+const q = s.queue[s.idx] || s.queue[0];
+const first = s.queue[0];
+const notifOpen = !first.answer;
+const hasAnswer = s.input.trim().length > 0;
+const answered = s.queue.filter((x) => x.answer);
+const skipped = s.queue.filter((x) => x.skipped && !x.answer);
+const recentList = ['Farmácia', 'Mercado', 'Padaria', 'Lanche'];
+const sheetItem = s.admin.find((x) => x.id === s.sheetId);
+return {
+isNotif: s.screen === 'notif',
+isPergunta: s.screen === 'pergunta',
+isFim: s.screen === 'fim',
+isAdmin: s.screen === 'admin',
+notifOpen: notifOpen,
+notifDone: !notifOpen,
+notifAnswer: first.answer,
+notifChips: ['Farmácia', 'Mercado', 'Lanche'].map((c, i) => ({ label: c, bg: i === 0 ? '#E1F0E7' : '#F1EBE2', fg: i === 0 ? '#22573D' : '#2B2620', pick: () => this.answerNotif(c) })),
+notifInput: s.notifInput,
+onNotifInput: (e) => this.setState({ notifInput: e.target.value }),
+notifSend: () => this.answerNotif(s.notifInput),
+openQueue: () => {
+const start = this.nextPendingFrom(s.queue, 0);
+if (start === -1) this.setState({ screen: 'fim' });
+else this.setState({ screen: 'pergunta', idx: start, input: '' });
+},
+backNotif: () => this.setState({ screen: 'notif' }),
+position: (s.idx + 1) + ' de ' + s.queue.length,
+dots: s.queue.map((x, i) => ({ bg: x.answer ? '#2F6B4F' : (i === s.idx ? '#7CC4A0' : (x.skipped ? '#E8C98A' : '#E6DED3')) })),
+q: q,
+answer: s.input,
+onAnswer: (e) => this.setState({ input: e.target.value }),
+useLast: () => this.setState({ input: q.last }),
+recents: recentList.map((r) => ({ label: r, bg: s.input === r ? '#2F6B4F' : '#F1EBE2', fg: s.input === r ? '#FFFFFF' : '#2B2620', pick: () => this.setState({ input: r }) })),
+saveLabel: this.nextPendingFrom(s.queue, s.idx + 1) === -1 ? 'Salvar' : 'Salvar e próxima',
+saveBg: hasAnswer ? '#2F6B4F' : '#E6DED3',
+saveFg: hasAnswer ? '#FFFFFF' : '#6B6258',
+saveNext: () => {
+if (!hasAnswer) return;
+this.advance(s.queue.map((x, i) => i === s.idx ? { ...x, answer: s.input.trim() } : x));
+},
+skip: () => this.advance(s.queue.map((x, i) => i === s.idx ? { ...x, skipped: true } : x)),
+fimTitle: skipped.length ? 'Quase tudo respondido' : 'Tudo respondido',
+fimText: skipped.length ? (skipped.length === 1 ? '1 compra ficou para depois. Ela volta na próxima notificação.' : skipped.length + ' compras ficaram para depois. Elas voltam na próxima notificação.') : 'Cada compra agora tem a sua memória para a conciliação do mês.',
+answered: answered.map((x) => ({ label: x.answer, place: x.place, value: x.value })),
+restart: () => this.setState({ screen: 'notif' }),
+adminItems: s.admin.map((n) => ({
+...n,
+open: n.status === 'open',
+resolved: n.status !== 'open',
+resolvedLabel: n.status === 'created' ? 'Anotação criada: ' + n.created : 'Descartada',
+badgeBg: n.status === 'created' ? '#E1F0E7' : '#EFE8DE',
+badgeFg: n.status === 'created' ? '#22573D' : '#5C5248',
+create: () => this.setState({ sheetId: n.id, sheetValue: '', sheetWhat: '' }),
+discard: () => this.setState({ admin: s.admin.map((x) => x.id === n.id ? { ...x, status: 'discarded' } : x) })
+})),
+hasSheet: !!sheetItem,
+sheetFrom: sheetItem ? 'A partir da notificação de ' + sheetItem.app + ', ' + sheetItem.when : '',
+sheetValue: s.sheetValue,
+sheetWhat: s.sheetWhat,
+onSheetValue: (e) => this.setState({ sheetValue: e.target.value }),
+onSheetWhat: (e) => this.setState({ sheetWhat: e.target.value }),
+closeSheet: () => this.setState({ sheetId: null }),
+sheetSave: () => {
+if (!sheetItem) return;
+const v = s.sheetValue.trim() || 'R$ 0,00';
+const w = s.sheetWhat.trim() || 'Sem descrição';
+const label = w + ' · ' + (v.indexOf('R$') === 0 ? v : 'R$ ' + v);
+this.setState({ admin: s.admin.map((x) => x.id === sheetItem.id ? { ...x, status: 'created', created: label } : x), sheetId: null });
+}
+};
+}
+}
+</script>
+</body>
+</html>

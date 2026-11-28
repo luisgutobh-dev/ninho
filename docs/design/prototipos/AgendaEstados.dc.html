@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ninho: estados da agenda</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2F6B4F}a:hover{color:#22573D}
+</style>
+</helmet>
+<div style="width: 2080px; height: 980px; box-sizing: border-box; padding: 48px 56px; background: #EFE8DE; color: #2B2620; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; gap: 28px">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 32px">
+    <h1 style="margin: 0; font-family: Figtree, Inter, sans-serif; font-size: 32px; font-weight: 700">Agenda da família</h1>
+    <p style="margin: 0; max-width: 820px; font-size: 14px; line-height: 1.5; color: #5C5248">Cada evento ganha o fundo claro da primeira pessoa e um avatar por participante. Categorias têm ícone e filtro próprio. O lembrete com confirmação repete até alguém marcar “Feito”, e a agenda mostra quem confirmou.</p>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">1. Dia, com a hora de agora</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Agenda" preset="dia" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">2. Mês, um ponto por pessoa</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Agenda" preset="mes" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">3. Criar evento com confirmação</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Agenda" preset="criar" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">4. Notificação confirmada</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Agenda" preset="confirmado" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">5. Conflito com o Google</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Agenda" preset="detalhe" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":2080,"height":980}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

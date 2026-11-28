@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ninho: listas de compras</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2F6B4F}a:hover{color:#22573D}
+button,input{font-family:inherit}
+@keyframes ninhoChega{0%{background:#D3EBDD;transform:translateY(-6px);opacity:0}25%{opacity:1;transform:none}100%{background:#FFFFFF}}
+.chegou{animation:ninhoChega 2.4s ease-out both}
+@keyframes ninhoPulso{0%,100%{opacity:1}50%{opacity:.35}}
+.aovivo{animation:ninhoPulso 1.6s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.chegou,.aovivo{animation:none}}
+</style>
+</helmet>
+<div style="position: relative; width: 360px; height: 760px; overflow: hidden; background: #FAF6F0; color: #2B2620; font-family: Inter, system-ui, sans-serif">
+
+  <!-- BANNER OFFLINE -->
+  <sc-if value="{{offline}}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position: absolute; left: 0; right: 0; top: 0; z-index: 2; min-height: 48px; padding: 8px 8px 8px 16px; box-sizing: border-box; background: #EFE8DE; color: #3D3630; display: flex; align-items: center; gap: 10px; font-size: 14px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.3 9.5 4.5 4.5 0 0 0 7 18z"/><path d="M3 3l18 18"/></svg>
+      <span style="flex: 1">Offline. Suas mudanças vão sincronizar.</span>
+      <button onClick="{{reconnect}}" style="height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; color: #2F6B4F; font-size: 14px; font-weight: 600; cursor: pointer">Reconectar</button>
+    </div>
+  </sc-if>
+
+  <!-- TODAS AS LISTAS -->
+  <sc-if value="{{isListas}}" hint-placeholder-val="{{ true }}">
+    <div style="position: absolute; left: 0; right: 0; top: {{topPad}}; bottom: 72px; overflow-y: auto; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <div style="font-family: Figtree, Inter, sans-serif; font-size: 26px; font-weight: 700">Listas de compras</div>
+        <div style="font-size: 13px; color: #6B6258">Compartilhadas com a família, ao vivo</div>
+      </div>
+      <sc-for list="{{lists}}" as="l" hint-placeholder-count="3">
+        <button onClick="{{l.open}}" style="padding: 16px; border-radius: 18px; border: 1px solid #E6DED3; background: #FFFFFF; color: #2B2620; display: flex; align-items: center; gap: 14px; text-align: left; cursor: pointer">
+          <span style="flex: none; width: 48px; height: 48px; border-radius: 14px; background: {{l.tint}}; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{l.ink}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16l-1.5 10h-13z"/><path d="M8 9l4-5 4 5"/></svg></span>
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+            <span style="font-family: Figtree, Inter, sans-serif; font-size: 18px; font-weight: 600">{{l.name}}</span>
+            <span style="font-size: 13px; color: #6B6258">{{l.summary}}</span>
+            <sc-if value="{{l.hasPresence}}" hint-placeholder-val="{{ false }}">
+              <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #22573D"><span class="aovivo" style="width: 8px; height: 8px; border-radius: 999px; background: #2F9E68"></span>{{l.presence}}</span>
+            </sc-if>
+          </span>
+          <span style="flex: none; min-width: 32px; height: 32px; padding: 0 8px; box-sizing: border-box; border-radius: 999px; background: #2F6B4F; color: #FFFFFF; font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; display: flex; align-items: center; justify-content: center">{{l.pending}}</span>
+        </button>
+      </sc-for>
+      <button style="height: 52px; border: 1.5px dashed #B9AE9F; border-radius: 16px; background: transparent; color: #2F6B4F; font-size: 15px; font-weight: 600; cursor: pointer">Nova lista</button>
+    </div>
+  </sc-if>
+
+  <!-- LISTA ABERTA -->
+  <sc-if value="{{isLista}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; left: 0; right: 0; top: {{topPad}}; bottom: 72px; display: flex; flex-direction: column">
+      <div style="flex: none; padding: 8px 16px 8px 8px; display: flex; flex-direction: column; gap: 6px">
+        <div style="display: flex; align-items: center; gap: 4px">
+          <button onClick="{{back}}" aria-label="Voltar para as listas" style="width: 48px; height: 48px; border: 0; border-radius: 12px; background: transparent; color: #2B2620; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <span style="flex: 1; font-family: Figtree, Inter, sans-serif; font-size: 22px; font-weight: 700">Mercado</span>
+          <span style="font-size: 13px; color: #6B6258; font-variant-numeric: tabular-nums">{{pendingLabel}}</span>
+        </div>
+        <sc-if value="{{showPresence}}" hint-placeholder-val="{{ true }}">
+          <div style="margin-left: 12px; align-self: flex-start; display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px 0 4px; border-radius: 999px; background: #E1F0E7; color: #22573D; font-size: 13px; font-weight: 600">
+            <span style="position: relative; width: 24px; height: 24px; border-radius: 999px; background: #7A4BB0; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">B<span class="aovivo" style="position: absolute; right: -1px; bottom: -1px; width: 9px; height: 9px; border-radius: 999px; background: #2F9E68; box-shadow: 0 0 0 2px #E1F0E7"></span></span>
+            Responsável B está nesta lista agora
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 4px 20px 12px; display: flex; flex-direction: column; gap: 12px">
+        <div style="border-radius: 16px; background: #FFFFFF; border: 1px solid #E6DED3; overflow: hidden">
+          <sc-for list="{{pendingItems}}" as="it" hint-placeholder-count="5">
+            <div class="{{it.cls}}" style="display: flex; align-items: center; border-top: 1px solid {{it.divider}}">
+              <button onClick="{{it.toggle}}" aria-label="{{it.toggleLabel}}" style="flex: none; width: 56px; height: 60px; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer">
+                <span style="width: 26px; height: 26px; border-radius: 8px; box-sizing: border-box; border: 2px solid #CFC5B8; background: #FFFFFF"></span>
+              </button>
+              <div style="flex: 1; min-width: 0; padding: 9px 0; display: flex; flex-direction: column; gap: 4px">
+                <span style="font-size: 16px; font-weight: 500">{{it.name}}<span style="font-weight: 400; color: #6B6258"> {{it.qty}}</span></span>
+                <sc-if value="{{it.fromPantry}}" hint-placeholder-val="{{ false }}">
+                  <span style="align-self: flex-start; display: flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px; border-radius: 999px; background: #F8E0DC; color: #9A2B1E; font-size: 12px; font-weight: 600"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="12" cy="12" r="5"/></svg>Acabou na despensa</span>
+                </sc-if>
+                <sc-if value="{{it.isLive}}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size: 12px; font-weight: 600; color: #22573D">Chegou agora</span>
+                </sc-if>
+              </div>
+              <span title="{{it.byName}}" aria-label="Pedido por {{it.byName}}" style="flex: none; margin-right: 14px; width: 26px; height: 26px; border-radius: 999px; background: {{it.color}}; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{it.by}}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <button onClick="{{toggleBought}}" aria-expanded="{{boughtOpenAttr}}" style="height: 48px; padding: 0 14px; border: 0; border-radius: 14px; background: #F1EBE2; color: #3D3630; display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; cursor: pointer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform: {{chevron}}"><path d="M9 6l6 6-6 6"/></svg>
+          <span style="flex: 1; text-align: left">{{boughtLabel}}</span>
+        </button>
+        <sc-if value="{{boughtOpen}}" hint-placeholder-val="{{ false }}">
+          <div style="border-radius: 16px; background: #FFFFFF; border: 1px solid #E6DED3; overflow: hidden">
+            <sc-for list="{{boughtItems}}" as="it" hint-placeholder-count="3">
+              <div style="display: flex; align-items: center; border-top: 1px solid {{it.divider}}">
+                <button onClick="{{it.toggle}}" aria-label="{{it.toggleLabel}}" style="flex: none; width: 56px; height: 52px; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer">
+                  <span style="width: 26px; height: 26px; border-radius: 8px; background: #2F6B4F; display: flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span>
+                </button>
+                <span style="flex: 1; font-size: 15px; color: #6B6258; text-decoration: line-through">{{it.name}}</span>
+                <span style="flex: none; margin-right: 14px; font-size: 12px; color: #6B6258">{{it.boughtBy}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="flex: none; padding: 10px 12px 12px; background: #FFFFFF; border-top: 1px solid #E6DED3; display: flex; gap: 8px">
+        <label for="novo" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Adicionar item</label>
+        <input id="novo" value="{{draft}}" onChange="{{onDraft}}" onKeyDown="{{onDraftKey}}" placeholder="Adicionar item, ex.: café 500 g" style="flex: 1; min-width: 0; height: 52px; padding: 0 14px; box-sizing: border-box; border: 1px solid #E6DED3; border-radius: 14px; background: #FAF6F0; color: #2B2620; font-size: 16px">
+        <button onClick="{{add}}" aria-label="Adicionar" style="flex: none; width: 52px; height: 52px; border: 0; border-radius: 14px; background: {{addBg}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- BARRA INFERIOR -->
+  <nav aria-label="Módulos" style="position: absolute; left: 0; right: 0; bottom: 0; height: 72px; padding-bottom: 4px; box-sizing: border-box; background: #FFFFFF; border-top: 1px solid #E6DED3; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr))">
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span>Hoje</a>
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M16 15h2"/></svg></span>Gastos</a>
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #2F6B4F; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: #E1F0E7; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg></span>Rotina</a>
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>Agenda</a>
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/></svg></span>Consumo</a>
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16l-1.5 10h-13z"/><path d="M8 9l4-5 4 5"/></svg></span>Despensa</a>
+  </nav>
+
+  <!-- CONFLITO -->
+  <sc-if value="{{hasConflict}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; justify-content: flex-end">
+      <div style="position: absolute; inset: 0; background: rgba(43,38,32,0.45)"></div>
+      <div role="alertdialog" aria-label="Duas mudanças no mesmo item" style="position: relative; padding: 12px 20px 20px; border-radius: 24px 24px 0 0; background: #FFFFFF; display: flex; flex-direction: column; gap: 12px">
+        <div style="align-self: center; width: 40px; height: 4px; border-radius: 999px; background: #CFC5B8"></div>
+        <div style="display: flex; align-items: center; gap: 10px">
+          <span style="flex: none; width: 36px; height: 36px; border-radius: 999px; background: #FCEFD6; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7A4E00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg></span>
+          <span style="font-family: Figtree, Inter, sans-serif; font-size: 20px; font-weight: 700; line-height: 1.25">Duas mudanças no mesmo item</span>
+        </div>
+        <span style="font-size: 14px; line-height: 1.45; color: #5C5248">Enquanto você estava sem internet, Responsável B também mexeu em “Leite integral”. Qual versão fica?</span>
+        <button onClick="{{keepMine}}" style="padding: 14px; border-radius: 16px; border: 2px solid #24508F; background: #FFFFFF; color: #2B2620; display: flex; flex-direction: column; gap: 6px; text-align: left; cursor: pointer">
+          <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #24508F"><span style="width: 22px; height: 22px; border-radius: 999px; background: #24508F; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">A</span>A sua, às 21:48</span>
+          <span style="font-size: 16px; font-weight: 500">Leite integral · 2 caixas · <span style="color: #22573D; font-weight: 600">comprado</span></span>
+        </button>
+        <button onClick="{{keepTheirs}}" style="padding: 14px; border-radius: 16px; border: 2px solid #7A4BB0; background: #FFFFFF; color: #2B2620; display: flex; flex-direction: column; gap: 6px; text-align: left; cursor: pointer">
+          <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #7A4BB0"><span style="width: 22px; height: 22px; border-radius: 999px; background: #7A4BB0; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">B</span>A de Responsável B, às 21:50</span>
+          <span style="font-size: 16px; font-weight: 500">Leite integral · 3 caixas · <span style="color: #5C5248; font-weight: 600">pendente</span></span>
+        </button>
+        <span style="font-size: 12px; color: #6B6258; text-align: center">Toque na versão que deve ficar. A outra é descartada.</span>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- AVISO DE RESOLUÇÃO -->
+  <sc-if value="{{hasNotice}}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position: absolute; left: 16px; right: 16px; bottom: 156px; z-index: 2; min-height: 48px; padding: 12px 16px; box-sizing: border-box; border-radius: 14px; background: #2B2620; color: #FFFFFF; display: flex; align-items: center; gap: 10px; font-size: 14px; box-shadow: 0 8px 24px rgba(43,38,32,0.28)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9FD9BC" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12l5 5 9-10"/></svg>{{notice}}
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"preset":{"editor":"enum","options":["listas","lista","offline","conflito"],"default":"listas"},"$preview":{"width":360,"height":760}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+const preset = (props && props.preset) || 'listas';
+const items = [
+{ id: 1, name: 'Arroz', qty: '5 kg', by: 'A', fromPantry: false, bought: false },
+{ id: 2, name: 'Leite integral', qty: '2 caixas', by: 'D', fromPantry: true, bought: preset === 'conflito' },
+{ id: 3, name: 'Ovos', qty: '1 dúzia', by: 'B', fromPantry: false, bought: false },
+{ id: 4, name: 'Detergente', qty: '', by: 'A', fromPantry: true, bought: false },
+{ id: 5, name: 'Banana', qty: '6', by: 'D', fromPantry: false, bought: false },
+{ id: 6, name: 'Pão de forma', qty: '', by: 'B', fromPantry: false, bought: true, boughtBy: 'B' },
+{ id: 7, name: 'Manteiga', qty: '', by: 'A', fromPantry: false, bought: true, boughtBy: 'A' },
+{ id: 8, name: 'Sabonete', qty: '3', by: 'D', fromPantry: false, bought: true, boughtBy: 'B' }
+];
+if (preset === 'lista') items.splice(0, 0, { id: 9, name: 'Iogurte natural', qty: '4', by: 'B', fromPantry: false, bought: false, live: true });
+this.state = {
+screen: preset === 'listas' ? 'listas' : 'lista',
+offline: preset === 'offline' || preset === 'conflito',
+conflict: preset === 'conflito',
+items: items,
+boughtOpen: false,
+draft: preset === 'offline' ? 'Café 500 g' : '',
+notice: ''
+};
+this.liveSent = preset === 'lista';
+}
+componentWillUnmount() { if (this.timer) clearTimeout(this.timer); if (this.noticeTimer) clearTimeout(this.noticeTimer); }
+scheduleLive() {
+if (this.liveSent || this.state.offline) return;
+this.liveSent = true;
+this.timer = setTimeout(() => {
+this.setState({ items: [{ id: 9, name: 'Iogurte natural', qty: '4', by: 'B', fromPantry: false, bought: false, live: true }].concat(this.state.items) });
+}, 2500);
+}
+showNotice(text) {
+this.setState({ notice: text });
+if (this.noticeTimer) clearTimeout(this.noticeTimer);
+this.noticeTimer = setTimeout(() => this.setState({ notice: '' }), 3500);
+}
+addItem() {
+const t = this.state.draft.trim();
+if (!t) return;
+const parts = t.match(/^(.*?)(\s+\d.*)?$/);
+const name = parts && parts[1] ? parts[1] : t;
+const qty = parts && parts[2] ? parts[2].trim() : '';
+const cap = name.charAt(0).toUpperCase() + name.slice(1);
+this.setState({ items: [{ id: Date.now(), name: cap, qty: qty, by: 'A', fromPantry: false, bought: false, mine: true }].concat(this.state.items), draft: '' });
+}
+renderVals() {
+const s = this.state;
+const colors = { A: '#24508F', B: '#7A4BB0', D: '#B4561A' };
+const names = { A: 'Responsável A', B: 'Responsável B', D: 'Dependente' };
+const pend = s.items.filter((x) => !x.bought);
+const bought = s.items.filter((x) => x.bought);
+const toggle = (id) => () => this.setState({ items: s.items.map((x) => x.id === id ? { ...x, bought: !x.bought, boughtBy: 'A', live: false } : x) });
+return {
+offline: s.offline,
+topPad: s.offline ? '48px' : '0px',
+isListas: s.screen === 'listas',
+isLista: s.screen === 'lista',
+lists: [
+{ name: 'Mercado', pending: String(pend.length), summary: pend.length + ' para comprar · ' + bought.length + ' comprados', hasPresence: !s.offline, presence: 'Responsável B está aqui agora', tint: '#E1F0E7', ink: '#22573D', open: () => { this.setState({ screen: 'lista' }); this.scheduleLive(); } },
+{ name: 'Farmácia', pending: '2', summary: '2 para comprar', hasPresence: false, presence: '', tint: '#F8E0DC', ink: '#9A2B1E', open: () => {} },
+{ name: 'Feira', pending: '3', summary: '3 para comprar · atualizada ontem', hasPresence: false, presence: '', tint: '#FCEFD6', ink: '#7A4E00', open: () => {} }
+],
+back: () => this.setState({ screen: 'listas' }),
+showPresence: !s.offline,
+pendingLabel: pend.length + ' para comprar',
+pendingItems: pend.map((x, i) => ({ ...x, divider: i === 0 ? 'transparent' : '#EFE8DE', color: colors[x.by], byName: names[x.by], cls: x.live ? 'chegou' : '', isLive: !!x.live, toggleLabel: 'Marcar ' + x.name + ' como comprado', toggle: toggle(x.id) })),
+boughtItems: bought.map((x, i) => ({ ...x, divider: i === 0 ? 'transparent' : '#EFE8DE', boughtBy: 'Por ' + (x.boughtBy === 'A' ? 'você' : names[x.boughtBy || 'A']), toggleLabel: 'Voltar ' + x.name + ' para a lista', toggle: toggle(x.id) })),
+boughtOpen: s.boughtOpen,
+boughtOpenAttr: s.boughtOpen ? 'true' : 'false',
+chevron: s.boughtOpen ? 'rotate(90deg)' : 'none',
+boughtLabel: 'Comprados (' + bought.length + ')',
+toggleBought: () => this.setState({ boughtOpen: !s.boughtOpen }),
+draft: s.draft,
+onDraft: (e) => this.setState({ draft: e.target.value }),
+onDraftKey: (e) => { if (e.key === 'Enter') this.addItem(); },
+add: () => this.addItem(),
+addBg: s.draft.trim() ? '#2F6B4F' : '#9DB8AA',
+reconnect: () => this.setState({ conflict: true }),
+hasConflict: s.conflict,
+keepMine: () => { this.setState({ conflict: false, offline: false, items: s.items.map((x) => x.id === 2 ? { ...x, qty: '2 caixas', bought: true, boughtBy: 'A' } : x) }); this.showNotice('Ficou a sua versão. Tudo sincronizado.'); },
+keepTheirs: () => { this.setState({ conflict: false, offline: false, items: s.items.map((x) => x.id === 2 ? { ...x, qty: '3 caixas', bought: false } : x) }); this.showNotice('Ficou a versão de Responsável B. Tudo sincronizado.'); },
+hasNotice: !!s.notice,
+notice: s.notice
+};
+}
+}
+</script>
+</body>
+</html>

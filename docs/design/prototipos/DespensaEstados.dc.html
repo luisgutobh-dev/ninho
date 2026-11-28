@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ninho: estados da despensa</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2F6B4F}a:hover{color:#22573D}
+</style>
+</helmet>
+<div style="width: 2480px; height: 980px; box-sizing: border-box; padding: 48px 56px; background: #EFE8DE; color: #2B2620; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; gap: 28px">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 32px">
+    <h1 style="margin: 0; font-family: Figtree, Inter, sans-serif; font-size: 32px; font-weight: 700">Despensa: o que tem e o que acabou</h1>
+    <p style="margin: 0; max-width: 900px; font-size: 14px; line-height: 1.5; color: #5C5248">Um toque alterna entre tem e acabou. O que acaba vai sozinho para a lista de compras certa e volta para tem quando alguém compra. O perfil alimentar é preenchido aos poucos; o dependente vê a família toda e edita só o próprio.</p>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">1. Itens por categoria</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Despensa" preset="itens" viewer="A" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">2. Marcou que acabou</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Despensa" preset="acabou" viewer="A" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">3. Comprado na lista, voltou para tem</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Despensa" preset="comprado" viewer="A" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">4. Adicionar item</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Despensa" preset="adicionar" viewer="A" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">5. Perfil alimentar</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Despensa" preset="perfil" viewer="A" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">6. Perfil visto pelo dependente</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Despensa" preset="perfil" viewer="D" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":2480,"height":980}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

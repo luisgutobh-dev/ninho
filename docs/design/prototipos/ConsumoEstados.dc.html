@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ninho: estados do consumo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2F6B4F}a:hover{color:#22573D}
+</style>
+</helmet>
+<div style="width: 2480px; height: 980px; box-sizing: border-box; padding: 48px 56px; background: #EFE8DE; color: #2B2620; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; gap: 28px">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 32px">
+    <h1 style="margin: 0; font-family: Figtree, Inter, sans-serif; font-size: 32px; font-weight: 700">Consumo: água e energia</h1>
+    <p style="margin: 0; max-width: 900px; font-size: 14px; line-height: 1.5; color: #5C5248">Água pela leitura semanal do hidrômetro, energia pela conta. O gráfico mostra a faixa do normal e marca atenção e alerta com cor e ícone. O módulo é só dos responsáveis: o dependente não vê o Consumo.</p>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">1. Painel de água e energia</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Consumo" preset="painel" viewer="A" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">2. Leitura: o contador deu a volta</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Consumo" preset="virada" viewer="A" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">3. Registrar conta</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Consumo" preset="conta" viewer="A" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">4. Histórico com faixa do normal</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Consumo" preset="historico" viewer="A" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">5. Notificação urgente</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Consumo" preset="notificacao" viewer="A" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">6. Alerta de possível vazamento</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Consumo" preset="alerta" viewer="A" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":2480,"height":980}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

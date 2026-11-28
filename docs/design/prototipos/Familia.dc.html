@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ninho: família e preferências</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2F6B4F}a:hover{color:#22573D}
+button,input{font-family:inherit}
+.semscroll{scrollbar-width:none}.semscroll::-webkit-scrollbar{display:none}
+</style>
+</helmet>
+<div style="position: relative; width: 360px; height: 760px; overflow: hidden; background: #FAF6F0; color: #2B2620; font-family: Inter, system-ui, sans-serif">
+
+  <!-- CRIAR A FAMÍLIA -->
+  <sc-if value="{{isCriar}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; padding: 56px 24px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+      <span style="width: 64px; height: 64px; border-radius: 20px; background: #E1F0E7; color: #2F6B4F; display: flex; align-items: center; justify-content: center"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg></span>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h1 style="margin: 0; font-family: Figtree, Inter, sans-serif; font-size: 28px; font-weight: 700; line-height: 1.2">Crie a sua família no Ninho</h1>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #5C5248">Depois você convida as outras pessoas por um link.</p>
+      </div>
+      <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #5C5248">Nome da família
+        <input value="{{familyName}}" onChange="{{onFamilyName}}" placeholder="Ex.: Nossa casa" style="height: 52px; padding: 0 14px; box-sizing: border-box; border: 1px solid #E6DED3; border-radius: 14px; background: #FFFFFF; color: #2B2620; font-size: 16px; font-weight: 400">
+      </label>
+      <div style="padding: 14px 16px; border-radius: 16px; background: #F1EBE2; display: flex; gap: 12px; align-items: flex-start">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2F6B4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+        <span style="font-size: 14px; line-height: 1.45; color: #3D3630">Quem cria a família vira <strong>responsável administrador</strong>: convida pessoas, troca papéis e remove membros.</span>
+      </div>
+      <div style="flex: 1"></div>
+      <button onClick="{{createFamily}}" style="height: 56px; border: 0; border-radius: 16px; background: {{createBg}}; color: #FFFFFF; font-size: 16px; font-weight: 600; cursor: pointer">Criar família</button>
+    </div>
+  </sc-if>
+
+  <!-- CABEÇALHO DAS TELAS INTERNAS -->
+  <sc-if value="{{hasHeader}}" hint-placeholder-val="{{ true }}">
+    <div style="position: absolute; left: 0; right: 0; top: 0; height: 64px; padding: 8px 16px 8px 8px; box-sizing: border-box; background: #FAF6F0; display: flex; align-items: center; gap: 4px; z-index: 1">
+      <button onClick="{{back}}" aria-label="{{backLabel}}" style="width: 48px; height: 48px; border: 0; border-radius: 12px; background: transparent; color: #2B2620; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <span style="flex: 1; font-family: Figtree, Inter, sans-serif; font-size: 22px; font-weight: 700">{{headerTitle}}</span>
+    </div>
+  </sc-if>
+
+  <!-- MEMBROS -->
+  <sc-if value="{{isMembros}}" hint-placeholder-val="{{ true }}">
+    <div class="semscroll" style="position: absolute; left: 0; right: 0; top: 64px; bottom: 0; overflow-y: auto; padding: 4px 20px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+      <div style="font-size: 14px; color: #6B6258">{{familyName}} · {{memberCount}}</div>
+      <div style="border-radius: 18px; background: #FFFFFF; border: 1px solid #E6DED3; overflow: hidden">
+        <sc-for list="{{members}}" as="m" hint-placeholder-count="3">
+          <div style="display: flex; align-items: center; gap: 12px; min-height: 72px; padding: 0 8px 0 16px; border-top: 1px solid {{m.divider}}">
+            <span style="flex: none; width: 40px; height: 40px; border-radius: 999px; background: {{m.color}}; color: #FFFFFF; font-family: Figtree, Inter, sans-serif; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{m.k}}</span>
+            <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+              <span style="font-size: 16px; font-weight: 600">{{m.name}}</span>
+              <span style="display: flex; flex-wrap: wrap; gap: 6px">
+                <span style="height: 22px; padding: 0 8px; border-radius: 999px; background: #F1EBE2; color: #3D3630; font-size: 12px; font-weight: 600; display: flex; align-items: center">{{m.role}}</span>
+                <sc-if value="{{m.admin}}" hint-placeholder-val="{{ false }}"><span style="height: 22px; padding: 0 8px; border-radius: 999px; background: #E1F0E7; color: #22573D; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg>Administrador</span></sc-if>
+              </span>
+            </span>
+            <sc-if value="{{m.canManage}}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{m.manage}}" aria-label="Gerenciar {{m.name}}" style="flex: none; width: 48px; height: 48px; border: 0; border-radius: 12px; background: transparent; color: #6B6258; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+      <sc-if value="{{hasInvite}}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 14px 16px; border-radius: 18px; border: 1.5px dashed #B9AE9F; display: flex; align-items: center; gap: 12px">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6B6258" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">Convite de {{inviteRole}} pendente</span><span style="font-size: 13px; color: #6B6258">Vale até {{inviteUntil}} · serve uma vez</span></span>
+          <button onClick="{{cancelInvite}}" style="flex: none; height: 40px; padding: 0 10px; border: 0; border-radius: 10px; background: transparent; color: #9A2B1E; font-size: 14px; font-weight: 600; cursor: pointer">Cancelar</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{canInvite}}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{openInvite}}" style="height: 52px; border: 0; border-radius: 16px; background: #2F6B4F; color: #FFFFFF; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; font-weight: 600; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Convidar pessoa</button>
+      </sc-if>
+      <sc-if value="{{notAdmin}}" hint-placeholder-val="{{ false }}">
+        <div style="font-size: 13px; line-height: 1.45; color: #6B6258">Só o administrador convida, troca papéis e remove membros.</div>
+      </sc-if>
+      <button onClick="{{goPerfil}}" style="padding: 16px; border-radius: 18px; border: 1px solid #E6DED3; background: #FFFFFF; color: #2B2620; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer">
+        <span style="flex: none; width: 40px; height: 40px; border-radius: 12px; background: #F1EBE2; color: #3D3630; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></span>
+        <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 600">Meu perfil e avisos</span><span style="font-size: 13px; color: #6B6258">Nome, cor, canais e horário de silêncio</span></span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6258" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </sc-if>
+
+  <!-- PERFIL E AVISOS -->
+  <sc-if value="{{isPerfil}}" hint-placeholder-val="{{ false }}">
+    <div class="semscroll" style="position: absolute; left: 0; right: 0; top: 64px; bottom: 0; overflow-y: auto; padding: 0 20px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #5C5248">Nome
+          <input value="{{myName}}" onChange="{{onMyName}}" style="height: 48px; padding: 0 14px; box-sizing: border-box; border: 1px solid #E6DED3; border-radius: 14px; background: #FFFFFF; color: #2B2620; font-size: 16px; font-weight: 400">
+        </label>
+        <div role="radiogroup" aria-label="Sua cor" style="display: flex; flex-direction: column; gap: 6px">
+          <span style="font-size: 13px; font-weight: 600; color: #5C5248">Cor na Agenda</span>
+          <div style="display: flex; gap: 8px">
+            <sc-for list="{{swatches}}" as="sw" hint-placeholder-count="6">
+              <button role="radio" aria-checked="{{sw.checked}}" aria-label="{{sw.label}}" onClick="{{sw.pick}}" style="width: 44px; height: 44px; border-radius: 999px; border: 0; padding: 0; background: transparent; display: flex; align-items: center; justify-content: center; cursor: {{sw.cursor}}; opacity: {{sw.opacity}}">
+                <span style="width: 36px; height: 36px; border-radius: 999px; background: {{sw.color}}; box-shadow: {{sw.ring}}; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 11px; font-weight: 700">{{sw.mark}}</span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <section style="display: flex; flex-direction: column; gap: 8px">
+        <h2 style="margin: 0; font-family: Figtree, Inter, sans-serif; font-size: 17px; font-weight: 600">Como você quer ser avisado</h2>
+        <div role="table" aria-label="Avisos por canal" style="border-radius: 16px; background: #FFFFFF; border: 1px solid #E6DED3; overflow: hidden">
+          <div role="row" style="display: grid; grid-template-columns: 1fr 64px 64px; align-items: center; height: 36px; padding: 0 8px 0 14px; background: #F1EBE2; font-size: 12px; font-weight: 600; color: #5C5248">
+            <span role="columnheader">Aviso</span><span role="columnheader" style="text-align: center">Push</span><span role="columnheader" style="text-align: center">E-mail</span>
+          </div>
+          <sc-for list="{{grid}}" as="r" hint-placeholder-count="4">
+            <div role="row" style="display: grid; grid-template-columns: 1fr 64px 64px; align-items: center; min-height: 56px; padding: 0 8px 0 14px; border-top: 1px solid #EFE8DE">
+              <span role="rowheader" style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 500">{{r.label}}</span><span style="font-size: 12px; color: #6B6258">{{r.hint}}</span></span>
+              <sc-for list="{{r.cells}}" as="sw" hint-placeholder-count="2">
+                <span role="cell" style="display: flex; justify-content: center">
+                  <button role="switch" aria-checked="{{sw.on}}" aria-label="{{sw.label}}" onClick="{{sw.toggle}}" style="width: 48px; height: 48px; border: 0; padding: 0; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer">
+                    <span style="width: 44px; height: 26px; border-radius: 999px; background: {{sw.track}}; position: relative; display: block"><span style="position: absolute; top: 3px; left: {{sw.knob}}; width: 20px; height: 20px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(43,38,32,0.3)"></span></span>
+                  </button>
+                </span>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section style="display: flex; flex-direction: column; gap: 8px">
+        <h2 style="margin: 0; font-family: Figtree, Inter, sans-serif; font-size: 17px; font-weight: 600">Horário de silêncio</h2>
+        <div style="border-radius: 16px; background: #FFFFFF; border: 1px solid #E6DED3; padding: 6px 8px 14px 14px; display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; align-items: center; gap: 10px">
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 500">Segurar avisos à noite</span><span style="font-size: 12px; color: #6B6258">{{quietSummary}}</span></span>
+            <button role="switch" aria-checked="{{quietOn}}" aria-label="Horário de silêncio" onClick="{{toggleQuiet}}" style="width: 48px; height: 48px; border: 0; padding: 0; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer">
+              <span style="width: 44px; height: 26px; border-radius: 999px; background: {{quietTrack}}; position: relative; display: block"><span style="position: absolute; top: 3px; left: {{quietKnob}}; width: 20px; height: 20px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(43,38,32,0.3)"></span></span>
+            </button>
+          </div>
+          <sc-if value="{{quiet}}" hint-placeholder-val="{{ true }}">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-right: 6px">
+              <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: #5C5248">De
+                <input type="time" value="{{quietFrom}}" onChange="{{onQuietFrom}}" style="height: 44px; padding: 0 12px; box-sizing: border-box; border: 1px solid #E6DED3; border-radius: 12px; background: #FAF6F0; color: #2B2620; font-size: 16px; font-variant-numeric: tabular-nums">
+              </label>
+              <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: #5C5248">Até
+                <input type="time" value="{{quietTo}}" onChange="{{onQuietTo}}" style="height: 44px; padding: 0 12px; box-sizing: border-box; border: 1px solid #E6DED3; border-radius: 12px; background: #FAF6F0; color: #2B2620; font-size: 16px; font-variant-numeric: tabular-nums">
+              </label>
+            </div>
+          </sc-if>
+          <div style="margin-right: 6px; padding: 10px 12px; border-radius: 12px; background: #FCEFD6; color: #7A4E00; display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 1.45">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>
+            <span>{{urgentNote}}</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </sc-if>
+
+  <!-- FOLHA: CONVIDAR -->
+  <sc-if value="{{sheetInvite}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; justify-content: flex-end">
+      <div onClick="{{closeSheet}}" style="position: absolute; inset: 0; background: rgba(43,38,32,0.45)"></div>
+      <div role="dialog" aria-label="Convidar pessoa" style="position: relative; padding: 12px 20px 20px; border-radius: 24px 24px 0 0; background: #FFFFFF; display: flex; flex-direction: column; gap: 16px">
+        <div style="align-self: center; width: 40px; height: 4px; border-radius: 999px; background: #CFC5B8"></div>
+        <span style="font-family: Figtree, Inter, sans-serif; font-size: 20px; font-weight: 700">Convidar pessoa</span>
+        <div role="radiogroup" aria-label="Papel de quem vai entrar" style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 13px; font-weight: 600; color: #5C5248">Quem vai entrar como</span>
+          <sc-for list="{{roleOptions}}" as="o" hint-placeholder-count="2">
+            <button role="radio" aria-checked="{{o.checked}}" onClick="{{o.pick}}" style="padding: 12px 14px; border-radius: 14px; border: 2px solid {{o.border}}; background: {{o.bg}}; color: #2B2620; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer">
+              <span style="flex: none; width: 22px; height: 22px; border-radius: 999px; box-sizing: border-box; border: 2px solid {{o.dot}}; display: flex; align-items: center; justify-content: center"><span style="width: 10px; height: 10px; border-radius: 999px; background: {{o.dotFill}}"></span></span>
+              <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{o.label}}</span><span style="font-size: 13px; color: #6B6258">{{o.hint}}</span></span>
+            </button>
+          </sc-for>
+        </div>
+        <sc-if value="{{linkReady}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; align-items: center; gap: 8px; height: 52px; padding: 0 6px 0 14px; border-radius: 14px; background: #F1EBE2">
+              <span style="flex: 1; font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums">ninho.app/c/7KQ2-M9XA</span>
+              <button onClick="{{copyLink}}" style="height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: #FFFFFF; color: #2F6B4F; font-size: 14px; font-weight: 600; cursor: pointer">{{copyLabel}}</button>
+            </div>
+            <span style="font-size: 13px; color: #6B6258">Vale até {{inviteUntil}} e serve uma vez só. Quem abrir já entra como {{pickedRoleLower}}.</span>
+          </div>
+        </sc-if>
+        <button onClick="{{inviteAction}}" style="height: 52px; border: 0; border-radius: 16px; background: #2F6B4F; color: #FFFFFF; font-size: 16px; font-weight: 600; cursor: pointer">{{inviteActionLabel}}</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- FOLHA: GERENCIAR MEMBRO -->
+  <sc-if value="{{sheetManage}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; justify-content: flex-end">
+      <div onClick="{{closeSheet}}" style="position: absolute; inset: 0; background: rgba(43,38,32,0.45)"></div>
+      <div role="dialog" aria-label="Gerenciar {{target.name}}" style="position: relative; padding: 12px 20px 20px; border-radius: 24px 24px 0 0; background: #FFFFFF; display: flex; flex-direction: column; gap: 14px">
+        <div style="align-self: center; width: 40px; height: 4px; border-radius: 999px; background: #CFC5B8"></div>
+        <div style="display: flex; align-items: center; gap: 12px">
+          <span style="flex: none; width: 40px; height: 40px; border-radius: 999px; background: {{target.color}}; color: #FFFFFF; font-family: Figtree, Inter, sans-serif; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{target.k}}</span>
+          <span style="font-family: Figtree, Inter, sans-serif; font-size: 20px; font-weight: 700">{{target.name}}</span>
+        </div>
+        <div role="radiogroup" aria-label="Papel" style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 13px; font-weight: 600; color: #5C5248">Papel</span>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
+            <sc-for list="{{targetRoles}}" as="o" hint-placeholder-count="2">
+              <button role="radio" aria-checked="{{o.checked}}" aria-disabled="{{o.disabled}}" onClick="{{o.pick}}" style="height: 48px; border-radius: 14px; border: 2px solid {{o.border}}; background: {{o.bg}}; color: {{o.fg}}; font-size: 15px; font-weight: 600; cursor: pointer">{{o.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; min-height: 52px">
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 500">Administrador</span><span style="font-size: 12px; color: #6B6258">Convida, troca papéis e remove membros</span></span>
+          <button role="switch" aria-checked="{{target.adminAttr}}" aria-disabled="{{adminLocked}}" aria-label="Administrador" onClick="{{toggleAdmin}}" style="width: 48px; height: 48px; border: 0; padding: 0; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: {{adminOpacity}}">
+            <span style="width: 44px; height: 26px; border-radius: 999px; background: {{adminTrack}}; position: relative; display: block"><span style="position: absolute; top: 3px; left: {{adminKnob}}; width: 20px; height: 20px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(43,38,32,0.3)"></span></span>
+          </button>
+        </div>
+        <sc-if value="{{soleAdmin}}" hint-placeholder-val="{{ false }}">
+          <div role="note" style="padding: 10px 12px; border-radius: 12px; background: #FCEFD6; color: #7A4E00; display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 1.45">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>
+            <span>A família não pode ficar sem administrador. Para mudar o seu papel ou sair, torne outro responsável administrador antes.</span>
+          </div>
+        </sc-if>
+        <button onClick="{{askRemove}}" aria-disabled="{{removeDisabled}}" style="height: 52px; border-radius: 16px; border: 1.5px solid {{removeBorder}}; background: #FFFFFF; color: {{removeFg}}; font-size: 15px; font-weight: 600; cursor: pointer">{{removeLabel}}</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- CONFIRMAR REMOÇÃO -->
+  <sc-if value="{{confirmRemove}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 4; display: flex; align-items: center; justify-content: center; padding: 24px">
+      <div style="position: absolute; inset: 0; background: rgba(43,38,32,0.5)"></div>
+      <div role="alertdialog" aria-label="Remover {{target.name}}" style="position: relative; padding: 20px; border-radius: 22px; background: #FFFFFF; display: flex; flex-direction: column; gap: 12px">
+        <span style="font-family: Figtree, Inter, sans-serif; font-size: 20px; font-weight: 700; line-height: 1.25">Remover {{target.name}} da família?</span>
+        <span style="font-size: 14px; line-height: 1.5; color: #5C5248">O acesso acaba na hora. Tarefas, eventos e itens que essa pessoa criou continuam na família.</span>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px">
+          <button onClick="{{cancelRemove}}" style="height: 48px; border: 0; border-radius: 14px; background: #F1EBE2; color: #2B2620; font-size: 15px; font-weight: 600; cursor: pointer">Cancelar</button>
+          <button onClick="{{doRemove}}" style="height: 48px; border: 0; border-radius: 14px; background: #9A2B1E; color: #FFFFFF; font-size: 15px; font-weight: 600; cursor: pointer">Remover</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- AVISO -->
+  <sc-if value="{{hasToast}}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position: absolute; left: 16px; right: 16px; bottom: 24px; z-index: 5; min-height: 52px; padding: 12px 16px; box-sizing: border-box; border-radius: 14px; background: #2B2620; color: #FFFFFF; display: flex; align-items: center; gap: 10px; font-size: 14px; line-height: 1.4; box-shadow: 0 8px 24px rgba(43,38,32,0.28)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9FD9BC" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12l5 5 9-10"/></svg>{{toast}}
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"preset":{"editor":"enum","options":["criar","membros","convite","papel","remover","perfil"],"default":"membros"},"viewer":{"editor":"enum","options":["A","B","D"],"default":"A"},"$preview":{"width":360,"height":760}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+const preset = (props && props.preset) || 'membros';
+this.state = {
+screen: preset === 'criar' ? 'criar' : (preset === 'perfil' ? 'perfil' : 'membros'),
+familyName: preset === 'criar' ? '' : 'Nossa casa',
+members: preset === 'criar' ? [{ k: 'A', role: 'resp', admin: true }] : [{ k: 'A', role: 'resp', admin: true }, { k: 'B', role: 'resp', admin: false }, { k: 'D', role: 'dep', admin: false }],
+sheet: preset === 'convite' ? 'invite' : (preset === 'papel' || preset === 'remover' ? 'manage' : ''),
+target: preset === 'papel' ? 'A' : 'D',
+confirm: preset === 'remover',
+inviteRole: 'dep',
+linkReady: preset === 'convite',
+copied: false,
+invite: null,
+myColor: null,
+myName: null,
+prefs: { lembrete: [true, true], pergunta: [true, false], consumo: [true, true], despensa: [true, false] },
+quiet: true, quietFrom: '22:00', quietTo: '07:00',
+toast: ''
+};
+}
+componentWillUnmount() { if (this.timer) clearTimeout(this.timer); }
+showToast(t) { this.setState({ toast: t }); if (this.timer) clearTimeout(this.timer); this.timer = setTimeout(() => this.setState({ toast: '' }), 3500); }
+sw(on, label, toggle) { return { on: on ? 'true' : 'false', label: label, toggle: toggle, track: on ? '#2F6B4F' : '#CFC5B8', knob: on ? '21px' : '3px' }; }
+renderVals() {
+const s = this.state;
+const v = this.props.viewer || 'A';
+const names = { A: 'Responsável A', B: 'Responsável B', D: 'Dependente' };
+const baseColors = { A: '#24508F', B: '#7A4BB0', D: '#B4561A' };
+const colorOf = (k) => (k === v && s.myColor) ? s.myColor : baseColors[k];
+const me = s.members.find((m) => m.k === v) || { k: v, role: v === 'D' ? 'dep' : 'resp', admin: false };
+const iAmAdmin = !!me.admin;
+const admins = s.members.filter((m) => m.admin).length;
+const roleName = (r) => r === 'resp' ? 'Responsável' : 'Dependente';
+const until = '04/12';
+const t = s.members.find((m) => m.k === s.target) || s.members[0];
+const targetSole = t.admin && admins === 1;
+const isMe = t.k === v;
+const swatchList = [['#24508F', 'Azul'], ['#7A4BB0', 'Roxo'], ['#B4561A', 'Laranja'], ['#2F6B4F', 'Verde'], ['#A3305E', 'Vinho'], ['#5C5248', 'Grafite']];
+const used = s.members.filter((m) => m.k !== v).map((m) => colorOf(m.k));
+const mine = colorOf(v);
+const typeRows = [
+{ key: 'lembrete', label: 'Lembretes', hint: 'Agenda e tarefas', dep: true },
+{ key: 'pergunta', label: 'O que foi isso?', hint: 'Gasto sem descrição', dep: false },
+{ key: 'consumo', label: 'Alerta de consumo', hint: 'Água e energia', dep: false },
+{ key: 'despensa', label: 'Item que acabou', hint: 'Despensa', dep: true }
+].filter((r) => v !== 'D' || r.dep);
+const setPref = (key, i) => () => { const p = { ...s.prefs }; const arr = p[key].slice(); arr[i] = !arr[i]; p[key] = arr; this.setState({ prefs: p }); };
+const back = s.screen === 'perfil' ? () => this.setState({ screen: 'membros' }) : () => {};
+return {
+isCriar: s.screen === 'criar',
+hasHeader: s.screen !== 'criar',
+headerTitle: s.screen === 'perfil' ? 'Meu perfil e avisos' : 'Família',
+backLabel: s.screen === 'perfil' ? 'Voltar para a família' : 'Voltar para Hoje',
+back: back,
+familyName: s.familyName,
+onFamilyName: (e) => this.setState({ familyName: e.target.value }),
+createBg: s.familyName.trim() ? '#2F6B4F' : '#9DB8AA',
+createFamily: () => { if (!s.familyName.trim()) return; this.setState({ screen: 'membros' }); this.showToast('Família criada. Você é o administrador.'); },
+isMembros: s.screen === 'membros',
+memberCount: s.members.length + (s.members.length === 1 ? ' pessoa' : ' pessoas'),
+members: s.members.map((m, i) => ({
+k: m.k, color: colorOf(m.k), divider: i === 0 ? 'transparent' : '#EFE8DE',
+name: names[m.k] + (m.k === v ? ' (você)' : ''),
+role: roleName(m.role), admin: m.admin,
+canManage: iAmAdmin,
+manage: () => this.setState({ sheet: 'manage', target: m.k, confirm: false })
+})),
+canInvite: iAmAdmin,
+notAdmin: !iAmAdmin,
+hasInvite: !!s.invite,
+inviteRole: s.invite === 'resp' ? 'responsável' : 'dependente',
+inviteUntil: until,
+cancelInvite: () => { this.setState({ invite: null }); this.showToast('Convite cancelado. O link não funciona mais.'); },
+openInvite: () => this.setState({ sheet: 'invite', linkReady: false, copied: false }),
+goPerfil: () => this.setState({ screen: 'perfil' }),
+sheetInvite: s.sheet === 'invite',
+sheetManage: s.sheet === 'manage',
+closeSheet: () => this.setState({ sheet: '', confirm: false }),
+roleOptions: [['resp', 'Responsável', 'Vê tudo, inclusive gastos e consumo'], ['dep', 'Dependente', 'Rotina, Agenda e Despensa']].map(([r, l, h]) => {
+const on = s.inviteRole === r;
+return { label: l, hint: h, checked: on ? 'true' : 'false', border: on ? '#2F6B4F' : '#E6DED3', bg: on ? '#F3F9F5' : '#FFFFFF', dot: on ? '#2F6B4F' : '#B9AE9F', dotFill: on ? '#2F6B4F' : 'transparent', pick: () => this.setState({ inviteRole: r, linkReady: false, copied: false }) };
+}),
+linkReady: s.linkReady,
+pickedRoleLower: s.inviteRole === 'resp' ? 'responsável' : 'dependente',
+copyLabel: s.copied ? 'Copiado' : 'Copiar',
+copyLink: () => this.setState({ copied: true }),
+inviteActionLabel: s.linkReady ? 'Pronto' : 'Gerar link de convite',
+inviteAction: () => { if (!s.linkReady) this.setState({ linkReady: true }); else { this.setState({ sheet: '', invite: s.inviteRole }); this.showToast('Convite criado. Ele aparece na lista até alguém usar.'); } },
+target: { k: t.k, name: names[t.k] + (isMe ? ' (você)' : ''), color: colorOf(t.k), adminAttr: t.admin ? 'true' : 'false' },
+targetRoles: ['resp', 'dep'].map((r) => {
+const on = t.role === r;
+const locked = targetSole && r === 'dep';
+return { label: roleName(r), checked: on ? 'true' : 'false', disabled: locked ? 'true' : 'false', border: on ? '#2F6B4F' : '#E6DED3', bg: on ? '#F3F9F5' : '#FFFFFF', fg: locked ? '#B9AE9F' : '#2B2620',
+pick: () => { if (locked || on) return; this.setState({ members: s.members.map((m) => m.k === t.k ? { ...m, role: r, admin: r === 'dep' ? false : m.admin } : m) }); this.showToast(names[t.k] + ' agora é ' + roleName(r).toLowerCase() + '.'); } };
+}),
+soleAdmin: targetSole,
+adminLocked: (targetSole || t.role === 'dep') ? 'true' : 'false',
+adminOpacity: (targetSole || t.role === 'dep') ? '0.5' : '1',
+adminTrack: t.admin ? '#2F6B4F' : '#CFC5B8',
+adminKnob: t.admin ? '21px' : '3px',
+toggleAdmin: () => { if (targetSole || t.role === 'dep') return; this.setState({ members: s.members.map((m) => m.k === t.k ? { ...m, admin: !m.admin } : m) }); },
+removeLabel: isMe ? 'Sair da família' : 'Remover da família',
+removeDisabled: targetSole ? 'true' : 'false',
+removeBorder: targetSole ? '#E6DED3' : '#9A2B1E',
+removeFg: targetSole ? '#B9AE9F' : '#9A2B1E',
+askRemove: () => { if (!targetSole) this.setState({ confirm: true }); },
+confirmRemove: s.confirm,
+cancelRemove: () => this.setState({ confirm: false }),
+doRemove: () => { this.setState({ members: s.members.filter((m) => m.k !== t.k), confirm: false, sheet: '' }); this.showToast(names[t.k] + ' saiu da família. O que essa pessoa criou continua aqui.'); },
+isPerfil: s.screen === 'perfil',
+myName: s.myName === null ? names[v] : s.myName,
+onMyName: (e) => this.setState({ myName: e.target.value }),
+swatches: swatchList.map(([c, l]) => {
+const taken = used.indexOf(c) >= 0;
+const on = c === mine;
+return { color: c, label: l + (taken ? ', em uso por outra pessoa' : ''), checked: on ? 'true' : 'false', ring: on ? '0 0 0 3px #FFFFFF, 0 0 0 5px ' + c : 'none', mark: on ? '✓' : '', opacity: taken ? '0.35' : '1', cursor: taken ? 'not-allowed' : 'pointer', pick: () => { if (!taken) this.setState({ myColor: c }); } };
+}),
+grid: typeRows.map((r) => ({ label: r.label, hint: r.hint, cells: [this.sw(s.prefs[r.key][0], r.label + ' por push', setPref(r.key, 0)), this.sw(s.prefs[r.key][1], r.label + ' por e-mail', setPref(r.key, 1))] })),
+quiet: s.quiet,
+quietOn: s.quiet ? 'true' : 'false',
+quietTrack: s.quiet ? '#2F6B4F' : '#CFC5B8',
+quietKnob: s.quiet ? '21px' : '3px',
+toggleQuiet: () => this.setState({ quiet: !s.quiet }),
+quietSummary: s.quiet ? 'Das ' + s.quietFrom + ' às ' + s.quietTo + ', os avisos esperam' : 'Desligado',
+quietFrom: s.quietFrom, quietTo: s.quietTo,
+onQuietFrom: (e) => this.setState({ quietFrom: e.target.value }),
+onQuietTo: (e) => this.setState({ quietTo: e.target.value }),
+urgentNote: v === 'D' ? 'Avisos urgentes da família passam mesmo no silêncio.' : 'Avisos urgentes, como um possível vazamento de água, chegam mesmo no silêncio.',
+hasToast: !!s.toast,
+toast: s.toast
+};
+}
+}
+</script>
+</body>
+</html>

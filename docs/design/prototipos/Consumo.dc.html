@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ninho: água e energia</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2F6B4F}a:hover{color:#22573D}
+button,input{font-family:inherit}
+</style>
+</helmet>
+<div style="position: relative; width: 360px; height: 760px; overflow: hidden; background: #FAF6F0; color: #2B2620; font-family: Inter, system-ui, sans-serif">
+
+  <!-- PAINEL -->
+  <sc-if value="{{isPainel}}" hint-placeholder-val="{{ true }}">
+    <div style="position: absolute; inset: 0 0 72px 0; display: flex; flex-direction: column">
+      <div style="flex: none; padding: 20px 20px 10px; display: flex; align-items: center; justify-content: space-between">
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <div style="font-family: Figtree, Inter, sans-serif; font-size: 26px; font-weight: 700">Consumo</div>
+          <div style="font-size: 13px; color: #6B6258">Água e energia da casa</div>
+        </div>
+        <span aria-label="{{viewerLabel}}" style="width: 48px; height: 48px; border-radius: 999px; background: {{viewerColor}}; color: #FFFFFF; font-family: Figtree, Inter, sans-serif; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{viewer}}</span>
+      </div>
+      <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 4px 20px 20px; display: flex; flex-direction: column; gap: 14px">
+        <sc-if value="{{leak}}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{openAlert}}" style="padding: 12px 14px; border: 0; border-radius: 14px; background: #9A2B1E; color: #FFFFFF; display: flex; align-items: center; gap: 10px; text-align: left; cursor: pointer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20h4"/></svg>
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">Possível vazamento de água</span><span style="font-size: 13px; color: #F8E0DC">Toque para ver o que fazer</span></span>
+          </button>
+        </sc-if>
+
+        <!-- Água -->
+        <div style="padding: 16px; border-radius: 18px; background: #FFFFFF; border: 1px solid #E6DED3; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; align-items: center; gap: 10px">
+            <span style="flex: none; width: 36px; height: 36px; border-radius: 10px; background: #E3EEF6; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#24508F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/></svg></span>
+            <span style="flex: 1; font-family: Figtree, Inter, sans-serif; font-size: 18px; font-weight: 600">Água</span>
+            <span style="display: flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px; border-radius: 999px; background: {{water.badgeBg}}; color: {{water.badgeFg}}; font-size: 12px; font-weight: 600">{{water.status}}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 34px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em">{{water.value}}</span>
+            <span style="font-size: 13px; color: #6B6258">Esta semana, de 20 a 27/11 · média de {{water.daily}}</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px">
+            <span style="height: 28px; padding: 0 10px; border-radius: 999px; background: #F1EBE2; color: #3D3630; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; display: flex; align-items: center">{{water.vsPrev}} vs semana anterior</span>
+            <span style="height: 28px; padding: 0 10px; border-radius: 999px; background: #F1EBE2; color: #3D3630; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; display: flex; align-items: center">{{water.vsYear}} vs nov/2025</span>
+          </div>
+          <div style="display: flex; gap: 8px">
+            <button onClick="{{openLeitura}}" style="flex: 1; height: 48px; border: 0; border-radius: 14px; background: #2F6B4F; color: #FFFFFF; font-size: 15px; font-weight: 600; cursor: pointer">Registrar leitura</button>
+            <button onClick="{{openHistAgua}}" style="height: 48px; padding: 0 14px; border: 1.5px solid #E6DED3; border-radius: 14px; background: #FFFFFF; color: #2F6B4F; font-size: 15px; font-weight: 600; cursor: pointer">Histórico</button>
+          </div>
+        </div>
+
+        <!-- Energia -->
+        <div style="padding: 16px; border-radius: 18px; background: #FFFFFF; border: 1px solid #E6DED3; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; align-items: center; gap: 10px">
+            <span style="flex: none; width: 36px; height: 36px; border-radius: 10px; background: #FCEFD6; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7A4E00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3L5 14h6l-1 7 8-11h-6z"/></svg></span>
+            <span style="flex: 1; font-family: Figtree, Inter, sans-serif; font-size: 18px; font-weight: 600">Energia</span>
+            <span style="height: 26px; padding: 0 10px; border-radius: 999px; background: #E1F0E7; color: #22573D; font-size: 12px; font-weight: 600; display: flex; align-items: center">Normal</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 34px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em">212 kWh</span>
+            <span style="font-size: 13px; color: #6B6258">Conta de 21/10 a 20/11, 31 dias · média de 6,8 kWh/dia</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px">
+            <span style="height: 28px; padding: 0 10px; border-radius: 999px; background: #F1EBE2; color: #3D3630; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; display: flex; align-items: center">−5% vs ciclo anterior</span>
+            <span style="height: 28px; padding: 0 10px; border-radius: 999px; background: #F1EBE2; color: #3D3630; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; display: flex; align-items: center">+3% vs nov/2025</span>
+          </div>
+          <sc-if value="{{showMoney}}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; justify-content: space-between; padding-top: 10px; border-top: 1px solid #EFE8DE; font-size: 14px"><span style="color: #5C5248">Valor da conta</span><span style="font-weight: 600; font-variant-numeric: tabular-nums">R$ 187,40</span></div>
+          </sc-if>
+          <div style="display: flex; gap: 8px">
+            <sc-if value="{{showMoney}}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{openConta}}" style="flex: 1; height: 48px; border: 0; border-radius: 14px; background: #2F6B4F; color: #FFFFFF; font-size: 15px; font-weight: 600; cursor: pointer">Registrar conta</button>
+            </sc-if>
+            <button onClick="{{openHistEnergia}}" style="flex: {{histFlex}}; height: 48px; padding: 0 14px; border: 1.5px solid #E6DED3; border-radius: 14px; background: #FFFFFF; color: #2F6B4F; font-size: 15px; font-weight: 600; cursor: pointer">Histórico</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- LEITURA DO HIDRÔMETRO -->
+  <sc-if value="{{isLeitura}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 2; background: #FAF6F0; display: flex; flex-direction: column">
+      <div style="flex: none; height: 56px; padding: 0 8px; display: flex; align-items: center; gap: 4px">
+        <button onClick="{{backPainel}}" aria-label="Voltar" style="width: 48px; height: 48px; border: 0; border-radius: 12px; background: transparent; color: #2B2620; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <span style="font-family: Figtree, Inter, sans-serif; font-size: 20px; font-weight: 600">Leitura do hidrômetro</span>
+      </div>
+      <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 0 20px 12px; display: flex; flex-direction: column; gap: 12px">
+        <span style="font-size: 14px; color: #5C5248">Última leitura: <span style="font-weight: 600; font-variant-numeric: tabular-nums">998</span> em 20/11. Hoje, 27/11, a data entra sozinha.</span>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 8px; padding: 8px 0">
+          <sc-for list="{{digits}}" as="d" hint-placeholder-count="3">
+            <span style="width: 64px; height: 76px; border-radius: 14px; background: #2B2620; color: #FFFFFF; border: 3px solid {{d.ring}}; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: 600; font-variant-numeric: tabular-nums">{{d.ch}}</span>
+          </sc-for>
+          <span style="margin-left: 4px; font-size: 18px; font-weight: 600; color: #5C5248">m³</span>
+        </div>
+        <sc-if value="{{hasResult}}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 12px 14px; border-radius: 14px; background: #FFFFFF; border: 1px solid #E6DED3; display: flex; justify-content: space-between; align-items: baseline; font-size: 14px"><span style="color: #5C5248">Consumo em 7 dias</span><span style="font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums">{{resultLabel}}</span></div>
+        </sc-if>
+        <sc-if value="{{wrapped}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; gap: 10px; padding: 12px 14px; border-radius: 14px; background: #E3EEF6; color: #1C3A66; font-size: 14px; line-height: 1.45">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M4 12a8 8 0 0 1 14-5.3L20 9"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-14 5.3L4 15"/><path d="M4 20v-5h5"/></svg>
+            <span><span style="font-weight: 600">O contador deu a volta.</span> Ele vai até 999 e recomeça em 000, como o hodômetro de um carro. Por isso, de 998 para {{typed}} contamos {{resultLabel}}, e não um número negativo.</span>
+          </div>
+        </sc-if>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: auto">
+          <sc-for list="{{keys}}" as="k" hint-placeholder-count="12">
+            <button onClick="{{k.press}}" aria-label="{{k.aria}}" style="height: 52px; border: 0; border-radius: 12px; background: {{k.bg}}; color: #2B2620; font-size: 22px; font-weight: 500; display: flex; align-items: center; justify-content: center; cursor: pointer">
+              <sc-if value="{{k.isBack}}" hint-placeholder-val="{{ false }}"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11v12H9l-6-6z"/><path d="M13 10l4 4M17 10l-4 4"/></svg></sc-if>
+              <sc-if value="{{k.isDigit}}" hint-placeholder-val="{{ true }}">{{k.label}}</sc-if>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="flex: none; padding: 12px 16px 16px; background: #FFFFFF; border-top: 1px solid #E6DED3">
+        <button onClick="{{saveLeitura}}" style="width: 100%; height: 56px; border: 0; border-radius: 16px; background: {{saveLBg}}; color: {{saveLFg}}; font-size: 17px; font-weight: 600; cursor: pointer">Salvar leitura</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- REGISTRAR CONTA -->
+  <sc-if value="{{isConta}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 2; background: #FAF6F0; display: flex; flex-direction: column">
+      <div style="flex: none; height: 56px; padding: 0 8px; display: flex; align-items: center; gap: 4px">
+        <button onClick="{{backPainel}}" aria-label="Voltar" style="width: 48px; height: 48px; border: 0; border-radius: 12px; background: transparent; color: #2B2620; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <span style="font-family: Figtree, Inter, sans-serif; font-size: 20px; font-weight: 600">Registrar conta</span>
+      </div>
+      <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 4px 20px 16px; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 13px; font-weight: 600; color: #5C5248">Conta de</span>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 14px; background: #F1EBE2">
+            <sc-for list="{{billTypes}}" as="t" hint-placeholder-count="2">
+              <button onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="height: 44px; border: 0; border-radius: 10px; background: {{t.bg}}; color: {{t.fg}}; font-size: 14px; font-weight: 600; box-shadow: {{t.shadow}}; cursor: pointer">{{t.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="consumo" style="font-size: 13px; font-weight: 600; color: #5C5248">Consumo da conta</label>
+          <div style="position: relative"><input id="consumo" value="{{bill.amount}}" onChange="{{onAmount}}" inputmode="decimal" placeholder="0" style="width: 100%; height: 52px; padding: 0 64px 0 14px; box-sizing: border-box; border: 1px solid #E6DED3; border-radius: 12px; background: #FFFFFF; color: #2B2620; font-size: 18px; font-variant-numeric: tabular-nums"><span style="position: absolute; right: 14px; top: 15px; font-size: 15px; font-weight: 600; color: #5C5248">{{billUnit}}</span></div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="dias" style="font-size: 13px; font-weight: 600; color: #5C5248">Dias do ciclo</label>
+          <div style="position: relative"><input id="dias" value="{{bill.days}}" onChange="{{onDays}}" inputmode="numeric" placeholder="30" style="width: 100%; height: 52px; padding: 0 64px 0 14px; box-sizing: border-box; border: 1px solid #E6DED3; border-radius: 12px; background: #FFFFFF; color: #2B2620; font-size: 18px; font-variant-numeric: tabular-nums"><span style="position: absolute; right: 14px; top: 15px; font-size: 15px; font-weight: 600; color: #5C5248">dias</span></div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="valor" style="font-size: 13px; font-weight: 600; color: #5C5248">Valor da conta</label>
+          <div style="position: relative"><span style="position: absolute; left: 14px; top: 15px; font-size: 16px; font-weight: 600; color: #5C5248">R$</span><input id="valor" value="{{bill.price}}" onChange="{{onPrice}}" inputmode="decimal" placeholder="0,00" style="width: 100%; height: 52px; padding: 0 14px 0 46px; box-sizing: border-box; border: 1px solid #E6DED3; border-radius: 12px; background: #FFFFFF; color: #2B2620; font-size: 18px; font-variant-numeric: tabular-nums"></div>
+        </div>
+        <sc-if value="{{billPreview}}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 12px 14px; border-radius: 14px; background: #E1F0E7; color: #1E4A34; font-size: 14px; line-height: 1.45">{{billPreviewText}}</div>
+        </sc-if>
+      </div>
+      <div style="flex: none; padding: 12px 16px 16px; background: #FFFFFF; border-top: 1px solid #E6DED3">
+        <button onClick="{{saveConta}}" style="width: 100%; height: 56px; border: 0; border-radius: 16px; background: {{saveCBg}}; color: {{saveCFg}}; font-size: 17px; font-weight: 600; cursor: pointer">Salvar conta</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- HISTÓRICO -->
+  <sc-if value="{{isHist}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0 0 72px 0; display: flex; flex-direction: column">
+      <div style="flex: none; height: 56px; padding: 0 8px; display: flex; align-items: center; gap: 4px">
+        <button onClick="{{backPainel}}" aria-label="Voltar" style="width: 48px; height: 48px; border: 0; border-radius: 12px; background: transparent; color: #2B2620; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <span style="font-family: Figtree, Inter, sans-serif; font-size: 20px; font-weight: 600">Histórico</span>
+      </div>
+      <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 0 20px 20px; display: flex; flex-direction: column; gap: 12px">
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 14px; background: #F1EBE2">
+          <sc-for list="{{histTabs}}" as="t" hint-placeholder-count="2">
+            <button onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="height: 40px; border: 0; border-radius: 10px; background: {{t.bg}}; color: {{t.fg}}; font-size: 14px; font-weight: 600; box-shadow: {{t.shadow}}; cursor: pointer">{{t.label}}</button>
+          </sc-for>
+        </div>
+        <div style="padding: 14px 12px 10px; border-radius: 18px; background: #FFFFFF; border: 1px solid #E6DED3; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; flex-direction: column; gap: 2px; padding: 0 4px">
+            <span style="font-size: 15px; font-weight: 600">{{chart.title}}</span>
+            <span style="font-size: 13px; color: #5C5248; font-variant-numeric: tabular-nums; min-height: 18px">{{chart.readout}}</span>
+          </div>
+          <div style="position: relative; height: 170px; margin: 4px 0 0 30px">
+            <div style="position: absolute; left: -30px; top: 0; bottom: 0; width: 26px; display: flex; flex-direction: column; justify-content: space-between; text-align: right; font-size: 11px; color: #6B6258; font-variant-numeric: tabular-nums"><span>{{chart.maxLabel}}</span><span>{{chart.midLabel}}</span><span>0</span></div>
+            <div style="position: absolute; left: 0; right: 0; top: 0; border-top: 1px solid #EFE8DE"></div>
+            <div style="position: absolute; left: 0; right: 0; top: 50%; border-top: 1px solid #EFE8DE"></div>
+            <div style="position: absolute; left: 0; right: 0; bottom: 0; border-top: 1px solid #CFC5B8"></div>
+            <div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: {{chart.bandBottom}}; height: {{chart.bandHeight}}; background: rgba(47,107,79,0.10); border-top: 1px dashed rgba(47,107,79,0.45); border-bottom: 1px dashed rgba(47,107,79,0.45)"></div>
+            <div style="position: absolute; inset: 0; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 6px; align-items: end">
+              <sc-for list="{{chart.bars}}" as="b" hint-placeholder-count="12">
+                <button onClick="{{b.pick}}" aria-label="{{b.aria}}" style="height: 100%; padding: 0; border: 0; background: transparent; display: flex; align-items: flex-end; justify-content: center; cursor: pointer">
+                  <span style="width: 100%; max-width: 16px; height: {{b.h}}; border-radius: 4px 4px 0 0; background: {{b.color}}; box-shadow: {{b.ring}}"></span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 6px; margin-left: 30px; font-size: 10px; color: #6B6258; text-align: center; font-variant-numeric: tabular-nums">
+            <sc-for list="{{chart.bars}}" as="b" hint-placeholder-count="12"><span>{{b.short}}</span></sc-for>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px; padding: 6px 4px 0; font-size: 12px; color: #3D3630">
+            <span style="display: flex; align-items: center; gap: 6px"><span style="width: 14px; height: 10px; border-radius: 2px; background: rgba(47,107,79,0.18); border: 1px dashed rgba(47,107,79,0.6)"></span>Faixa do normal</span>
+            <span style="display: flex; align-items: center; gap: 6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#B07612" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>Atenção</span>
+            <span style="display: flex; align-items: center; gap: 6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9A2B1E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20h4"/></svg>Alerta</span>
+          </div>
+        </div>
+        <span style="font-size: 13px; font-weight: 600; color: #5C5248">{{chart.listTitle}}</span>
+        <div style="border-radius: 16px; background: #FFFFFF; border: 1px solid #E6DED3; overflow: hidden">
+          <sc-for list="{{chart.rows}}" as="r" hint-placeholder-count="6">
+            <div style="display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px; border-top: 1px solid {{r.divider}}; font-size: 14px">
+              <span style="flex: 1">{{r.label}}</span>
+              <span style="font-weight: 600; font-variant-numeric: tabular-nums">{{r.value}}</span>
+              <span style="width: 78px; display: flex; justify-content: flex-end"><span style="height: 24px; padding: 0 8px; border-radius: 999px; background: {{r.badgeBg}}; color: {{r.badgeFg}}; font-size: 12px; font-weight: 600; display: flex; align-items: center">{{r.status}}</span></span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- NOTIFICAÇÃO URGENTE -->
+  <sc-if value="{{isNotif}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 3; background: #2E2A26; padding: 28px 12px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px">
+      <div style="padding: 0 8px 12px; display: flex; flex-direction: column; gap: 2px; color: #F2EDE6">
+        <span style="font-size: 44px; font-weight: 500; font-variant-numeric: tabular-nums">07:12</span>
+        <span style="font-size: 14px; color: #CFC5B8">Sexta, 27 de novembro</span>
+      </div>
+      <div style="padding: 14px; border-radius: 22px; background: #FFFFFF; box-shadow: 0 0 0 3px #9A2B1E; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B6258">
+          <span style="width: 20px; height: 20px; border-radius: 6px; background: #9A2B1E; display: flex; align-items: center; justify-content: center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20h4"/></svg></span>Ninho · Consumo · urgente
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 3px">
+          <span style="font-size: 16px; font-weight: 700; color: #9A2B1E">Possível vazamento de água</span>
+          <span style="font-size: 14px; line-height: 1.4; color: #3D3630">Esta semana já foram 4,2 m³, quase o dobro do normal da casa. Vale conferir agora.</span>
+        </div>
+        <button onClick="{{openAlert}}" style="height: 48px; border: 0; border-radius: 14px; background: #9A2B1E; color: #FFFFFF; font-size: 16px; font-weight: 600; cursor: pointer">Ver o que fazer</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- DETALHE DO ALERTA -->
+  <sc-if value="{{isAlert}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 2; background: #FAF6F0; display: flex; flex-direction: column">
+      <div style="flex: none; height: 56px; padding: 0 8px; display: flex; align-items: center; gap: 4px">
+        <button onClick="{{backPainel}}" aria-label="Voltar" style="width: 48px; height: 48px; border: 0; border-radius: 12px; background: transparent; color: #2B2620; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <span style="font-family: Figtree, Inter, sans-serif; font-size: 20px; font-weight: 600">Possível vazamento</span>
+      </div>
+      <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 0 20px 20px; display: flex; flex-direction: column; gap: 14px">
+        <div style="padding: 16px; border-radius: 18px; background: #F8E0DC; color: #5E1A12; display: flex; flex-direction: column; gap: 8px">
+          <span style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #9A2B1E"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20h4"/></svg>Alerta de água</span>
+          <span style="font-size: 32px; font-weight: 600; font-variant-numeric: tabular-nums; color: #2B2620">4,2 m³ <span style="font-size: 15px; font-weight: 500; color: #5E1A12">esta semana</span></span>
+          <span style="font-size: 14px; line-height: 1.45">O consumo deste ciclo está bem acima do normal dos últimos 12 ciclos, que fica entre 1,4 e 2,2 m³ por semana.</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 15px; font-weight: 600">O que vale olhar</span>
+          <div style="border-radius: 16px; background: #FFFFFF; border: 1px solid #E6DED3; overflow: hidden; font-size: 14px; line-height: 1.4">
+            <div style="padding: 12px 14px">Feche todas as torneiras e veja se o hidrômetro continua girando.</div>
+            <div style="padding: 12px 14px; border-top: 1px solid #EFE8DE">Confira se a descarga não fica escorrendo.</div>
+            <div style="padding: 12px 14px; border-top: 1px solid #EFE8DE">Olhe a boia da caixa d’água.</div>
+          </div>
+        </div>
+        <sc-if value="{{feedbackOpen}}" hint-placeholder-val="{{ true }}">
+          <div style="padding: 16px; border-radius: 18px; background: #FFFFFF; border: 1px solid #E6DED3; display: flex; flex-direction: column; gap: 12px">
+            <span style="font-family: Figtree, Inter, sans-serif; font-size: 18px; font-weight: 600">Era mesmo um problema?</span>
+            <span style="font-size: 13px; color: #6B6258; line-height: 1.4">A resposta ajuda o Ninho a acertar os próximos alertas.</span>
+            <div style="display: flex; gap: 8px">
+              <button onClick="{{answerYes}}" style="flex: 1; height: 52px; border: 0; border-radius: 14px; background: #2F6B4F; color: #FFFFFF; font-size: 16px; font-weight: 600; cursor: pointer">Sim</button>
+              <button onClick="{{answerNo}}" style="flex: 1; height: 52px; border: 1.5px solid #E6DED3; border-radius: 14px; background: #FFFFFF; color: #2B2620; font-size: 16px; font-weight: 600; cursor: pointer">Não</button>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{feedbackDone}}" hint-placeholder-val="{{ false }}">
+          <div role="status" style="display: flex; gap: 10px; padding: 14px 16px; border-radius: 16px; background: #E1F0E7; color: #1E4A34; font-size: 14px; line-height: 1.45"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22573D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12l5 5 9-10"/></svg><span>{{feedbackText}}</span></div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- TOAST -->
+  <sc-if value="{{hasToast}}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position: absolute; left: 16px; right: 16px; bottom: 88px; z-index: 1; min-height: 52px; padding: 12px 16px; box-sizing: border-box; border-radius: 14px; background: #2B2620; color: #FFFFFF; display: flex; align-items: center; gap: 10px; font-size: 14px; box-shadow: 0 8px 24px rgba(43,38,32,0.28)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9FD9BC" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12l5 5 9-10"/></svg>{{toast}}</div>
+  </sc-if>
+
+  <!-- BARRA INFERIOR -->
+  <sc-if value="{{isResp}}" hint-placeholder-val="{{ true }}">
+    <nav aria-label="Módulos" style="position: absolute; left: 0; right: 0; bottom: 0; height: 72px; padding-bottom: 4px; box-sizing: border-box; background: #FFFFFF; border-top: 1px solid #E6DED3; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr))">
+      <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span>Hoje</a>
+      <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M16 15h2"/></svg></span>Gastos</a>
+      <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg></span>Rotina</a>
+      <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>Agenda</a>
+      <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #2F6B4F; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: #E1F0E7; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/></svg></span>Consumo</a>
+      <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16l-1.5 10h-13z"/><path d="M8 9l4-5 4 5"/></svg></span>Despensa</a>
+    </nav>
+  </sc-if>
+  <sc-if value="{{isDep}}" hint-placeholder-val="{{ false }}">
+    <nav aria-label="Módulos" style="position: absolute; left: 0; right: 0; bottom: 0; height: 72px; padding-bottom: 4px; box-sizing: border-box; background: #FFFFFF; border-top: 1px solid #E6DED3; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr))">
+      <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span>Hoje</a>
+      <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg></span>Rotina</a>
+      <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>Agenda</a>
+      <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #2F6B4F; font-size: 11px; font-weight: 600"><span style="width: 48px; height: 28px; border-radius: 999px; background: #E1F0E7; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/></svg></span>Consumo</a>
+      <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16l-1.5 10h-13z"/><path d="M8 9l4-5 4 5"/></svg></span>Despensa</a>
+    </nav>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"preset":{"editor":"enum","options":["painel","leitura","virada","conta","historico","notificacao","alerta"],"default":"painel"},"viewer":{"editor":"enum","options":["A","B"],"default":"A"},"$preview":{"width":360,"height":760}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+const preset = (props && props.preset) || 'painel';
+const leak = preset === 'notificacao' || preset === 'alerta' || preset === 'historico';
+this.state = {
+screen: { painel: 'painel', leitura: 'leitura', virada: 'leitura', conta: 'conta', historico: 'hist', notificacao: 'notif', alerta: 'alerta' }[preset] || 'painel',
+leak: leak,
+typed: preset === 'virada' ? '000' : (preset === 'leitura' ? '99' : ''),
+histKind: 'agua',
+sel: 11,
+billType: 'energia',
+bill: preset === 'conta' ? { amount: '212', days: '31', price: '187,40' } : { amount: '', days: '', price: '' },
+feedback: null,
+toast: ''
+};
+}
+componentWillUnmount() { if (this.timer) clearTimeout(this.timer); }
+showToast(t) { this.setState({ toast: t }); if (this.timer) clearTimeout(this.timer); this.timer = setTimeout(() => this.setState({ toast: '' }), 3500); }
+fmt1(n) { return n.toFixed(1).replace('.', ','); }
+renderVals() {
+const s = this.state;
+const v = this.props.viewer || 'A';
+const colors = { A: '#24508F', B: '#7A4BB0', D: '#B4561A' };
+const names = { A: 'Responsável A', B: 'Responsável B', D: 'Dependente' };
+const statusStyle = (st) => st === 'Alerta' ? { badgeBg: '#9A2B1E', badgeFg: '#FFFFFF', color: '#9A2B1E' } : (st === 'Atenção' ? { badgeBg: '#FCEFD6', badgeFg: '#7A4E00', color: '#C98A1B' } : { badgeBg: '#E1F0E7', badgeFg: '#22573D', color: '#5E8F77' });
+const lastWater = s.leak ? 4.2 : 1.9;
+const waterVals = [1.6, 1.8, 1.5, 1.7, 1.9, 1.6, 2.1, 1.8, 2.4, 1.7, 1.9, lastWater];
+const waterLabels = ['11/9', '18/9', '25/9', '2/10', '9/10', '16/10', '23/10', '30/10', '6/11', '13/11', '20/11', '27/11'];
+const energyVals = [198, 205, 230, 251, 240, 215, 201, 195, 190, 208, 224, 212];
+const energyLabels = ['dez', 'jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov'];
+const wStatus = (x) => x > 3 ? 'Alerta' : (x > 2.2 ? 'Atenção' : 'Normal');
+const eStatus = (x) => x > 260 ? 'Alerta' : (x > 235 ? 'Atenção' : 'Normal');
+const wNow = wStatus(lastWater);
+const prev = waterVals[10];
+const pct = (a, b) => { const p = Math.round((a - b) / b * 100); return (p > 0 ? '+' : (p < 0 ? '−' : '')) + Math.abs(p) + '%'; };
+const water = { value: this.fmt1(lastWater) + ' m³', daily: this.fmt1(lastWater / 7).replace(/,(\d)$/, ',$10') + ' m³/dia', vsPrev: pct(lastWater, prev), vsYear: pct(lastWater, 2.0), status: wNow, ...statusStyle(wNow) };
+water.daily = (lastWater / 7).toFixed(2).replace('.', ',') + ' m³/dia';
+const isAgua = s.histKind === 'agua';
+const vals = isAgua ? waterVals : energyVals;
+const labels = isAgua ? waterLabels : energyLabels;
+const max = isAgua ? 4.5 : 280;
+const band = isAgua ? [1.4, 2.2] : [185, 235];
+const unit = isAgua ? ' m³' : ' kWh';
+const fv = (x) => isAgua ? this.fmt1(x) + unit : x + unit;
+const st = (x) => isAgua ? wStatus(x) : eStatus(x);
+const sel = Math.min(s.sel, vals.length - 1);
+const bars = vals.map((x, i) => { const status = st(x); const ss = statusStyle(status); return { h: Math.round(x / max * 100) + '%', color: ss.color, short: i % 2 === 1 || i === vals.length - 1 ? labels[i] : '', aria: (isAgua ? 'Semana de ' : 'Ciclo de ') + labels[i] + ': ' + fv(x) + ', ' + status.toLowerCase(), ring: i === sel ? '0 0 0 2px #FFFFFF, 0 0 0 4px #2B2620' : 'none', pick: () => this.setState({ sel: i }) }; });
+const chart = {
+title: isAgua ? 'Água, por semana' : 'Energia, por conta mensal',
+readout: (isAgua ? 'Semana de ' : 'Ciclo de ') + labels[sel] + ': ' + fv(vals[sel]) + ' · ' + st(vals[sel]),
+maxLabel: isAgua ? '4,5' : '280', midLabel: isAgua ? '2,3' : '140',
+bandBottom: (band[0] / max * 100) + '%', bandHeight: ((band[1] - band[0]) / max * 100) + '%',
+bars: bars,
+listTitle: isAgua ? 'Últimas semanas' : 'Últimas contas',
+rows: vals.map((x, i) => ({ i: i, x: x })).reverse().slice(0, 6).map((o, j) => { const status = st(o.x); return { label: (isAgua ? 'Semana de ' : '') + labels[o.i], value: fv(o.x), status: status, ...statusStyle(status), divider: j ? '#EFE8DE' : 'transparent' }; })
+};
+const seg = (cur, id, label, pick) => ({ label: label, pressed: cur === id ? 'true' : 'false', bg: cur === id ? '#FFFFFF' : 'transparent', fg: cur === id ? '#2F6B4F' : '#5C5248', shadow: cur === id ? '0 1px 3px rgba(43,38,32,0.15)' : 'none', pick: pick });
+const last = 998;
+const full = s.typed.length === 3;
+const n = full ? parseInt(s.typed, 10) : null;
+const wrapped = full && n < last;
+const result = full ? (wrapped ? n + 1000 - last : n - last) : null;
+const keyList = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'back'];
+const b = s.bill;
+const billReady = b.amount && b.days && (v !== 'D');
+const amountNum = parseFloat((b.amount || '0').replace(',', '.')) || 0;
+const daysNum = parseInt(b.days || '0', 10) || 0;
+return {
+viewer: v, viewerColor: colors[v], viewerLabel: 'Perfil de ' + names[v],
+isResp: v !== 'D', isDep: v === 'D',
+showMoney: v !== 'D',
+histFlex: v === 'D' ? '1' : 'none',
+isPainel: s.screen === 'painel' || s.screen === 'leitura' || s.screen === 'conta' || s.screen === 'alerta',
+isLeitura: s.screen === 'leitura',
+isConta: s.screen === 'conta' && v !== 'D',
+isHist: s.screen === 'hist',
+isNotif: s.screen === 'notif',
+isAlert: s.screen === 'alerta',
+leak: s.leak,
+water: water,
+openAlert: () => this.setState({ screen: 'alerta', leak: true }),
+openLeitura: () => this.setState({ screen: 'leitura', typed: '' }),
+openConta: () => this.setState({ screen: 'conta' }),
+openHistAgua: () => this.setState({ screen: 'hist', histKind: 'agua', sel: 11 }),
+openHistEnergia: () => this.setState({ screen: 'hist', histKind: 'energia', sel: 11 }),
+backPainel: () => this.setState({ screen: 'painel' }),
+digits: [0, 1, 2].map((i) => ({ ch: s.typed[i] || '·', ring: i === s.typed.length ? '#7CC4A0' : '#2B2620' })),
+typed: s.typed,
+hasResult: full,
+wrapped: wrapped,
+resultLabel: result === null ? '' : result + ' m³',
+keys: keyList.map((k) => ({ label: k, isBack: k === 'back', isDigit: k !== 'back', aria: k === 'back' ? 'Apagar' : (k || 'vazio'), bg: k === '' ? 'transparent' : '#F1EBE2', press: () => { if (k === 'back') this.setState({ typed: s.typed.slice(0, -1) }); else if (k !== '' && s.typed.length < 3) this.setState({ typed: s.typed + k }); } })),
+saveLBg: full ? '#2F6B4F' : '#E6DED3', saveLFg: full ? '#FFFFFF' : '#6B6258',
+saveLeitura: () => { if (!full) return; this.setState({ screen: 'painel' }); this.showToast('Leitura salva: ' + result + ' m³ nesta semana.'); },
+billTypes: [['agua', 'Água'], ['energia', 'Energia']].map(([id, label]) => seg(s.billType, id, label, () => this.setState({ billType: id }))),
+billUnit: s.billType === 'agua' ? 'm³' : 'kWh',
+bill: b,
+onAmount: (e) => this.setState({ bill: { ...b, amount: e.target.value } }),
+onDays: (e) => this.setState({ bill: { ...b, days: e.target.value } }),
+onPrice: (e) => this.setState({ bill: { ...b, price: e.target.value } }),
+billPreview: !!(amountNum && daysNum),
+billPreviewText: amountNum && daysNum ? 'Dá ' + (amountNum / daysNum).toFixed(1).replace('.', ',') + (s.billType === 'agua' ? ' m³' : ' kWh') + ' por dia neste ciclo.' : '',
+saveCBg: billReady ? '#2F6B4F' : '#E6DED3', saveCFg: billReady ? '#FFFFFF' : '#6B6258',
+saveConta: () => { if (!billReady) return; this.setState({ screen: 'painel', bill: { amount: '', days: '', price: '' } }); this.showToast('Conta salva.'); },
+histTabs: [['agua', 'Água'], ['energia', 'Energia']].map(([id, label]) => seg(s.histKind, id, label, () => this.setState({ histKind: id, sel: 11 }))),
+chart: chart,
+feedbackOpen: !s.feedback,
+feedbackDone: !!s.feedback,
+feedbackText: s.feedback === 'sim' ? 'Anotado: era um problema. Quando o consumo voltar ao normal, o alerta some sozinho.' : 'Anotado: não era problema. O Ninho vai considerar este ciclo ao calcular o normal da casa.',
+answerYes: () => this.setState({ feedback: 'sim' }),
+answerNo: () => this.setState({ feedback: 'nao' }),
+hasToast: !!s.toast,
+toast: s.toast
+};
+}
+}
+</script>
+</body>
+</html>

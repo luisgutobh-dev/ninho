@@ -6,5 +6,6 @@
   - Case e PRD: `docs/case.md` e `docs/prd.md`
   - Modelo de DDD (estratégico e tático): `docs/ddd/mapa-estrategico.md`
   - Decisões de arquitetura: `docs/adr/`, uma por arquivo
+  - Design system e protótipos: `docs/design/` (fontes do canvas em `docs/design/prototipos/`; toda mudança no canvas entra aqui por PR)
 - Exceção: os aprendizados das sessões de estudo não ficam no repositório. Eles vão num documento do projeto no Claude, fora do Git. Lições também não entram nos documentos de modelo.
 - Sessões de estudo são socráticas: perguntar e corrigir, sem dar respostas prontas. Ao tocar num tema, indicar o ramo do mind map do mantenedor pela cor.

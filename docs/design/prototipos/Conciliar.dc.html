@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ninho: conciliar o mês</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2F6B4F}a:hover{color:#22573D}
+button,input{font-family:inherit}
+</style>
+</helmet>
+<div style="position: relative; width: 360px; height: 760px; overflow: hidden; background: #FAF6F0; color: #2B2620; font-family: Inter, system-ui, sans-serif">
+
+  <!-- LISTA DO MÊS -->
+  <sc-if value="{{isLista}}" hint-placeholder-val="{{ true }}">
+    <div style="position: absolute; inset: 0 0 72px 0; display: flex; flex-direction: column">
+      <div style="flex: none; padding: 20px 20px 10px; display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <div style="font-family: Figtree, Inter, sans-serif; font-size: 26px; font-weight: 700">Conciliar</div>
+            <div style="font-size: 13px; color: #6B6258">Novembro de 2026</div>
+          </div>
+          <button onClick="{{openFechamento}}" style="height: 40px; padding: 0 14px; border: 1.5px solid #2F6B4F; border-radius: 999px; background: #FFFFFF; color: #2F6B4F; font-size: 14px; font-weight: 600; cursor: pointer">Fechar o mês</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums">{{summary}}</span><span style="font-size: 13px; color: #6B6258; font-variant-numeric: tabular-nums">{{pendingTotal}}</span></div>
+          <div style="height: 8px; border-radius: 999px; background: #E6DED3; overflow: hidden"><div style="height: 8px; border-radius: 999px; background: #2F6B4F; width: {{progress}}"></div></div>
+        </div>
+        <div style="position: relative">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6258" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="position: absolute; left: 14px; top: 15px"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+          <label for="busca" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Buscar por valor</label>
+          <input id="busca" value="{{query}}" onChange="{{onQuery}}" inputmode="decimal" placeholder="Buscar valor, ex.: 45,90" style="width: 100%; height: 48px; padding: 0 14px 0 42px; box-sizing: border-box; border: 1px solid #E6DED3; border-radius: 12px; background: #FFFFFF; color: #2B2620; font-size: 16px">
+        </div>
+        <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px">
+          <sc-for list="{{chips}}" as="c" hint-placeholder-count="6">
+            <button onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="flex: none; height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px; cursor: pointer">
+              <sc-if value="{{c.hasDot}}" hint-placeholder-val="{{ false }}"><span style="width: 10px; height: 10px; border-radius: 999px; background: {{c.dot}}"></span></sc-if>{{c.label}}
+            </button>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 0 20px 16px; display: flex; flex-direction: column; gap: 14px">
+        <sc-if value="{{noResults}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 32px 12px; text-align: center">
+            <span style="font-family: Figtree, Inter, sans-serif; font-size: 17px; font-weight: 600">Nenhuma anotação com esse filtro</span>
+            <span style="font-size: 14px; color: #6B6258">Tente outro valor ou limpe os filtros.</span>
+          </div>
+        </sc-if>
+        <sc-for list="{{groups}}" as="g" hint-placeholder-count="2">
+          <div style="display: flex; flex-direction: column">
+            <div style="padding: 4px 0 6px; font-size: 13px; font-weight: 600; color: #5C5248">{{g.day}}</div>
+            <div style="border-radius: 16px; background: #FFFFFF; border: 1px solid #E6DED3; overflow: hidden">
+              <sc-for list="{{g.items}}" as="it" hint-placeholder-count="2">
+                <div style="display: flex; align-items: center; border-top: 1px solid {{it.divider}}">
+                  <button onClick="{{it.open}}" style="flex: 1; min-width: 0; min-height: 64px; padding: 10px 4px 10px 14px; border: 0; background: transparent; color: #2B2620; display: flex; align-items: center; gap: 10px; text-align: left; cursor: pointer">
+                    <span style="flex: none; width: 32px; height: 32px; border-radius: 999px; background: {{it.avatarBg}}; color: #FFFFFF; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{it.who}}</span>
+                    <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                      <span style="font-size: 15px; font-weight: 500">{{it.what}}</span>
+                      <span style="font-size: 13px; color: #6B6258">{{it.meta}}</span>
+                    </span>
+                    <span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; color: {{it.valueColor}}">{{it.value}}</span>
+                  </button>
+                  <button onClick="{{it.toggle}}" aria-label="{{it.toggleLabel}}" aria-pressed="{{it.pressed}}" style="flex: none; width: 52px; height: 64px; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer">
+                    <span style="width: 28px; height: 28px; border-radius: 999px; box-sizing: border-box; border: 2px solid {{it.checkBd}}; background: {{it.checkBg}}; display: flex; align-items: center; justify-content: center">
+                      <sc-if value="{{it.done}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></sc-if>
+                    </span>
+                  </button>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- FECHAMENTO DO MÊS -->
+  <sc-if value="{{isFechamento}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0 0 72px 0; display: flex; flex-direction: column">
+      <div style="flex: none; height: 56px; padding: 0 8px; display: flex; align-items: center; gap: 4px">
+        <button onClick="{{backLista}}" aria-label="Voltar" style="width: 48px; height: 48px; border: 0; border-radius: 12px; background: transparent; color: #2B2620; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <span style="font-family: Figtree, Inter, sans-serif; font-size: 20px; font-weight: 600">Fechamento de novembro</span>
+      </div>
+      <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 4px 20px 16px; display: flex; flex-direction: column; gap: 14px">
+        <sc-if value="{{hasPending}}" hint-placeholder-val="{{ true }}">
+          <div style="padding: 18px; border-radius: 18px; background: #FCEFD6; color: #5A3A00; display: flex; flex-direction: column; gap: 4px">
+            <span style="font-family: Figtree, Inter, sans-serif; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums">{{pendingTitle}}</span>
+            <span style="font-size: 14px; line-height: 1.4">Somam {{pendingTotalShort}}. Revise cada uma antes de fechar o mês.</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px">
+            <sc-for list="{{pendingList}}" as="p" hint-placeholder-count="3">
+              <div style="display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 14px; border-radius: 16px; background: #FFFFFF; border: 1.5px solid #E8C98A">
+                <span style="flex: none; width: 32px; height: 32px; border-radius: 999px; background: {{p.avatarBg}}; color: #FFFFFF; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{p.who}}</span>
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                  <span style="font-size: 15px; font-weight: 500">{{p.what}} · <span style="font-variant-numeric: tabular-nums">{{p.value}}</span></span>
+                  <span style="font-size: 13px; color: #6B6258">{{p.dayShort}} · {{p.meta}}</span>
+                </span>
+                <button onClick="{{p.open}}" style="flex: none; height: 44px; padding: 0 14px; border: 0; border-radius: 12px; background: #2F6B4F; color: #FFFFFF; font-size: 14px; font-weight: 600; cursor: pointer">Revisar</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{allDone}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 40px 12px; text-align: center">
+            <div style="width: 64px; height: 64px; border-radius: 999px; background: #E1F0E7; display: flex; align-items: center; justify-content: center"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#22573D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></div>
+            <span style="font-family: Figtree, Inter, sans-serif; font-size: 20px; font-weight: 600">Tudo conciliado em novembro</span>
+            <span style="font-size: 14px; color: #6B6258; line-height: 1.4">Cada gasto do mês tem a sua memória. Pode fechar.</span>
+          </div>
+        </sc-if>
+      </div>
+      <div style="flex: none; padding: 12px 16px 16px; border-top: 1px solid #E6DED3; background: #FFFFFF; display: flex; flex-direction: column; gap: 6px">
+        <button onClick="{{closeMonth}}" disabled="{{closeDisabled}}" style="height: 56px; border: 0; border-radius: 16px; background: {{closeBg}}; color: {{closeFg}}; font-size: 17px; font-weight: 600; cursor: pointer">{{closeLabel}}</button>
+        <span style="font-size: 12px; color: #6B6258; text-align: center">{{closeHint}}</span>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- BARRA INFERIOR -->
+  <nav aria-label="Módulos" style="position: absolute; left: 0; right: 0; bottom: 0; height: 72px; padding-bottom: 4px; box-sizing: border-box; background: #FFFFFF; border-top: 1px solid #E6DED3; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr))">
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span>Hoje</a>
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #2F6B4F; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: #E1F0E7; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M16 15h2"/></svg></span>Gastos</a>
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg></span>Rotina</a>
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>Agenda</a>
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/></svg></span>Consumo</a>
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16l-1.5 10h-13z"/><path d="M8 9l4-5 4 5"/></svg></span>Despensa</a>
+  </nav>
+
+  <!-- FOLHA DE DETALHE -->
+  <sc-if value="{{hasSheet}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end">
+      <button onClick="{{closeSheet}}" aria-label="Fechar detalhe" style="position: absolute; inset: 0; border: 0; background: rgba(43,38,32,0.40); cursor: pointer"></button>
+      <div role="dialog" aria-label="Detalhe da anotação" style="position: relative; padding: 12px 20px 20px; border-radius: 24px 24px 0 0; background: #FFFFFF; display: flex; flex-direction: column; gap: 12px">
+        <div style="align-self: center; width: 40px; height: 4px; border-radius: 999px; background: #CFC5B8"></div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+          <span style="font-family: Figtree, Inter, sans-serif; font-size: 22px; font-weight: 600">{{sheet.what}}</span>
+          <span style="font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums">{{sheet.value}}</span>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center; font-size: 14px; color: #5C5248"><span style="width: 26px; height: 26px; border-radius: 999px; background: {{sheet.avatarBg}}; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{sheet.who}}</span>Responsável {{sheet.who}} · {{sheet.meta}}</div>
+        <div style="font-size: 14px; color: #5C5248">{{sheet.dayShort}}</div>
+        <span style="align-self: flex-start; display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 999px; background: {{sheet.badgeBg}}; color: {{sheet.badgeFg}}; font-size: 13px; font-weight: 600">{{sheet.statusLabel}}</span>
+        <sc-if value="{{sheet.photo}}" hint-placeholder-val="{{ true }}">
+          <div style="display: flex; gap: 12px; align-items: center; padding: 10px; border-radius: 14px; background: #F1EBE2">
+            <div aria-label="Foto do cupom" role="img" style="flex: none; width: 72px; height: 96px; border-radius: 8px; background: #FFFFFF; border: 1px solid #E6DED3; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column; gap: 5px">
+              <span style="height: 4px; width: 70%; background: #CFC5B8; border-radius: 2px"></span><span style="height: 4px; width: 90%; background: #E6DED3; border-radius: 2px"></span><span style="height: 4px; width: 80%; background: #E6DED3; border-radius: 2px"></span><span style="height: 4px; width: 60%; background: #E6DED3; border-radius: 2px"></span><span style="height: 4px; width: 85%; background: #E6DED3; border-radius: 2px"></span><span style="margin-top: auto; height: 5px; width: 50%; align-self: flex-end; background: #CFC5B8; border-radius: 2px"></span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 14px; font-weight: 600">Foto do cupom</span><span style="font-size: 13px; color: #6B6258">Toque para ver em tela cheia</span></div>
+          </div>
+        </sc-if>
+        <sc-if value="{{sheet.noPhoto}}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 12px 14px; border-radius: 14px; background: #F1EBE2; font-size: 14px; color: #5C5248">Sem foto do cupom</div>
+        </sc-if>
+        <button onClick="{{sheet.action}}" style="height: 52px; border-radius: 16px; border: 1.5px solid {{sheet.btnBd}}; background: {{sheet.btnBg}}; color: {{sheet.btnFg}}; font-size: 16px; font-weight: 600; cursor: pointer">{{sheet.actionLabel}}</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- CONFIRMAÇÃO -->
+  <sc-if value="{{hasConfirm}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 24px">
+      <div style="position: absolute; inset: 0; background: rgba(43,38,32,0.50)"></div>
+      <div role="alertdialog" aria-label="Voltar para pendente?" style="position: relative; width: 100%; padding: 22px 20px 16px; box-sizing: border-box; border-radius: 22px; background: #FFFFFF; display: flex; flex-direction: column; gap: 10px">
+        <span style="font-family: Figtree, Inter, sans-serif; font-size: 20px; font-weight: 700">Voltar para pendente?</span>
+        <span style="font-size: 15px; line-height: 1.45; color: #5C5248">{{confirmText}}</span>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px">
+          <button onClick="{{confirmYes}}" style="height: 50px; border: 0; border-radius: 14px; background: #9A2B1E; color: #FFFFFF; font-size: 16px; font-weight: 600; cursor: pointer">Voltar para pendente</button>
+          <button onClick="{{confirmNo}}" style="height: 50px; border: 0; border-radius: 14px; background: transparent; color: #2F6B4F; font-size: 16px; font-weight: 600; cursor: pointer">Manter conciliada</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"preset":{"editor":"enum","options":["lista","busca","detalhe","confirmar","fechamento"],"default":"lista"},"$preview":{"width":360,"height":760}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+const preset = (props && props.preset) || 'lista';
+const items = [
+{ id: 1, day: 'Sexta, 27/11', what: 'Farmácia', who: 'A', meta: 'Crédito · Banco 1 · 14:32', value: 'R$ 45,90', cents: 4590, done: false, photo: true },
+{ id: 2, day: 'Sexta, 27/11', what: 'Padaria', who: 'B', meta: 'Conta · 08:10', value: 'R$ 18,50', cents: 1850, done: false, photo: false },
+{ id: 3, day: 'Sexta, 27/11', what: 'Mercado', who: 'A', meta: 'Dinheiro · 07:45', value: 'R$ 112,30', cents: 11230, done: true, photo: true },
+{ id: 4, day: 'Quinta, 26/11', what: 'Combustível', who: 'B', meta: 'Crédito · Banco 2 · 18:20', value: 'R$ 210,00', cents: 21000, done: true, photo: false },
+{ id: 5, day: 'Quinta, 26/11', what: 'Lanche', who: 'A', meta: 'Crédito · Banco 1 · 12:05', value: 'R$ 32,00', cents: 3200, done: false, photo: false },
+{ id: 6, day: 'Quinta, 26/11', what: 'Farmácia', who: 'B', meta: 'Conta · 09:40', value: 'R$ 27,80', cents: 2780, done: true, photo: true },
+{ id: 7, day: 'Quarta, 25/11', what: 'Mercado da semana', who: 'A', meta: 'Crédito · Banco 1 · 19:10', value: 'R$ 389,47', cents: 38947, done: true, photo: true },
+{ id: 8, day: 'Quarta, 25/11', what: 'Presente de aniversário', who: 'B', meta: 'Crédito · Banco 2 · 16:00', value: 'R$ 89,90', cents: 8990, done: true, photo: false },
+{ id: 9, day: 'Quarta, 25/11', what: 'Estacionamento', who: 'A', meta: 'Dinheiro · 10:15', value: 'R$ 15,00', cents: 1500, done: true, photo: false },
+{ id: 10, day: 'Terça, 24/11', what: 'Feira', who: 'B', meta: 'Conta · 08:30', value: 'R$ 45,90', cents: 4590, done: true, photo: false },
+{ id: 11, day: 'Terça, 24/11', what: 'Pet shop', who: 'A', meta: 'Crédito · Banco 2 · 17:50', value: 'R$ 76,40', cents: 7640, done: false, photo: true }
+];
+this.state = {
+screen: preset === 'fechamento' ? 'fechamento' : 'lista',
+items: items,
+person: null,
+method: null,
+query: preset === 'busca' ? '45,90' : '',
+sheetId: preset === 'detalhe' ? 1 : null,
+confirmId: preset === 'confirmar' ? 3 : null,
+closed: false
+};
+}
+fmt(n) {
+const r = String(Math.floor(n / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+return 'R$ ' + r + ',' + String(n % 100).padStart(2, '0');
+}
+setDone(id, done) {
+this.setState({ items: this.state.items.map((x) => x.id === id ? { ...x, done: done } : x) });
+}
+toggle(id) {
+const it = this.state.items.find((x) => x.id === id);
+if (!it) return;
+if (it.done) this.setState({ confirmId: id });
+else this.setDone(id, true);
+}
+renderVals() {
+const s = this.state;
+const colors = { A: '#24508F', B: '#7A4BB0' };
+const methodOf = (it) => it.meta.split(' · ')[0];
+const q = s.query.replace(/[^0-9,]/g, '');
+const filtered = s.items.filter((it) =>
+(!s.person || it.who === s.person) &&
+(!s.method || methodOf(it) === s.method) &&
+(!q || it.value.replace('R$ ', '').indexOf(q) !== -1));
+const decorate = (it, idx) => ({
+...it,
+avatarBg: colors[it.who],
+dayShort: it.day,
+divider: idx === 0 ? 'transparent' : '#EFE8DE',
+valueColor: it.done ? '#6B6258' : '#2B2620',
+checkBd: it.done ? '#2F6B4F' : '#CFC5B8',
+checkBg: it.done ? '#2F6B4F' : '#FFFFFF',
+pressed: it.done ? 'true' : 'false',
+toggleLabel: it.done ? 'Conciliada. Toque para voltar a pendente' : 'Marcar como conciliada',
+open: () => this.setState({ sheetId: it.id }),
+toggle: () => this.toggle(it.id)
+});
+const groups = [];
+filtered.forEach((it) => {
+let g = groups.find((x) => x.day === it.day);
+if (!g) { g = { day: it.day, items: [] }; groups.push(g); }
+g.items.push(decorate(it, g.items.length));
+});
+const total = s.items.length;
+const doneCount = s.items.filter((x) => x.done).length;
+const pending = s.items.filter((x) => !x.done);
+const pendingCents = pending.reduce((a, x) => a + x.cents, 0);
+const chipDefs = [
+{ label: 'Resp. A', kind: 'person', val: 'A', dot: colors.A },
+{ label: 'Resp. B', kind: 'person', val: 'B', dot: colors.B },
+{ label: 'Crédito', kind: 'method', val: 'Crédito' },
+{ label: 'Conta', kind: 'method', val: 'Conta' },
+{ label: 'Dinheiro', kind: 'method', val: 'Dinheiro' }
+];
+const chips = chipDefs.map((c) => {
+const on = s[c.kind] === c.val;
+return {
+label: c.label, hasDot: !!c.dot, dot: c.dot || 'transparent',
+pressed: on ? 'true' : 'false',
+bg: on ? '#2F6B4F' : '#FFFFFF', fg: on ? '#FFFFFF' : '#2B2620', bd: on ? '#2F6B4F' : '#E6DED3',
+pick: () => this.setState({ [c.kind]: on ? null : c.val })
+};
+});
+chips.push({ label: 'Novembro', hasDot: false, dot: 'transparent', pressed: 'false', bg: '#F1EBE2', fg: '#2B2620', bd: '#F1EBE2', pick: () => {} });
+const sheetItem = s.items.find((x) => x.id === s.sheetId);
+const sheet = sheetItem ? {
+...decorate(sheetItem, 0),
+noPhoto: !sheetItem.photo,
+statusLabel: sheetItem.done ? 'Conciliada' : 'Pendente',
+badgeBg: sheetItem.done ? '#E1F0E7' : '#EFE8DE',
+badgeFg: sheetItem.done ? '#22573D' : '#5C5248',
+actionLabel: sheetItem.done ? 'Voltar para pendente' : 'Marcar como conciliada',
+btnBg: sheetItem.done ? '#FFFFFF' : '#2F6B4F',
+btnFg: sheetItem.done ? '#9A2B1E' : '#FFFFFF',
+btnBd: sheetItem.done ? '#E6DED3' : '#2F6B4F',
+action: () => {
+if (sheetItem.done) this.setState({ confirmId: sheetItem.id });
+else { this.setDone(sheetItem.id, true); this.setState({ sheetId: null }); }
+}
+} : { what: '', value: '', who: '', meta: '', dayShort: '', avatarBg: 'transparent', photo: false, noPhoto: false, statusLabel: '', badgeBg: 'transparent', badgeFg: 'transparent', actionLabel: '', btnBg: 'transparent', btnFg: 'transparent', btnBd: 'transparent', action: () => {} };
+const confirmItem = s.items.find((x) => x.id === s.confirmId);
+const allDone = pending.length === 0;
+return {
+isLista: s.screen === 'lista',
+isFechamento: s.screen === 'fechamento',
+summary: doneCount + ' de ' + total + ' conciliadas',
+pendingTotal: pending.length ? 'Faltam ' + this.fmt(pendingCents) : 'Tudo conferido',
+progress: Math.round((doneCount / total) * 100) + '%',
+query: s.query,
+onQuery: (e) => this.setState({ query: e.target.value }),
+chips: chips,
+groups: groups,
+noResults: groups.length === 0,
+openFechamento: () => this.setState({ screen: 'fechamento' }),
+backLista: () => this.setState({ screen: 'lista' }),
+hasPending: !allDone,
+allDone: allDone,
+pendingTitle: pending.length === 1 ? '1 anotação sem conciliar' : pending.length + ' anotações sem conciliar',
+pendingTotalShort: this.fmt(pendingCents),
+pendingList: pending.map((x) => decorate(x, 0)),
+closeDisabled: !allDone || s.closed,
+closeBg: allDone && !s.closed ? '#2F6B4F' : '#E6DED3',
+closeFg: allDone && !s.closed ? '#FFFFFF' : '#6B6258',
+closeLabel: s.closed ? 'Novembro fechado' : 'Fechar novembro',
+closeHint: s.closed ? 'Fechado agora por Responsável A.' : (allDone ? 'Tudo certo para fechar.' : 'Libera quando todas estiverem conciliadas.'),
+closeMonth: () => this.setState({ closed: true }),
+hasSheet: !!sheetItem,
+sheet: sheet,
+closeSheet: () => this.setState({ sheetId: null }),
+hasConfirm: !!confirmItem,
+confirmText: confirmItem ? confirmItem.what + ' (' + confirmItem.value + ') já foi conferida no app de finanças. Se voltar, ela entra de novo na lista do que falta conciliar.' : '',
+confirmYes: () => { if (confirmItem) this.setDone(confirmItem.id, false); this.setState({ confirmId: null }); },
+confirmNo: () => this.setState({ confirmId: null })
+};
+}
+}
+</script>
+</body>
+</html>
