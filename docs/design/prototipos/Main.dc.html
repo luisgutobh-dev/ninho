@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ninho: fundamentos</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2F6B4F}a:hover{color:#22573D}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1260px; box-sizing: border-box; padding: 64px 72px; background: #FAF6F0; color: #2B2620; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; gap: 48px">
+
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 32px">
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <div style="font-size: 14px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2F6B4F">Ninho · design system v0.1</div>
+      <h1 style="margin: 0; font-family: Figtree, Inter, sans-serif; font-size: 56px; font-weight: 700; line-height: 1.05">Casa, não banco.</h1>
+      <p style="margin: 0; font-size: 18px; line-height: 1.5; color: #6B6258; max-width: 760px">Fundo claro quente, um verde de destaque calmo e uma cor para cada pessoa. Feito para uma mão, no celular, a partir de 360 px. Todo texto do app em sentence case: só a primeira letra maiúscula, como em “Mercado da semana”.</p>
+    </div>
+    <div style="display: flex; gap: 8px; font-size: 14px; color: #6B6258">
+      <span style="padding: 8px 14px; border-radius: 999px; background: #F1EBE2">Mobile-first</span>
+      <span style="padding: 8px 14px; border-radius: 999px; background: #F1EBE2">Alvos de 48 px</span>
+      <span style="padding: 8px 14px; border-radius: 999px; background: #F1EBE2">Contraste AA</span>
+      <span style="padding: 8px 14px; border-radius: 999px; background: #F1EBE2">Sentence case</span>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px">
+    <section style="display: flex; flex-direction: column; gap: 16px">
+      <h2 style="margin: 0; font-family: Figtree, Inter, sans-serif; font-size: 22px; font-weight: 600">Cores, tema claro</h2>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+        <sc-for list="{{lightColors}}" as="c" hint-placeholder-count="8">
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div style="height: 72px; border-radius: 12px; background: {{c.hex}}; border: 1px solid rgba(43,38,32,0.10)"></div>
+            <div style="font-size: 14px; font-weight: 600">{{c.name}}</div>
+            <div style="font-size: 12px; color: #6B6258; font-variant-numeric: tabular-nums">{{c.hex}} · {{c.use}}</div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 16px; background: #1C1A17; color: #F2EDE6; border-radius: 20px; padding: 24px; margin: -24px 0 0">
+      <h2 style="margin: 0; font-family: Figtree, Inter, sans-serif; font-size: 22px; font-weight: 600">Cores, tema escuro</h2>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+        <sc-for list="{{darkColors}}" as="c" hint-placeholder-count="8">
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div style="height: 72px; border-radius: 12px; background: {{c.hex}}; border: 1px solid rgba(242,237,230,0.14)"></div>
+            <div style="font-size: 14px; font-weight: 600">{{c.name}}</div>
+            <div style="font-size: 12px; color: #B8AEA2; font-variant-numeric: tabular-nums">{{c.hex}} · {{c.use}}</div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px">
+    <section style="display: flex; flex-direction: column; gap: 16px">
+      <h2 style="margin: 0; font-family: Figtree, Inter, sans-serif; font-size: 22px; font-weight: 600">Cores de pessoa</h2>
+      <p style="margin: 0; font-size: 14px; color: #6B6258; line-height: 1.5">Uma cor por pessoa em avatares, na agenda e em “quem fez”. Diferem no tom e na claridade, e sempre vêm com a inicial, para não depender só da cor.</p>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+        <sc-for list="{{people}}" as="p" hint-placeholder-count="3">
+          <div style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 16px; background: #FFFFFF; border: 1px solid #E6DED3">
+            <div style="display: flex; align-items: center; gap: 12px">
+              <div style="width: 48px; height: 48px; border-radius: 999px; background: {{p.light}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: Figtree, Inter, sans-serif; font-weight: 700; font-size: 18px">{{p.initial}}</div>
+              <div style="width: 48px; height: 48px; border-radius: 999px; background: {{p.dark}}; color: #1C1A17; display: flex; align-items: center; justify-content: center; font-family: Figtree, Inter, sans-serif; font-weight: 700; font-size: 18px; box-shadow: 0 0 0 4px #1C1A17">{{p.initial}}</div>
+            </div>
+            <div style="font-size: 15px; font-weight: 600">{{p.name}}</div>
+            <div style="font-size: 12px; color: #6B6258; font-variant-numeric: tabular-nums">claro {{p.light}} · escuro {{p.dark}}</div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 16px">
+      <h2 style="margin: 0; font-family: Figtree, Inter, sans-serif; font-size: 22px; font-weight: 600">Cores de estado</h2>
+      <p style="margin: 0; font-size: 14px; color: #6B6258; line-height: 1.5">Todo estado tem palavra e ícone além da cor. Pendente é neutro de propósito: não é um problema, só falta fazer.</p>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+        <sc-for list="{{states}}" as="s" hint-placeholder-count="4">
+          <div style="display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: 16px; background: {{s.bg}}">
+            <div style="font-size: 15px; font-weight: 600; color: {{s.fg}}">{{s.name}}</div>
+            <div style="font-size: 12px; color: {{s.fg}}; font-variant-numeric: tabular-nums">{{s.bg}} / {{s.fg}}</div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 32px">
+    <section style="grid-column: span 7; display: flex; flex-direction: column; gap: 14px">
+      <h2 style="margin: 0; font-family: Figtree, Inter, sans-serif; font-size: 22px; font-weight: 600">Tipografia</h2>
+      <div style="display: flex; flex-direction: column; gap: 10px; padding: 24px; border-radius: 20px; background: #FFFFFF; border: 1px solid #E6DED3">
+        <div style="display: flex; align-items: baseline; gap: 24px"><span style="width: 150px; font-size: 12px; color: #6B6258">Título · Figtree 28/34</span><span style="font-family: Figtree, Inter, sans-serif; font-size: 28px; font-weight: 700">Bom dia, casa</span></div>
+        <div style="display: flex; align-items: baseline; gap: 24px"><span style="width: 150px; font-size: 12px; color: #6B6258">Seção · Figtree 20/26</span><span style="font-family: Figtree, Inter, sans-serif; font-size: 20px; font-weight: 600">Anotações de hoje</span></div>
+        <div style="display: flex; align-items: baseline; gap: 24px"><span style="width: 150px; font-size: 12px; color: #6B6258">Corpo · Inter 16/24</span><span style="font-size: 16px">Mercado da semana, com a lista da Despensa</span></div>
+        <div style="display: flex; align-items: baseline; gap: 24px"><span style="width: 150px; font-size: 12px; color: #6B6258">Apoio · Inter 14/20</span><span style="font-size: 14px; color: #6B6258">Cartão do Banco 1 · hoje, 14:32</span></div>
+        <div style="display: flex; align-items: baseline; gap: 24px"><span style="width: 150px; font-size: 12px; color: #6B6258">Legenda · Inter 12/16</span><span style="font-size: 12px; font-weight: 500; color: #6B6258">Sincronizado agora</span></div>
+        <div style="display: flex; align-items: baseline; gap: 24px; padding-top: 8px; border-top: 1px solid #EFE8DE"><span style="width: 150px; font-size: 12px; color: #6B6258">Valor · Inter 40, tabular</span><span style="font-size: 40px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em">R$ 1.234,56</span></div>
+        <div style="display: flex; align-items: baseline; gap: 24px"><span style="width: 150px; font-size: 12px; color: #6B6258">Valores em lista</span><span style="display: flex; flex-direction: column; font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums; text-align: right"><span>R$ 45,90</span><span>R$ 1.087,40</span><span>R$ 7,00</span></span></div>
+        <div style="display: flex; align-items: baseline; gap: 24px"><span style="width: 150px; font-size: 12px; color: #6B6258">Datas</span><span style="font-size: 16px; font-variant-numeric: tabular-nums">27/11 · sex, 27/11 às 19:30</span></div>
+      </div>
+    </section>
+    <section style="grid-column: span 5; display: flex; flex-direction: column; gap: 14px">
+      <h2 style="margin: 0; font-family: Figtree, Inter, sans-serif; font-size: 22px; font-weight: 600">Espaço, cantos e toque</h2>
+      <div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; border-radius: 20px; background: #FFFFFF; border: 1px solid #E6DED3">
+        <div style="display: flex; align-items: flex-end; gap: 12px">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><div style="width: 4px; height: 4px; background: #2F6B4F"></div><span style="font-size: 12px; color: #6B6258">4</span></div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><div style="width: 8px; height: 8px; background: #2F6B4F"></div><span style="font-size: 12px; color: #6B6258">8</span></div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><div style="width: 12px; height: 12px; background: #2F6B4F"></div><span style="font-size: 12px; color: #6B6258">12</span></div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><div style="width: 16px; height: 16px; background: #2F6B4F"></div><span style="font-size: 12px; color: #6B6258">16</span></div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><div style="width: 24px; height: 24px; background: #2F6B4F"></div><span style="font-size: 12px; color: #6B6258">24</span></div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><div style="width: 32px; height: 32px; background: #2F6B4F"></div><span style="font-size: 12px; color: #6B6258">32</span></div>
+        </div>
+        <div style="display: flex; gap: 12px">
+          <div style="flex: 1; height: 64px; border-radius: 8px; background: #F1EBE2; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #6B6258">8 · campo</div>
+          <div style="flex: 1; height: 64px; border-radius: 16px; background: #F1EBE2; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #6B6258">16 · cartão</div>
+          <div style="flex: 1; height: 64px; border-radius: 24px 24px 0 0; background: #F1EBE2; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #6B6258">24 · folha</div>
+          <div style="flex: 1; height: 64px; border-radius: 999px; background: #F1EBE2; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #6B6258">chip</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px">
+          <div style="width: 48px; height: 48px; border: 2px dashed #2F6B4F; border-radius: 12px; box-sizing: border-box"></div>
+          <span style="font-size: 14px; line-height: 1.5; color: #2B2620">Alvo mínimo de 48 × 48 px. Ação principal sempre na metade de baixo da tela, ao alcance do polegar.</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1260}}'>
+class Component extends DCLogic {
+renderVals() {
+return {
+lightColors: [
+{ name: 'Fundo', hex: '#FAF6F0', use: 'tela' },
+{ name: 'Superfície', hex: '#FFFFFF', use: 'cartões' },
+{ name: 'Superfície 2', hex: '#F1EBE2', use: 'chips, campos' },
+{ name: 'Borda', hex: '#E6DED3', use: 'divisórias' },
+{ name: 'Texto', hex: '#2B2620', use: 'principal' },
+{ name: 'Texto apoio', hex: '#6B6258', use: 'secundário' },
+{ name: 'Destaque', hex: '#2F6B4F', use: 'ação principal' },
+{ name: 'Destaque suave', hex: '#E1F0E7', use: 'seleção' }
+],
+darkColors: [
+{ name: 'Fundo', hex: '#1C1A17', use: 'tela' },
+{ name: 'Superfície', hex: '#262320', use: 'cartões' },
+{ name: 'Superfície 2', hex: '#322E29', use: 'chips, campos' },
+{ name: 'Borda', hex: '#3E3933', use: 'divisórias' },
+{ name: 'Texto', hex: '#F2EDE6', use: 'principal' },
+{ name: 'Texto apoio', hex: '#B8AEA2', use: 'secundário' },
+{ name: 'Destaque', hex: '#7CC4A0', use: 'ação principal' },
+{ name: 'Destaque suave', hex: '#243A2E', use: 'seleção' }
+],
+people: [
+{ name: 'Responsável A', initial: 'A', light: '#24508F', dark: '#8DB3F2' },
+{ name: 'Responsável B', initial: 'B', light: '#7A4BB0', dark: '#C9A6F0' },
+{ name: 'Dependente', initial: 'D', light: '#B4561A', dark: '#F2A469' }
+],
+states: [
+{ name: 'Pendente', bg: '#EFE8DE', fg: '#5C5248' },
+{ name: 'Conciliado · Tem', bg: '#E1F0E7', fg: '#22573D' },
+{ name: 'Atenção', bg: '#FCEFD6', fg: '#7A4E00' },
+{ name: 'Acabou · Alerta', bg: '#F8E0DC', fg: '#9A2B1E' }
+]
+};
+}
+}
+</script>
+</body>
+</html>

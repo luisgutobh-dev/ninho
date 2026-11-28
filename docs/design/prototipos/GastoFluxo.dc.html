@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ninho: anotar gasto</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2F6B4F}a:hover{color:#22573D}
+button,input{font-family:inherit}
+</style>
+</helmet>
+<div style="position: relative; width: 360px; height: 760px; overflow: hidden; background: #FAF6F0; color: #2B2620; font-family: Inter, system-ui, sans-serif">
+
+  <!-- TELA HOJE -->
+  <sc-if value="{{isHoje}}" hint-placeholder-val="{{ true }}">
+    <div style="position: absolute; inset: 0; display: flex; flex-direction: column">
+      <div style="flex: 1; overflow-y: auto; padding: 24px 20px 100px; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <div style="font-family: Figtree, Inter, sans-serif; font-size: 28px; font-weight: 700">Hoje</div>
+            <sc-if value="{{offline}}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #5C5248"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.3 9.5 4.5 4.5 0 0 0 7 18z"/><path d="M3 3l18 18"/></svg>Offline, vai sincronizar</div>
+            </sc-if>
+            <sc-if value="{{online}}" hint-placeholder-val="{{ true }}">
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #6B6258"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F6B4F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Sincronizado · sex, 27/11</div>
+            </sc-if>
+          </div>
+          <button aria-label="Perfil de Responsável A" style="width: 48px; height: 48px; border: 0; border-radius: 999px; background: #24508F; color: #FFFFFF; font-family: Figtree, Inter, sans-serif; font-size: 18px; font-weight: 700">A</button>
+        </div>
+
+        <button onClick="{{openAnotar}}" style="height: 64px; border: 0; border-radius: 18px; background: #2F6B4F; color: #FFFFFF; font-size: 18px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Anotar gasto</button>
+
+        <div style="padding: 14px 16px; border-radius: 16px; background: #FFFFFF; border: 1px solid #E6DED3; display: flex; flex-direction: column; gap: 2px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 4px"><span style="font-family: Figtree, Inter, sans-serif; font-size: 17px; font-weight: 600">Anotações de hoje</span><span style="font-size: 13px; color: #6B6258">{{noteCount}}</span></div>
+          <sc-for list="{{notes}}" as="n" hint-placeholder-count="2">
+            <div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid #EFE8DE; background: {{n.rowBg}}">
+              <span style="flex: none; width: 32px; height: 32px; border-radius: 999px; background: {{n.avatarBg}}; color: #FFFFFF; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{n.who}}</span>
+              <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                <span style="font-size: 15px; font-weight: 500">{{n.what}}</span>
+                <span style="font-size: 13px; color: #6B6258">{{n.label}}</span>
+                <sc-if value="{{n.pending}}" hint-placeholder-val="{{ false }}">
+                  <span style="align-self: flex-start; display: flex; align-items: center; gap: 4px; margin-top: 2px; height: 22px; padding: 0 8px; border-radius: 999px; background: #F1EBE2; color: #5C5248; font-size: 12px; font-weight: 500"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.3 9.5 4.5 4.5 0 0 0 7 18z"/><path d="M3 3l18 18"/></svg>Vai sincronizar</span>
+                </sc-if>
+              </div>
+              <span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums">{{n.value}}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="padding: 14px 16px; border-radius: 16px; background: #FFFFFF; border: 1px solid #E6DED3; display: flex; flex-direction: column; gap: 4px">
+          <span style="font-family: Figtree, Inter, sans-serif; font-size: 17px; font-weight: 600">Para hoje</span>
+          <label style="display: flex; align-items: center; gap: 12px; min-height: 48px"><input type="checkbox" style="width: 22px; height: 22px; accent-color: #2F6B4F; margin: 0"><span style="flex: 1; font-size: 15px">Regar as plantas</span><span style="width: 10px; height: 10px; border-radius: 999px; background: #7A4BB0"></span></label>
+          <div style="display: flex; align-items: center; gap: 12px; min-height: 40px; font-size: 15px"><span style="width: 4px; height: 32px; border-radius: 4px; background: #B4561A"></span><span style="flex: 1">Dentista do Dependente</span><span style="font-size: 14px; color: #6B6258; font-variant-numeric: tabular-nums">16:00</span></div>
+        </div>
+      </div>
+
+      <sc-if value="{{toast}}" hint-placeholder-val="{{ false }}">
+        <div role="status" style="position: absolute; left: 16px; right: 16px; bottom: 88px; min-height: 52px; padding: 6px 6px 6px 16px; box-sizing: border-box; border-radius: 14px; background: #2B2620; color: #FFFFFF; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 24px rgba(43,38,32,0.28)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9FD9BC" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12l5 5 9-10"/></svg>
+          <span style="flex: 1; font-size: 15px">{{toastText}}</span>
+          <button onClick="{{undo}}" style="height: 44px; padding: 0 14px; border: 0; border-radius: 10px; background: transparent; color: #9FD9BC; font-size: 15px; font-weight: 600; cursor: pointer">Desfazer</button>
+        </div>
+      </sc-if>
+
+      <nav aria-label="Módulos" style="position: absolute; left: 0; right: 0; bottom: 0; height: 72px; padding-bottom: 4px; background: #FFFFFF; border-top: 1px solid #E6DED3; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr))">
+        <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #2F6B4F; font-size: 11px; font-weight: 600"><span style="width: 44px; height: 28px; border-radius: 999px; background: #E1F0E7; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></span>Hoje</a>
+        <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M16 15h2"/></svg></span>Gastos</a>
+        <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg></span>Rotina</a>
+        <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>Agenda</a>
+        <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/></svg></span>Consumo</a>
+        <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #6B6258; font-size: 11px; font-weight: 500"><span style="height: 28px; display: flex; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16l-1.5 10h-13z"/><path d="M8 9l4-5 4 5"/></svg></span>Despensa</a>
+      </nav>
+    </div>
+  </sc-if>
+
+  <!-- TELA ANOTAR -->
+  <sc-if value="{{isAnotar}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; display: flex; flex-direction: column">
+      <div style="flex: none; height: 56px; padding: 0 8px; display: flex; align-items: center; gap: 4px">
+        <button onClick="{{back}}" aria-label="Voltar" style="width: 48px; height: 48px; border: 0; border-radius: 12px; background: transparent; color: #2B2620; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <span style="flex: 1; font-family: Figtree, Inter, sans-serif; font-size: 20px; font-weight: 600">Anotar gasto</span>
+        <sc-if value="{{offline}}" hint-placeholder-val="{{ false }}">
+          <span style="margin-right: 8px; display: flex; align-items: center; gap: 4px; height: 26px; padding: 0 10px; border-radius: 999px; background: #F1EBE2; color: #5C5248; font-size: 12px; font-weight: 500"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.3 9.5 4.5 4.5 0 0 0 7 18z"/><path d="M3 3l18 18"/></svg>Offline</span>
+        </sc-if>
+      </div>
+
+      <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 0 20px 8px; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0 8px; border-radius: 16px; border: 2px solid {{valueBorder}}; background: {{valueBg}}">
+          <span style="font-size: 13px; color: #6B6258">Quanto foi?</span>
+          <span style="font-size: 40px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; color: {{valueColor}}">{{display}}</span>
+          <sc-if value="{{error}}" hint-placeholder-val="{{ false }}">
+            <span role="alert" style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #9A2B1E"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>Digite o valor antes de salvar</span>
+          </sc-if>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <label for="oque" style="font-size: 13px; font-weight: 600; color: #5C5248">O que foi?</label>
+          <input id="oque" value="{{what}}" onChange="{{onWhat}}" placeholder="Ex.: mercado da semana" style="height: 48px; padding: 0 14px; box-sizing: border-box; border: 1px solid #E6DED3; border-radius: 12px; background: #FFFFFF; color: #2B2620; font-size: 16px">
+          <div style="display: flex; gap: 8px; overflow-x: auto">
+            <sc-for list="{{suggestions}}" as="s" hint-placeholder-count="4">
+              <button onClick="{{s.pick}}" style="flex: none; height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: {{s.bg}}; color: {{s.fg}}; font-size: 14px; cursor: pointer">{{s.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; min-height: 56px">
+          <span style="font-size: 13px; font-weight: 600; color: #5C5248">Quem gastou?</span>
+          <div style="display: flex; gap: 14px">
+            <sc-for list="{{people}}" as="p" hint-placeholder-count="2">
+              <button onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" aria-label="{{p.name}}" style="width: 48px; height: 48px; border: 0; border-radius: 999px; background: {{p.bg}}; color: #FFFFFF; font-family: Figtree, Inter, sans-serif; font-size: 18px; font-weight: 700; opacity: {{p.opacity}}; box-shadow: {{p.ring}}; cursor: pointer">{{p.initial}}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 13px; font-weight: 600; color: #5C5248">Como pagou?</span>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 4px; border-radius: 14px; background: #F1EBE2">
+            <sc-for list="{{methods}}" as="m" hint-placeholder-count="3">
+              <button onClick="{{m.pick}}" aria-pressed="{{m.pressed}}" style="height: 44px; border: 0; border-radius: 10px; background: {{m.bg}}; color: {{m.fg}}; font-size: 14px; font-weight: 600; box-shadow: {{m.shadow}}; cursor: pointer">{{m.label}}</button>
+            </sc-for>
+          </div>
+          <sc-if value="{{showBanks}}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; gap: 8px">
+              <sc-for list="{{banks}}" as="b" hint-placeholder-count="2">
+                <button onClick="{{b.pick}}" aria-pressed="{{b.pressed}}" style="height: 40px; padding: 0 16px; border-radius: 999px; border: 1.5px solid {{b.bd}}; background: {{b.bg}}; color: {{b.fg}}; font-size: 14px; font-weight: 600; cursor: pointer">{{b.label}}</button>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="display: flex; gap: 8px">
+          <button style="flex: 1; height: 48px; border: 1px solid #E6DED3; border-radius: 12px; background: #FFFFFF; color: #2B2620; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6258" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Hoje, 21:39</button>
+          <button onClick="{{togglePhoto}}" style="flex: 1; height: 48px; border: 1px solid {{photoBd}}; border-radius: 12px; background: {{photoBg}}; color: {{photoFg}}; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7l2-3h4l2 3"/><circle cx="12" cy="13" r="3.5"/></svg>{{photoLabel}}</button>
+        </div>
+      </div>
+
+      <div style="flex: none; padding: 10px 16px 16px; background: #FFFFFF; border-top: 1px solid #E6DED3; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px">
+          <sc-for list="{{keys}}" as="k" hint-placeholder-count="12">
+            <button onClick="{{k.press}}" aria-label="{{k.aria}}" style="height: 48px; border: 0; border-radius: 12px; background: #F1EBE2; color: #2B2620; font-size: 22px; font-weight: 500; display: flex; align-items: center; justify-content: center; cursor: pointer">
+              <sc-if value="{{k.isBack}}" hint-placeholder-val="{{ false }}"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11v12H9l-6-6z"/><path d="M13 10l4 4M17 10l-4 4"/></svg></sc-if>
+              <sc-if value="{{k.isDigit}}" hint-placeholder-val="{{ true }}">{{k.label}}</sc-if>
+            </button>
+          </sc-for>
+        </div>
+        <button onClick="{{save}}" style="height: 56px; border: 0; border-radius: 16px; background: #2F6B4F; color: #FFFFFF; font-size: 17px; font-weight: 600; cursor: pointer">Salvar</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"preset":{"editor":"enum","options":["inicio","anotar","erro","salvo","salvoOffline"],"default":"inicio"},"offline":{"editor":"boolean","default":false},"$preview":{"width":360,"height":760}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+const preset = (props && props.preset) || 'inicio';
+const base = [{ id: 1, what: 'Padaria', who: 'B', label: 'Conta · 08:10', value: 'R$ 18,50', pending: false }];
+const saved = { id: 2, what: 'Mercado', who: 'A', label: 'Dinheiro · agora', value: 'R$ 112,30', pending: preset === 'salvoOffline' };
+this.state = {
+screen: (preset === 'anotar' || preset === 'erro') ? 'anotar' : 'hoje',
+cents: preset === 'anotar' ? '4590' : '',
+what: preset === 'anotar' ? 'Farmácia' : '',
+who: 'A',
+method: 'credito',
+bank: 'Banco 1',
+photo: false,
+error: preset === 'erro',
+toast: preset === 'salvo' || preset === 'salvoOffline',
+toastText: preset === 'salvoOffline' ? 'Salvo no aparelho. Vai sincronizar.' : 'Gasto anotado',
+notes: (preset === 'salvo' || preset === 'salvoOffline') ? [saved].concat(base) : base
+};
+}
+componentWillUnmount() { if (this.timer) clearTimeout(this.timer); }
+isOffline() {
+const preset = this.props.preset || 'inicio';
+return this.props.offline ?? (preset === 'salvoOffline');
+}
+fmt(c) {
+const n = parseInt(c || '0', 10) || 0;
+const r = String(Math.floor(n / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+return 'R$ ' + r + ',' + String(n % 100).padStart(2, '0');
+}
+press(k) {
+let c = this.state.cents;
+if (k === 'back') c = c.slice(0, -1);
+else c = (c + k).replace(/^0+/, '');
+if (c.length > 8) return;
+this.setState({ cents: c, error: false });
+}
+save() {
+const n = parseInt(this.state.cents || '0', 10) || 0;
+if (!n) { this.setState({ error: true }); return; }
+const off = this.isOffline();
+const ml = { credito: 'Crédito', conta: 'Conta', dinheiro: 'Dinheiro' }[this.state.method];
+const label = ml + (this.state.method === 'credito' ? ' · ' + this.state.bank : '') + ' · agora';
+const note = { id: Date.now(), what: this.state.what.trim() || 'Sem descrição', who: this.state.who, label: label, value: this.fmt(this.state.cents), pending: off };
+this.setState({ notes: [note].concat(this.state.notes), screen: 'hoje', toast: true, toastText: off ? 'Salvo no aparelho. Vai sincronizar.' : 'Gasto anotado', cents: '', what: '', photo: false, error: false, who: 'A', method: 'credito', bank: 'Banco 1' });
+if (this.timer) clearTimeout(this.timer);
+this.timer = setTimeout(() => this.setState({ toast: false }), 5000);
+}
+undo() {
+if (this.timer) clearTimeout(this.timer);
+this.setState({ notes: this.state.notes.slice(1), toast: false });
+}
+renderVals() {
+const s = this.state;
+const off = this.isOffline();
+const colors = { A: '#24508F', B: '#7A4BB0' };
+const hasValue = (parseInt(s.cents || '0', 10) || 0) > 0;
+const sugg = ['Mercado', 'Farmácia', 'Padaria', 'Combustível', 'Lanche'];
+const digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '00', '0', 'back'];
+return {
+isHoje: s.screen === 'hoje',
+isAnotar: s.screen === 'anotar',
+offline: off,
+online: !off,
+toast: s.toast,
+toastText: s.toastText,
+noteCount: String(s.notes.length),
+notes: s.notes.map((n, i) => ({ ...n, avatarBg: colors[n.who], rowBg: (i === 0 && s.toast) ? '#F3F9F5' : 'transparent' })),
+openAnotar: () => this.setState({ screen: 'anotar', toast: false, error: false }),
+back: () => this.setState({ screen: 'hoje', error: false }),
+display: this.fmt(s.cents),
+valueColor: s.error ? '#9A2B1E' : (hasValue ? '#2B2620' : '#6B6258'),
+valueBorder: s.error ? '#9A2B1E' : 'transparent',
+valueBg: s.error ? '#FBEDEA' : 'transparent',
+error: s.error,
+what: s.what,
+onWhat: (e) => this.setState({ what: e.target.value }),
+suggestions: sugg.map((x) => ({ label: x, bg: s.what === x ? '#2F6B4F' : '#F1EBE2', fg: s.what === x ? '#FFFFFF' : '#2B2620', pick: () => this.setState({ what: x }) })),
+people: ['A', 'B'].map((p) => ({ initial: p, name: 'Responsável ' + p, bg: colors[p], pressed: s.who === p ? 'true' : 'false', opacity: s.who === p ? '1' : '0.5', ring: s.who === p ? '0 0 0 3px #FAF6F0, 0 0 0 6px ' + colors[p] : 'none', pick: () => this.setState({ who: p }) })),
+methods: [['credito', 'Crédito'], ['conta', 'Conta'], ['dinheiro', 'Dinheiro']].map(([id, label]) => ({ label: label, pressed: s.method === id ? 'true' : 'false', bg: s.method === id ? '#FFFFFF' : 'transparent', fg: s.method === id ? '#2F6B4F' : '#5C5248', shadow: s.method === id ? '0 1px 3px rgba(43,38,32,0.15)' : 'none', pick: () => this.setState({ method: id }) })),
+showBanks: s.method === 'credito',
+banks: ['Banco 1', 'Banco 2'].map((b) => ({ label: 'Cartão ' + b, pressed: s.bank === b ? 'true' : 'false', bd: s.bank === b ? '#2F6B4F' : '#E6DED3', bg: s.bank === b ? '#E1F0E7' : '#FFFFFF', fg: s.bank === b ? '#22573D' : '#2B2620', pick: () => this.setState({ bank: b }) })),
+togglePhoto: () => this.setState({ photo: !s.photo }),
+photoLabel: s.photo ? 'Cupom anexado' : 'Foto do cupom',
+photoBd: s.photo ? '#2F6B4F' : '#E6DED3',
+photoBg: s.photo ? '#E1F0E7' : '#FFFFFF',
+photoFg: s.photo ? '#22573D' : '#2B2620',
+keys: digits.map((d) => ({ label: d, isBack: d === 'back', isDigit: d !== 'back', aria: d === 'back' ? 'Apagar' : d, press: () => this.press(d) })),
+save: () => this.save(),
+undo: () => this.undo()
+};
+}
+}
+</script>
+</body>
+</html>

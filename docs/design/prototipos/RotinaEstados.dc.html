@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ninho: estados da rotina</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2F6B4F}a:hover{color:#22573D}
+</style>
+</helmet>
+<div style="width: 2080px; height: 980px; box-sizing: border-box; padding: 48px 56px; background: #EFE8DE; color: #2B2620; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; gap: 28px">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 32px">
+    <h1 style="margin: 0; font-family: Figtree, Inter, sans-serif; font-size: 32px; font-weight: 700">Rotina: tarefas, placar e mural</h1>
+    <p style="margin: 0; max-width: 760px; font-size: 14px; line-height: 1.5; color: #5C5248">Concluir é um toque, sem aprovação. A celebração é um aviso curto com os pontos e a opção de foto. O placar conta pontos, nunca dinheiro. O dependente vê as próprias tarefas primeiro e não cria tarefas.</p>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">1. Tarefas da semana (responsável)</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Rotina" preset="tarefas" viewer="A" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">2. Dependente conclui e comemora</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Rotina" preset="concluida" viewer="D" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">3. Criar tarefa, dias específicos</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Rotina" preset="criar" viewer="A" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">4. Placar e semanas anteriores</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Rotina" preset="placar" viewer="A" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 600">5. Mural da família</div>
+      <div style="width: 360px; height: 760px; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(43,38,32,0.18)">
+        <dc-import name="Rotina" preset="mural" viewer="A" hint-size="360px,760px"></dc-import>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":2080,"height":980}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

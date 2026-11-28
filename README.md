@@ -14,3 +14,4 @@ Os documentos em `docs/` são a fonte da verdade do projeto. Toda mudança neles
 | [PRD](docs/prd.md) | Requisitos funcionais (RF), não funcionais de produto (RNF-P) e técnicos de estudo (RNT), riscos e roadmap |
 | [Mapa de DDD](docs/ddd/mapa-estrategico.md) | Subdomínios, 7 bounded contexts, mapa de contextos e modelo tático |
 | [ADRs](docs/adr/) | Decisões de arquitetura, uma por arquivo |
+| [Design](docs/design/) | Design system v0.1, protótipos dos nove fluxos e os prompts que os geraram |
